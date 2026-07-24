@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Textiles: Scaled, Structural, Stalling — Sector Snapshot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon: #7A1F2E;
+    --maroon-deep: #5A1420;
+    --navy: #1C2B44;
+    --ivory: #F6EFE1;
+    --paper: #FBF7EE;
+    --gold: #B8862E;
+    --ink: #262220;
+    --ink-soft: #55504A;
+    --rule: #D9CBB0;
+    --rule-strong: #B7A57F;
+    --up: #3E6B4F;
+    --down: #A63A2E;
+    --hatch: #C9B98C;
+    --serif: 'Times New Roman', Times, serif;
+    --sans: 'Montserrat', Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); line-height:1.65; font-size:16px;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 30px;}
+  .prose{max-width:660px;}
+  .rule-thin{border:none; border-top:1px solid var(--rule); margin:44px 0;}
+
+  .masthead{padding:26px 0 14px; border-bottom:2px solid var(--ink); display:flex; justify-content:space-between; align-items:baseline; font-family:var(--sans); font-size:11px; letter-spacing:.04em; color:var(--ink-soft); text-transform:uppercase;}
+  .masthead .series{font-weight:700; color:var(--maroon-deep);}
+
+  header.hero{padding:34px 0 30px; border-bottom:1px solid var(--rule);}
+  .paper-meta{font-family:var(--sans); font-size:11.5px; color:var(--ink-soft); margin-bottom:16px; display:flex; gap:18px; flex-wrap:wrap; font-weight:500;}
+  .paper-meta span::before{content:"·"; margin-right:18px; color:var(--rule-strong);}
+  .paper-meta span:first-child::before{content:""; margin-right:0;}
+  h1{font-family:var(--sans); font-weight:800; font-size:clamp(1.85rem, 4.2vw, 2.7rem); line-height:1.12; margin:0 0 20px; color:var(--maroon-deep); letter-spacing:-0.01em;}
+  .byline-block{display:flex; flex-wrap:wrap; gap:28px; margin-bottom:26px; padding-bottom:22px; border-bottom:1px solid var(--rule);}
+  .byline-block .role{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); display:block; margin-bottom:3px; font-weight:600;}
+  .byline-block .who{font-size:14.5px; color:var(--ink); font-weight:600; font-family:var(--sans);}
+
+  .abstract{background:var(--ivory); border:1px solid var(--rule); padding:22px 24px; margin-bottom:8px;}
+  .abstract .label{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
+  .abstract p{margin:0; color:var(--ink); font-size:15px;}
+  .keywords{font-family:var(--sans); font-size:11px; color:var(--ink-soft); margin-top:14px;}
+  .keywords b{color:var(--ink); font-weight:600;}
+
+  .hero-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:22px;}
+  .hero-stat{background:var(--ivory); padding:16px 15px;}
+  .hero-stat .num{font-family:var(--sans); font-weight:800; font-size:1.55rem; color:var(--navy); display:block; line-height:1;}
+  .hero-stat .num.down{color:var(--down);}
+  .hero-stat .lbl{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-top:6px; display:block; line-height:1.4; font-weight:500;}
+
+  .stat-grid{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); margin:18px 0 6px;}
+  .stat-grid.cols-5{grid-template-columns:repeat(5,1fr);}
+  .stat-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .stat-box{background:var(--ivory); padding:15px 13px;}
+  .stat-box .num{font-family:var(--sans); font-weight:800; font-size:1.3rem; color:var(--navy); display:block; line-height:1.1;}
+  .stat-box .lbl{font-family:var(--sans); font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.02em; margin-top:6px; display:block; line-height:1.35; font-weight:500;}
+
+  section{padding:8px 0 42px;}
+  .section-head{display:flex; align-items:baseline; gap:12px; margin-bottom:18px; padding-bottom:8px; border-bottom:1px solid var(--rule);}
+  .section-tag{font-family:var(--sans); font-size:13px; color:var(--gold); font-weight:700; white-space:nowrap;}
+  h2{font-family:var(--sans); font-weight:700; font-size:1.35rem; color:var(--maroon-deep); margin:0;}
+  p{margin:0 0 15px; color:var(--ink);}
+  strong{color:var(--maroon-deep); font-weight:700;}
+  sup.cite{font-family:var(--sans); font-size:10px; color:var(--maroon); font-weight:700; margin-left:1px;}
+  sup.note{font-family:var(--sans); font-size:10px; color:var(--navy); font-weight:700; margin-left:1px;}
+
+  .figure{border:1px solid var(--rule); background:var(--ivory); padding:18px 18px 14px; margin:20px 0;}
+  .figure img{width:100%; height:auto; display:block; background:#fff; border:1px solid var(--rule);}
+  .fig-label{font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
+  .fig-caption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:640px; font-family:var(--serif); font-style:italic;}
+  svg text{font-family:var(--sans);}
+  .axis-label{font-size:9.5px; fill:var(--ink-soft);}
+  .legend{display:flex; gap:18px; font-size:11.5px; color:var(--ink-soft); margin-top:8px; flex-wrap:wrap; font-family:var(--sans);}
+  .legend .dot{display:inline-block; width:8px; height:8px; border-radius:1px; margin-right:5px; vertical-align:middle;}
+
+  .two-col{display:grid; grid-template-columns:1.05fr .95fr; gap:30px; align-items:start;}
+
+  .data-table{width:100%; border-collapse:collapse; font-size:13px; margin:14px 0;}
+  .data-table caption{caption-side:top; text-align:left; font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
+  .data-table th{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); text-align:left; padding:7px 10px; border-bottom:2px solid var(--ink); background:var(--ivory); font-weight:600;}
+  .data-table td{padding:8px 10px; border-bottom:1px solid var(--rule); vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:1px solid var(--ink);}
+  .data-table td.num{font-family:var(--sans); color:var(--navy); white-space:nowrap;}
+
+  .insight-box{border:1px solid var(--ink); border-left:4px solid var(--gold); padding:18px 22px; margin:22px 0; background:var(--ivory);}
+  .insight-box .label{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon); font-weight:700; margin-bottom:8px;}
+  .insight-box p{margin:0; font-size:14.5px;}
+
+  footer{border-top:2px solid var(--ink); margin-top:10px; padding:28px 0 60px;}
+  footer h3{font-family:var(--sans); font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon-deep); margin:0 0 12px; font-weight:700;}
+  .ref-list{list-style:none; margin:0 0 26px; padding:0; font-size:12.6px; color:var(--ink-soft); counter-reset:refnum;}
+  .ref-list li{counter-increment:refnum; padding:5px 0 5px 26px; position:relative; border-bottom:1px solid var(--rule);}
+  .ref-list li::before{content:"[" counter(refnum) "]"; position:absolute; left:0; font-family:var(--sans); color:var(--maroon); font-size:11px; font-weight:600;}
+  .note-list{list-style:none; margin:0; padding:0; font-size:12.6px; color:var(--ink-soft);}
+  .note-list li{padding:5px 0 5px 26px; position:relative; border-bottom:1px solid var(--rule);}
+  .note-list li .tag{position:absolute; left:0; font-family:var(--sans); color:var(--navy); font-size:11px; font-weight:700;}
+  .colophon{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); margin-top:24px; padding-top:16px; border-top:1px solid var(--rule);}
+
+  @media (max-width:680px){
+    .hero-stats{grid-template-columns:1fr;}
+    .stat-grid.cols-5{grid-template-columns:repeat(2,1fr);}
+    .stat-grid.cols-3{grid-template-columns:1fr;}
+    .two-col{grid-template-columns:1fr;}
+    .data-table{font-size:11.5px;}
+    .paper-meta{gap:10px;}
+    .paper-meta span::before{margin-right:10px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <span class="series">Institute of Manufacturing and Economy</span>
+    <span>Manufacturing Sector Working Paper Series</span>
+  </div>
+
+  <header class="hero">
+    <div class="paper-meta">
+      <span>Sector 09 of 11</span>
+      <span>NIC Divisions 13 and 14</span>
+      <span>July 2026</span>
+    </div>
+    <h1>Textiles: Scaled, Structural, Stalling</h1>
+    <div class="byline-block">
+      <div><span class="role">Primary Research</span><span class="who">Dhairya Shah</span></div>
+      <div><span class="role">Compiled by</span><span class="who">Riddhi Bhargava</span></div>
+      <div><span class="role">Series</span><span class="who">Sector Snapshots</span></div>
+    </div>
+
+    <div class="abstract">
+      <div class="label">Abstract</div>
+      <p>India's textile sector operates 31,176 registered factories and employs 25 lakh workers, a base large enough to anchor the country's manufacturing employment. Yet on the Index of Industrial Production it ranks 9th of 11 sectors under study across output level, latest growth, and full-period trend, and has not cleared its own 2018-19 peak since. This paper sets out the sector's scale, its output trajectory, its trade position, its cost and productivity structure, firm-level churn over a decade, the policy support directed at it, its principal production clusters, and state-level capital formation patterns, drawing on the Annual Survey of Industries, the Index of Industrial Production, CMIE, DGCI&amp;S trade data, and the institute's internal cluster registry.</p>
+    </div>
+    <div class="keywords"><b>Keywords:</b> Textiles, Index of Industrial Production, Annual Survey of Industries, trade balance, firm concentration, labour productivity, industrial clusters, Production-Linked Incentive scheme, capital formation</div>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num down">9 / 11</span><span class="lbl">Average IIP rank across level, growth, and CAGR</span></div>
+      <div class="hero-stat"><span class="num down">−2.4%</span><span class="lbl">Latest IIP growth, 2025-26</span></div>
+      <div class="hero-stat"><span class="num">42.6%</span><span class="lbl">Top-3 firms' combined market share, 2024-25</span></div>
+    </div>
+  </header>
+
+  <!-- SCALE -->
+  <section id="scale">
+    <div class="section-head"><span class="section-tag">§1</span><h2>The Scale</h2></div>
+    <div class="prose">
+      <p>By raw size, textiles is one of India's foundational manufacturing sectors: <strong>31,176 factories</strong> are registered under the Annual Survey of Industries (23,838 in operation), producing a combined <strong>Gross Value of Output of ₹7.81 lakh crore</strong> in 2023-24, up from ₹4.84 lakh crore in 2014-15.<sup class="cite">[1]</sup></p>
+    </div>
+    <table class="data-table">
+      <caption>Table 1. Scale indicators, Annual Survey of Industries, 2023-24</caption>
+      <thead><tr><th>Indicator</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Factories registered</td><td class="num">31,176</td></tr>
+        <tr><td>Factories in operation</td><td class="num">23,838</td></tr>
+        <tr><td>Total workers employed</td><td class="num">25.2 lakh</td></tr>
+        <tr><td>Gross Value of Output, 2023-24</td><td class="num">₹7.81 lakh crore</td></tr>
+        <tr><td>Gross Value Added, 2023-24</td><td class="num">₹1.54 lakh crore</td></tr>
+      </tbody>
+    </table>
+
+    <div class="figure">
+      <div class="fig-label">Figure 1. Gross Value of Output (bars) and value-added intensity (line), 2014-15 to 2023-24</div>
+      <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="GVO and GVA-to-GVO ratio chart">
+        <line x1="10" y1="194" x2="630" y2="194" stroke="#D9CBB0" stroke-width="1"/>
+        <rect x="19.3" y="91.6" width="43.4" height="102.4" fill="#7A1F2E"/>
+        <rect x="81.3" y="88.6" width="43.4" height="105.4" fill="#7A1F2E"/>
+        <rect x="143.3" y="83.7" width="43.4" height="110.3" fill="#7A1F2E"/>
+        <rect x="205.3" y="77.4" width="43.4" height="116.6" fill="#7A1F2E"/>
+        <rect x="267.3" y="68.9" width="43.4" height="125.1" fill="#7A1F2E"/>
+        <rect x="329.3" y="75.9" width="43.4" height="118.1" fill="#7A1F2E"/>
+        <rect x="391.3" y="88.7" width="43.4" height="105.3" fill="#7A1F2E"/>
+        <rect x="453.3" y="39.2" width="43.4" height="154.8" fill="#7A1F2E"/>
+        <rect x="515.3" y="26.7" width="43.4" height="167.3" fill="#7A1F2E"/>
+        <rect x="577.3" y="28.6" width="43.4" height="165.4" fill="#7A1F2E"/>
+        <polyline points="41.0,160.8 103.0,114.7 165.0,114.5 227.0,95.2 289.0,67.4 351.0,53.1 413.0,43.2 475.0,93.4 537.0,127.5 599.0,84.1"
+          fill="none" stroke="#B8862E" stroke-width="2.5"/>
+        <g fill="#B8862E">
+          <circle cx="41.0" cy="160.8" r="3"/><circle cx="103.0" cy="114.7" r="3"/><circle cx="165.0" cy="114.5" r="3"/>
+          <circle cx="227.0" cy="95.2" r="3"/><circle cx="289.0" cy="67.4" r="3"/><circle cx="351.0" cy="53.1" r="3"/>
+          <circle cx="413.0" cy="43.2" r="3"/><circle cx="475.0" cy="93.4" r="3"/><circle cx="537.0" cy="127.5" r="3"/>
+          <circle cx="599.0" cy="84.1" r="3"/>
+        </g>
+        <text x="19" y="210" class="axis-label">14-15</text>
+        <text x="143" y="210" class="axis-label">16-17</text>
+        <text x="267" y="210" class="axis-label">18-19</text>
+        <text x="391" y="210" class="axis-label">20-21</text>
+        <text x="515" y="210" class="axis-label">22-23</text>
+        <text x="577" y="210" class="axis-label">23-24</text>
+      </svg>
+      <div class="legend">
+        <span><span class="dot" style="background:#7A1F2E;"></span>GVO, ₹ lakh crore, left scale</span>
+        <span><span class="dot" style="background:#B8862E;"></span>GVA ÷ GVO ratio, 17.3%–20.9% range, right scale</span>
+      </div>
+      <div class="fig-caption">GVO rose 61% over the decade, concentrated in two step-changes (2018-19 and 2021-22) rather than steady growth. The value-added share of that output stayed essentially flat: 17.3% in 2014-15, 19.7% in 2023-24. The sector is producing more without capturing meaningfully more value per unit produced.<sup class="cite">[1]</sup></div>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 1b. Number of factories, national, 2014-15 to 2023-24</div>
+      <img src="Textiles\charts_textiles\07_factories_trend.png" alt="National factory count trend for textiles, 2014-15 to 2023-24">
+      <div class="fig-caption">Factory count rose from 28,600 to 31,176 over the decade, a shallower and steadier climb than the GVO series in Figure 1, with a mild dip in 2015-16 and 2016-17 before resuming growth.<sup class="cite">[1]</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- OUTPUT PERFORMANCE -->
+  <section id="output">
+    <div class="section-head"><span class="section-tag">§2</span><h2>The Slowdown</h2></div>
+    <div class="prose">
+      <p>Textiles peaked on the Index of Industrial Production in 2018-19 (128.88) and has not returned to that level since. The COVID-year collapse (96.06 in 2020-21) was followed by a partial rebound, but the index has been sliding again since 2021-22, down to 108.72 in 2025-26, barely 3 points above where the sector started in 2012-13. Excluding pharmaceuticals from the comparison set (tracked separately, not folded into any other sector's index here), textiles ranks 9th of 11 sectors on index level, latest growth, and full-period CAGR, and is the second most volatile sector on the index after General Manufacturing.<sup class="cite">[2]</sup><sup class="note">(a)</sup></p>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 2. IIP index level, textiles, 2012-13 to 2025-26 (base 2011-12 = 100)</div>
+      <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="Textiles IIP index level trend">
+        <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+        <rect x="365" y="10" width="53" height="164" fill="#A63A2E" opacity="0.08"/>
+        <text x="368" y="22" font-size="9.5" fill="#A63A2E">COVID</text>
+        <polyline points="10.0,121.8 57.7,89.5 105.4,77.3 153.1,50.3 200.8,31.7 248.5,49.4 296.2,24.9 343.8,33.3 391.5,160.4 439.2,46.6 486.9,89.0 534.6,110.1 582.3,97.0 630.0,108.2"
+          fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+        <circle cx="296.2" cy="24.9" r="4" fill="#B8862E"/>
+        <text x="270" y="16" font-size="9.5" fill="#B8862E">peak 128.9</text>
+        <circle cx="391.5" cy="160.4" r="4" fill="#A63A2E"/>
+        <text x="393" y="172" font-size="9.5" fill="#A63A2E">96.1 (20-21)</text>
+        <circle cx="630.0" cy="108.2" r="4" fill="#1C2B44"/>
+        <text x="560" y="122" font-size="9.5" fill="#1C2B44">108.7 (latest)</text>
+      </svg>
+      <div class="fig-caption">Item-group weights per the MoSPI IIP Manual, Annexure I, summed to NIC 2-digit level (Textiles = NIC 13 + 14).<sup class="cite">[2]</sup><sup class="note">(a)</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- TRADE -->
+  <section id="trade">
+    <div class="section-head"><span class="section-tag">§3</span><h2>The Surplus</h2></div>
+    <div class="prose">
+      <p><em>Figures in this section are directional rather than exact.</em> The underlying HS-to-NIC concordance maps 95% of export value and 89% of import value to a sector; the remainder is unclassified and excluded rather than estimated, so totals should be read as a close approximation of trade flows, not an exact reconciliation.<sup class="note">(b)</sup></p>
+      <p>Textiles remains one of the few manufacturing sectors where India runs a genuine trade surplus: ₹2.35 lakh crore in FY24-25, on exports of ₹3.16 lakh crore against imports of ₹0.81 lakh crore. Import dependency is low, at 20.4%. Export growth (5.4% CAGR over five years) is positive but unspectacular for a sector that scaled output by 61% over the decade.<sup class="cite">[3]</sup></p>
+    </div>
+    <div class="two-col">
+      <div class="figure">
+        <div class="fig-label">Figure 3. Exports, imports, and surplus, FY24-25 (₹ lakh crore)</div>
+        <svg viewBox="0 0 320 170" width="100%" height="170" role="img" aria-label="Exports imports surplus bar chart">
+          <line x1="10" y1="148" x2="310" y2="148" stroke="#D9CBB0" stroke-width="1"/>
+          <rect x="35" y="29.5" width="60" height="118.5" fill="#3E6B4F"/>
+          <rect x="130" y="117.6" width="60" height="30.4" fill="#A63A2E"/>
+          <rect x="225" y="59.9" width="60" height="88.1" fill="#B8862E"/>
+          <text x="45" y="22" font-size="10.5" fill="#262220" font-weight="600">3.16</text>
+          <text x="145" y="110" font-size="10.5" fill="#262220" font-weight="600">0.81</text>
+          <text x="235" y="52" font-size="10.5" fill="#262220" font-weight="600">2.35</text>
+          <text x="40" y="163" class="axis-label">Exports</text>
+          <text x="137" y="163" class="axis-label">Imports</text>
+          <text x="230" y="163" class="axis-label">Surplus</text>
+        </svg>
+        <div class="fig-caption">Directional estimate; see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
+      </div>
+      <div class="figure">
+        <div class="fig-label">Figure 4. Leading trade partners, FY24-25 (₹ crore)</div>
+        <svg viewBox="0 0 320 170" width="100%" height="170" role="img" aria-label="Top trade partners bar chart">
+          <text x="10" y="30" font-size="11" fill="#262220" font-weight="600">USA (export)</text>
+          <rect x="10" y="38" width="280" height="20" fill="#3E6B4F"/>
+          <text x="16" y="53" font-size="10.5" fill="#F6EFE1" font-weight="600">₹92,670 cr</text>
+          <text x="10" y="92" font-size="11" fill="#262220" font-weight="600">China (import)</text>
+          <rect x="10" y="100" width="92.8" height="20" fill="#A63A2E"/>
+          <text x="106" y="115" font-size="10.5" fill="#262220" font-weight="600">₹30,763 cr</text>
+        </svg>
+        <div class="fig-caption">Bar widths scaled to the export bar; directional estimate, see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- COMPETITIVE STRUCTURE -->
+  <section id="structure">
+    <div class="section-head"><span class="section-tag">§4</span><h2>The Structure</h2></div>
+    <div class="prose">
+      <p>Textiles carries the second highest employee cost share of any sector in this study, 10.5% of sales, behind only Leather and Related Products at 13.2%: a genuinely labour-intensive cost base. What is less obvious is that it also carries the second highest capital intensity, 1.52&times; Gross Fixed Assets to Sales, behind only Electrical Equipment, and well above Transport Equipment (1.33&times;) or Metals (1.07&times;). That combination of high labour cost and high asset intensity together is unusual: most sectors lean one way or the other. Sales per employee, at ₹3,274 million, is the second lowest of the 11 sectors, just above Leather and Related Products (₹3,201 million). R&amp;D spend, at 0.5% of sales, is below Chemicals (2.14%) and Engineering Goods (1.85%), though not the very lowest: General Manufacturing (0.13%) and Metals (0.19%) spend even less.<sup class="cite">[4]</sup></p>
+    </div>
+
+    <div class="stat-grid cols-5">
+      <div class="stat-box"><span class="num">₹31.0 L</span><span class="lbl">Output per worker, GVO ÷ total workers, 2023-24</span></div>
+      <div class="stat-box"><span class="num">₹6.1 L</span><span class="lbl">Value added per worker, GVA ÷ total workers, 2023-24</span></div>
+      <div class="stat-box"><span class="num">59.3%</span><span class="lbl">Material intensity, raw material share of sales</span></div>
+      <div class="stat-box"><span class="num">10.5%</span><span class="lbl">Labour cost share of sales</span></div>
+      <div class="stat-box"><span class="num">1.52×</span><span class="lbl">Capital intensity, GFA-to-sales</span></div>
+    </div>
+    <p class="fig-caption" style="margin:4px 0 18px;">Derived indicators.<sup class="note">(c)</sup> Output and value-added per worker are ASI economy-wide averages (2023-24); material intensity, labour cost share, and capital intensity are top-20 firm-panel averages (FY23-25) and are not on the same base.<sup class="cite">[1],[5]</sup></p>
+
+    <div class="two-col">
+      <div class="figure">
+        <div class="fig-label">Figure 5. Capital intensity, GFA-to-sales, selected sectors</div>
+        <svg viewBox="0 0 320 150" width="100%" height="150" role="img" aria-label="Capital intensity bar chart">
+          <line x1="10" y1="20" x2="10" y2="128" stroke="#D9CBB0" stroke-width="1"/>
+          <text x="15" y="30" font-size="10.5" fill="#262220">Elec. Equip.</text>
+          <rect x="115" y="21" width="18" height="16" fill="#C9B98C"/>
+          <rect x="133" y="21" width="18" height="16" fill="none" stroke="#B8862E" stroke-width="1.2" stroke-dasharray="2,2"/>
+          <text x="155" y="33" font-size="9.5" fill="#55504A">highest, exact value not disclosed</text>
+          <text x="15" y="58" font-size="10.5" fill="#262220" font-weight="600">Textiles</text>
+          <rect x="115" y="49" width="114" height="16" fill="#7A1F2E"/>
+          <text x="234" y="61" font-size="10.5" fill="#262220" font-weight="600">1.52×</text>
+          <text x="15" y="86" font-size="10.5" fill="#262220">Transport Equip.</text>
+          <rect x="115" y="77" width="99.8" height="16" fill="#1C2B44"/>
+          <text x="220" y="89" font-size="10.5" fill="#262220">1.33×</text>
+          <text x="15" y="114" font-size="10.5" fill="#262220">Metals</text>
+          <rect x="115" y="105" width="80.3" height="16" fill="#55504A"/>
+          <text x="200" y="117" font-size="10.5" fill="#262220">1.07×</text>
+        </svg>
+        <div class="fig-caption">Hatched segment denotes a reported rank without a disclosed value. Source: CMIE Industry Outlook.<sup class="cite">[5]</sup></div>
+      </div>
+      <div class="figure">
+        <div class="fig-label">Figure 6. Employee cost, share of sales, top two sectors</div>
+        <svg viewBox="0 0 320 150" width="100%" height="150" role="img" aria-label="Employee cost share bar chart">
+          <line x1="10" y1="20" x2="10" y2="128" stroke="#D9CBB0" stroke-width="1"/>
+          <text x="15" y="48" font-size="10.5" fill="#262220">Leather and Related Products</text>
+          <rect x="130" y="35" width="139.5" height="22" fill="#1C2B44"/>
+          <text x="274" y="50" font-size="10.5" fill="#262220" font-weight="600">13.2%</text>
+          <text x="15" y="100" font-size="10.5" fill="#262220" font-weight="600">Textiles</text>
+          <rect x="130" y="87" width="111" height="22" fill="#7A1F2E"/>
+          <text x="245" y="102" font-size="10.5" fill="#262220" font-weight="600">10.5%</text>
+        </svg>
+        <div class="fig-caption">Textiles ranks second of eleven sectors on this measure. Source: CMIE Industry Outlook.<sup class="cite">[5]</sup></div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 7. Cost structure, top 20 firms, three-year average, FY23-25</div>
+      <svg viewBox="0 0 640 70" width="100%" height="70" role="img" aria-label="Cost structure stacked bar">
+        <rect x="10" y="20" width="373.4" height="30" fill="#7A1F2E"/>
+        <rect x="383.4" y="20" width="65.9" height="30" fill="#B8862E"/>
+        <rect x="449.3" y="20" width="180.7" height="30" fill="#1C2B44"/>
+        <text x="15" y="40" fill="#F6EFE1" font-size="12" font-weight="600">Raw material 59.3%</text>
+        <text x="388" y="40" fill="#F6EFE1" font-size="11" font-weight="600">Employee 10.5%</text>
+        <text x="454" y="40" fill="#F6EFE1" font-size="12" font-weight="600">Other / margin 30.2%</text>
+      </svg>
+      <div class="fig-caption">"Other / margin" includes power, logistics, overheads, and PAT margin (8.3% of sales). Source: CMIE Prowess, top-20 firms by sector.<sup class="cite">[4]</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- FIRM-LEVEL -->
+  <section id="firms">
+    <div class="section-head"><span class="section-tag">§5</span><h2>The Firms</h2></div>
+    <div class="prose">
+      <p><strong>Vardhman Textiles</strong> has held the number one sales rank in this 20-firm panel continuously from FY14 through FY25: the only true decade-long constant at the top. <strong>Welspun Living</strong> is the standout riser, climbing from 7th (₹3,301 crore) to 2nd (₹8,286 crore), a 151% increase. <strong>SEL Manufacturing</strong> is the mirror image: 8th in FY14 at ₹2,929 crore, down to 17th by FY25 at just ₹33 crore, a 99% collapse. Three of the original 20 firms tracked since FY14, Shahi Exports, Krishna Knitwear Technology, and Orient Craft, dropped out of continuous reporting before FY25.<sup class="cite">[4]</sup></p>
+      <p>Concentration is rising, gradually. The top-3 firms' combined share was 42.6% in 2024-25; the sector's Herfindahl-Hirschman Index climbed from 803 in 2015-16 to 996 by 2024-25, still classified "Competitive" by standard thresholds, but on a steady upward drift rather than a static structure.<sup class="cite">[4]</sup></p>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 8. Sales, FY14 vs FY25, ₹ crore: leader, riser, laggard</div>
+      <svg viewBox="0 0 640 230" width="100%" height="230" role="img" aria-label="Firm sales FY14 vs FY25 comparison">
+        <line x1="10" y1="190" x2="630" y2="190" stroke="#D9CBB0" stroke-width="1"/>
+        <rect x="34.8" y="101.6" width="66.1" height="88.4" fill="#D9CBB0"/>
+        <rect x="106.9" y="29.3" width="66.1" height="160.7" fill="#7A1F2E"/>
+        <rect x="241.5" y="133.6" width="66.1" height="56.4" fill="#D9CBB0"/>
+        <rect x="313.6" y="48.4" width="66.1" height="141.6" fill="#7A1F2E"/>
+        <rect x="448.1" y="139.9" width="66.1" height="50.1" fill="#D9CBB0"/>
+        <rect x="520.3" y="189.4" width="66.1" height="0.6" fill="#A63A2E"/>
+        <text x="34" y="205" font-size="11" fill="#262220" font-weight="600">Vardhman</text>
+        <text x="55" y="219" font-size="9.5" fill="#55504A">#1 → #1</text>
+        <text x="248" y="205" font-size="11" fill="#262220" font-weight="600">Welspun</text>
+        <text x="265" y="219" font-size="9.5" fill="#55504A">#7 → #2</text>
+        <text x="440" y="205" font-size="11" fill="#262220" font-weight="600">SEL Mfg.</text>
+        <text x="450" y="219" font-size="9.5" fill="#A63A2E">#8 → #17</text>
+        <text x="80" y="95" font-size="10" fill="#262220">₹5,172cr</text>
+        <text x="118" y="23" font-size="10" fill="#7A1F2E" font-weight="600">₹9,402cr</text>
+        <text x="222" y="128" font-size="10" fill="#262220">₹3,301cr</text>
+        <text x="325" y="42" font-size="10" fill="#7A1F2E" font-weight="600">₹8,286cr</text>
+        <text x="430" y="134" font-size="10" fill="#262220">₹2,929cr</text>
+        <text x="500" y="184" font-size="10" fill="#A63A2E" font-weight="600">₹33cr</text>
+      </svg>
+      <div class="legend"><span><span class="dot" style="background:#D9CBB0;"></span>FY14</span><span><span class="dot" style="background:#7A1F2E;"></span>FY25</span></div>
+      <div class="fig-caption">Fixed 20-firm panel, standalone total sales. Source: CMIE Prowess IQ.<sup class="cite">[4]</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- POLICY -->
+  <section id="policy">
+    <div class="section-head"><span class="section-tag">§6</span><h2>The Support</h2></div>
+    <div class="prose">
+      <p>Policy attention exists, but its scale does not match the sector's footprint. The Production-Linked Incentive scheme for textiles carries an outlay of ₹10,683 crore, equivalent to roughly 1.4% of the sector's 2023-24 Gross Value of Output, small relative to a sector generating ₹7.81 lakh crore in output and directly employing 25 lakh workers. Cumulative FDI since April 2000 stands at US$5.02 billion, and domestic capital expenditure remains MSME-dominated rather than large-ticket.<sup class="cite">[7]</sup></p>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 9. PLI outlay as a share of sector Gross Value of Output, 2023-24</div>
+      <svg viewBox="0 0 640 90" width="100%" height="90" role="img" aria-label="PLI outlay proportion of GVO">
+        <rect x="10" y="30" width="600" height="30" fill="#D9CBB0"/>
+        <rect x="10" y="30" width="8.2" height="30" fill="#7A1F2E"/>
+        <line x1="18.2" y1="10" x2="18.2" y2="30" stroke="#7A1F2E" stroke-width="1"/>
+        <text x="24" y="18" font-size="10.5" fill="#7A1F2E" font-weight="600">PLI outlay, ₹10,683 cr (≈1.37%)</text>
+        <text x="500" y="18" font-size="10.5" fill="#55504A" font-weight="600">Sector GVO, ₹7.81 lakh cr</text>
+        <text x="10" y="76" font-size="9.5" fill="#55504A">Bar drawn to scale; the PLI segment is 1.37% of total bar width.</text>
+      </svg>
+      <div class="fig-caption">Source: Ministry of Textiles, Annual Report 2024-25.<sup class="cite">[7]</sup></div>
+    </div>
+    <div class="insight-box">
+      <div class="label">Observation</div>
+      <p>An outlay equivalent to roughly one seventy-fifth of the sector's annual output is unlikely, on its own, to shift the structural pattern documented in §1 and §4: rising output without rising value capture, and a cost base that is both labour- and capital-intensive at once.</p>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- STATE LEADERS -->
+  <section id="states">
+    <div class="section-head"><span class="section-tag">§7</span><h2>Where It Is Made: States</h2></div>
+    <div class="prose">
+      <p>Production is concentrated in three states. Tamil Nadu and Gujarat together account for the large majority of Gross Value of Output among the leading textile-producing states; Maharashtra trails at less than half of Tamil Nadu's level.<sup class="cite">[1]</sup></p>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 10. Gross Value of Output by leading state, 2023-24</div>
+      <svg viewBox="0 0 640 130" width="100%" height="130" role="img" aria-label="State GVO comparison">
+        <rect x="10" y="15" width="440" height="24" fill="#7A1F2E"/>
+        <rect x="10" y="55" width="370" height="24" fill="#1C2B44"/>
+        <rect x="10" y="95" width="173" height="24" fill="#B8862E"/>
+        <text x="18" y="31" fill="#F6EFE1" font-size="12" font-weight="600">Tamil Nadu — ₹1,80,991 cr</text>
+        <text x="18" y="71" fill="#F6EFE1" font-size="12" font-weight="600">Gujarat — ₹1,52,019 cr</text>
+        <text x="18" y="111" fill="#262220" font-size="12" font-weight="600">Maharashtra — ₹71,037 cr</text>
+      </svg>
+      <div class="fig-caption">Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup></div>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 10b. Gross Value of Output and Gross Value Added, all reporting states, 2023-24</div>
+      <img src="Textiles\charts_textiles\03_gvo_vs_gva_bar.png" alt="GVO and GVA by state, all reporting states, textiles, 2023-24">
+      <div class="fig-caption">The full state distribution behind Figure 10. Beyond the leading five or six states, both GVO and GVA fall away sharply; Jharkhand, Assam, Puducherry, Bihar, and Chhattisgarh each contribute a negligible share of national output, a fact that matters for the capital-formation reading in §7.1 below.<sup class="cite">[1]</sup></div>
+    </div>
+
+    <h3 style="font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--maroon-deep); margin:28px 0 12px;">§7.1 A note on Jharkhand and capital formation growth rates</h3>
+    <div class="prose">
+      <p>Jharkhand's Gross Fixed Capital Formation in textiles did register a very large year-on-year increase: it rose from ₹2.4 million in 2016-17 to ₹22.2 million in 2017-18, an increase of 825%, and then rose again to ₹296.8 million in 2018-19, a further 1,237% increase. A third, smaller spike took GFCF from ₹127.9 million in 2021-22 to ₹754.8 million in 2022-23, up 490%. So a claim of roughly 600 to 800% growth is accurate for at least one of these years (2017-18, at 825%), and understates the largest single jump (2018-19, at 1,237%).<sup class="cite">[1]</sup><sup class="note">(f)</sup></p>
+      <p>The context that has to travel with that figure: Jharkhand's textile GFCF never exceeds ₹755 million in any year of the series, against a national GFCF of ₹1.77 lakh crore to ₹3.67 lakh crore over the same period, and the state does not appear among the top 15 states by GFCF at all, as Figure 12 shows. Jharkhand's share of India's textile GVO stayed within a 0.011% to 0.073% band across the entire decade. The growth rate is real; the base it is growing from is not large enough to register at the national level.<sup class="cite">[1]</sup></p>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 12. Gross Fixed Capital Formation by state, textiles (₹ million)</div>
+      <img src="Textiles\charts_textiles\21_gfcf_by_state.png" alt="Gross Fixed Capital Formation by state for textiles">
+      <div class="fig-caption">Top 15 states by GFCF; Jharkhand does not appear, its GFCF being smaller than every state shown here in every year of the series. Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup><sup class="note">(f)</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- CLOSING -->
+  <section id="closing">
+    <div class="section-head"><span class="section-tag">§8</span><h2>Summary</h2></div>
+    <div class="prose">
+      <p>Put together, textiles is not a sector in decline; it is a sector that scaled in bursts, in 2018-19 and 2021-22, without compounding. Output grew 61% over the decade, but the value-added share of that output barely moved, R&amp;D spend stayed thin, and the industrial policy outlay is a fraction of the sector's size. At the firm level, one player has held the top spot for a decade while another lost 99% of its sales, illustrating a sector wide enough to hold both trajectories at once.</p>
+    </div>
+    <div class="stat-grid cols-5">
+      <div class="stat-box"><span class="num">+61%</span><span class="lbl">GVO growth, 2014-15 → 2023-24</span></div>
+      <div class="stat-box"><span class="num">17.3→19.7%</span><span class="lbl">GVA share of GVO, 2014-15 → 2023-24</span></div>
+      <div class="stat-box"><span class="num">0.5%</span><span class="lbl">R&amp;D spend, share of sales</span></div>
+      <div class="stat-box"><span class="num">1.37%</span><span class="lbl">PLI outlay, share of 2023-24 GVO</span></div>
+      <div class="stat-box"><span class="num">803→996</span><span class="lbl">Herfindahl-Hirschman Index, 2015-16 → 2024-25</span></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- CLUSTERS -->
+  <section id="clusters">
+    <div class="section-head"><span class="section-tag">§9</span><h2>Where It Is Made: Clusters</h2></div>
+    <div class="prose">
+      <p>Beyond state-level totals, textile output concentrates in a small number of named clusters, each specialised by product segment rather than by the sector as a whole. The three clusters below are the largest and best-documented in the underlying registry.<sup class="cite">[6]</sup><sup class="note">(d)</sup></p>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 11. Estimated unit count, leading clusters</div>
+      <svg viewBox="0 0 640 105" width="100%" height="105" role="img" aria-label="Cluster unit count comparison">
+        <text x="10" y="22" font-size="11" fill="#262220" font-weight="600">Tiruppur</text>
+        <rect x="140" y="10" width="300" height="18" fill="#7A1F2E"/>
+        <text x="446" y="24" font-size="10.5" fill="#262220">~20,000 units</text>
+        <text x="10" y="52" font-size="11" fill="#262220">Ludhiana</text>
+        <rect x="140" y="40" width="210" height="18" fill="#1C2B44"/>
+        <text x="356" y="54" font-size="10.5" fill="#262220">~14,000 MSMEs</text>
+        <text x="10" y="82" font-size="11" fill="#262220">Surat</text>
+        <rect x="140" y="70" width="6" height="18" fill="#B8862E"/>
+        <text x="152" y="84" font-size="10.5" fill="#262220">~400 units (86 large)</text>
+      </svg>
+      <div class="fig-caption">Bars scaled to Tiruppur. Unit definitions vary by source (registered units vs. MSME counts) and are not strictly comparable across clusters.<sup class="cite">[6]</sup><sup class="note">(d)</sup></div>
+    </div>
+    <table class="data-table">
+      <caption>Table 2. Principal textile clusters, selected indicators</caption>
+      <thead>
+        <tr><th>Cluster</th><th>State</th><th>Units (est.)</th><th>Turnover (est.)</th><th>Export value (est.)</th><th>Principal products</th><th>Export orientation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Tiruppur</td><td>Tamil Nadu</td><td class="num">~20,000</td><td>n/a</td><td class="num">₹24,181 cr</td><td>Cotton knitted garments</td><td>Yes (Europe, US)</td></tr>
+        <tr><td>Ludhiana</td><td>Punjab</td><td class="num">~14,000</td><td class="num">₹15,000 cr</td><td class="num">₹927 cr<sup class="note">(e)</sup></td><td>Woollen apparel, knitwear, winter wear</td><td>Partial</td></tr>
+        <tr><td>Surat</td><td>Gujarat</td><td class="num">~400 (86 large)</td><td>n/a</td><td>n/a</td><td>Synthetic and man-made-fibre textiles</td><td>Yes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    <h3>References</h3>
+    <ol class="ref-list">
+      <li>Annual Survey of Industries, Ministry of Statistics and Programme Implementation, National and State Summary Tables, 2014-15 to 2023-24.</li>
+      <li>Index of Industrial Production, Base 2011-12, Ministry of Statistics and Programme Implementation.</li>
+      <li>Directorate General of Commercial Intelligence and Statistics, TradeStat / Trade Intelligence and Analytics Portal, FY24-25.</li>
+      <li>Centre for Monitoring Indian Economy, Prowess IQ database, fixed 20-firm panel by sector, FY14 to FY25.</li>
+      <li>Centre for Monitoring Indian Economy, Industry Outlook, cost and capital-structure aggregates, FY23-25.</li>
+      <li>Cluster Supply Chain Linkage Workbook, compiled from the Tiruppur Exporters' Association (tea-india.org), the Punjab Department of Industries and Commerce sector profile, and Gujarat cluster profiles.</li>
+      <li>Ministry of Textiles, Annual Report 2024-25, Government of India.</li>
+    </ol>
+
+    <h3>Methodological Notes</h3>
+    <ul class="note-list">
+      <li><span class="tag">(a)</span>IIP item-group weights reconcile to 75.1% of item-level manufacturing weight against an official total of 77.6%. The residual is unreconciled sub-group weight and does not affect sectors' relative ranking.</li>
+      <li><span class="tag">(b)</span>The HS-to-NIC concordance underlying the trade figures maps 95% of export value and 89% of import value to a sector. The remainder is unclassified and excluded rather than estimated; treat the exports, imports, and surplus figures in §3 as directional rather than exact.</li>
+      <li><span class="tag">(c)</span>Output per worker and value-added per worker (§4) are derived by dividing ASI national aggregates by total ASI-reported workers; they are sector-wide averages, not a firm-level or per-worker survey measure, and sit on a different base from the top-20 firm-panel ratios shown alongside them.</li>
+      <li><span class="tag">(d)</span>Cluster data vintage varies by source: the Surat profile dates to 2009-2010, while the Tiruppur and Ludhiana sources are undated or more recent. Figures represent the most recent estimate available in the underlying registry rather than a single reference year.</li>
+      <li><span class="tag">(e)</span>The Ludhiana export figure of ₹927 crore is reported jointly for Ludhiana, Amritsar, and Jalandhar and is not isolable to Ludhiana alone.</li>
+      <li><span class="tag">(f)</span>Jharkhand's textile factory count ranges from 4 to 26 across the series (2014-15 to 2023-24), the smallest base of any reporting state. Percentage growth figures computed on this base are mathematically correct but should not be read as evidence of a meaningful shift in the sector's geography; the state's absolute contribution and share of national GVO remain negligible throughout.</li>
+    </ul>
+
+    <div class="colophon">Institute of Manufacturing and Economy · Manufacturing Sector Working Paper Series · Paper 9 of 11 · NIC Divisions 13, 14 · Primary research: Dhairya Shah · Compiled by: Riddhi Bhargava</div>
+  </footer>
+
+</div>
+</body>
+</html>
