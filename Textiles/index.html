@@ -30,7 +30,6 @@
   .prose{max-width:660px;}
   .rule-thin{border:none; border-top:1px solid var(--rule); margin:44px 0;}
 
-  /* MASTHEAD */
   .masthead{padding:26px 0 14px; border-bottom:2px solid var(--ink); display:flex; justify-content:space-between; align-items:baseline; font-family:var(--sans); font-size:11px; letter-spacing:.04em; color:var(--ink-soft); text-transform:uppercase;}
   .masthead .series{font-weight:700; color:var(--maroon-deep);}
 
@@ -55,7 +54,6 @@
   .hero-stat .num.down{color:var(--down);}
   .hero-stat .lbl{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-top:6px; display:block; line-height:1.4; font-weight:500;}
 
-  /* generic stat-box grid, reused wherever we want the "number box" treatment */
   .stat-grid{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); margin:18px 0 6px;}
   .stat-grid.cols-5{grid-template-columns:repeat(5,1fr);}
   .stat-grid.cols-3{grid-template-columns:repeat(3,1fr);}
@@ -73,6 +71,7 @@
   sup.note{font-family:var(--sans); font-size:10px; color:var(--navy); font-weight:700; margin-left:1px;}
 
   .figure{border:1px solid var(--rule); background:var(--ivory); padding:18px 18px 14px; margin:20px 0;}
+  .figure img{width:100%; height:auto; display:block; background:#fff; border:1px solid var(--rule);}
   .fig-label{font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
   .fig-caption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:640px; font-family:var(--serif); font-style:italic;}
   svg text{font-family:var(--sans);}
@@ -137,9 +136,9 @@
 
     <div class="abstract">
       <div class="label">Abstract</div>
-      <p>India's textile sector operates 31,176 registered factories and employs 25 lakh workers, a base large enough to anchor the country's manufacturing employment. Yet on the Index of Industrial Production it ranks 9th of 11 sectors under study across output level, latest growth, and full-period trend, and has not cleared its own 2018-19 peak since. This paper sets out the sector's scale, its output trajectory, its trade position, its cost and productivity structure, firm-level churn over a decade, the policy support directed at it, and its principal production clusters, drawing on the Annual Survey of Industries, the Index of Industrial Production, CMIE, DGCI&amp;S trade data, and the institute's internal cluster registry.</p>
+      <p>India's textile sector operates 31,176 registered factories and employs 25 lakh workers, a base large enough to anchor the country's manufacturing employment. Yet on the Index of Industrial Production it ranks 9th of 11 sectors under study across output level, latest growth, and full-period trend, and has not cleared its own 2018-19 peak since. This paper sets out the sector's scale, its output trajectory, its trade position, its cost and productivity structure, firm-level churn over a decade, the policy support directed at it, its principal production clusters, and state-level capital formation patterns, drawing on the Annual Survey of Industries, the Index of Industrial Production, CMIE, DGCI&amp;S trade data, and the institute's internal cluster registry.</p>
     </div>
-    <div class="keywords"><b>Keywords:</b> Textiles, Index of Industrial Production, Annual Survey of Industries, trade balance, firm concentration, labour productivity, industrial clusters, Production-Linked Incentive scheme</div>
+    <div class="keywords"><b>Keywords:</b> Textiles, Index of Industrial Production, Annual Survey of Industries, trade balance, firm concentration, labour productivity, industrial clusters, Production-Linked Incentive scheme, capital formation</div>
 
     <div class="hero-stats">
       <div class="hero-stat"><span class="num down">9 / 11</span><span class="lbl">Average IIP rank across level, growth, and CAGR</span></div>
@@ -200,6 +199,12 @@
         <span><span class="dot" style="background:#B8862E;"></span>GVA ÷ GVO ratio, 17.3%–20.9% range, right scale</span>
       </div>
       <div class="fig-caption">GVO rose 61% over the decade, concentrated in two step-changes (2018-19 and 2021-22) rather than steady growth. The value-added share of that output stayed essentially flat: 17.3% in 2014-15, 19.7% in 2023-24. The sector is producing more without capturing meaningfully more value per unit produced.<sup class="cite">[1]</sup></div>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 1b. Number of factories, national, 2014-15 to 2023-24</div>
+      <img src="charts_textiles/07_factories_trend.png" alt="National factory count trend for textiles, 2014-15 to 2023-24">
+      <div class="fig-caption">Factory count rose from 28,600 to 31,176 over the decade, a shallower and steadier climb than the GVO series in Figure 1, with a mild dip in 2015-16 and 2016-17 before resuming growth.<sup class="cite">[1]</sup></div>
     </div>
   </section>
 
@@ -422,6 +427,23 @@
       </svg>
       <div class="fig-caption">Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup></div>
     </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 10b. Gross Value of Output and Gross Value Added, all reporting states, 2023-24</div>
+      <img src="charts_textiles/03_gvo_vs_gva_bar.png" alt="GVO and GVA by state, all reporting states, textiles, 2023-24">
+      <div class="fig-caption">The full state distribution behind Figure 10. Beyond the leading five or six states, both GVO and GVA fall away sharply; Jharkhand, Assam, Puducherry, Bihar, and Chhattisgarh each contribute a negligible share of national output, a fact that matters for the capital-formation reading in §7.1 below.<sup class="cite">[1]</sup></div>
+    </div>
+
+    <h3 style="font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--maroon-deep); margin:28px 0 12px;">§7.1 A note on Jharkhand and capital formation growth rates</h3>
+    <div class="prose">
+      <p>Jharkhand's Gross Fixed Capital Formation in textiles did register a very large year-on-year increase: it rose from ₹2.4 million in 2016-17 to ₹22.2 million in 2017-18, an increase of 825%, and then rose again to ₹296.8 million in 2018-19, a further 1,237% increase. A third, smaller spike took GFCF from ₹127.9 million in 2021-22 to ₹754.8 million in 2022-23, up 490%. So a claim of roughly 600 to 800% growth is accurate for at least one of these years (2017-18, at 825%), and understates the largest single jump (2018-19, at 1,237%).<sup class="cite">[1]</sup><sup class="note">(f)</sup></p>
+      <p>The context that has to travel with that figure: Jharkhand's textile GFCF never exceeds ₹755 million in any year of the series, against a national GFCF of ₹1.77 lakh crore to ₹3.67 lakh crore over the same period, and the state does not appear among the top 15 states by GFCF at all, as Figure 12 shows. Jharkhand's share of India's textile GVO stayed within a 0.011% to 0.073% band across the entire decade. The growth rate is real; the base it is growing from is not large enough to register at the national level.<sup class="cite">[1]</sup></p>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 12. Gross Fixed Capital Formation by state, textiles (₹ million)</div>
+      <img src="charts_textiles/21_gfcf_by_state.png" alt="Gross Fixed Capital Formation by state for textiles">
+      <div class="fig-caption">Top 15 states by GFCF; Jharkhand does not appear, its GFCF being smaller than every state shown here in every year of the series. Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup><sup class="note">(f)</sup></div>
+    </div>
   </section>
 
   <hr class="rule-thin">
@@ -496,6 +518,7 @@
       <li><span class="tag">(c)</span>Output per worker and value-added per worker (§4) are derived by dividing ASI national aggregates by total ASI-reported workers; they are sector-wide averages, not a firm-level or per-worker survey measure, and sit on a different base from the top-20 firm-panel ratios shown alongside them.</li>
       <li><span class="tag">(d)</span>Cluster data vintage varies by source: the Surat profile dates to 2009-2010, while the Tiruppur and Ludhiana sources are undated or more recent. Figures represent the most recent estimate available in the underlying registry rather than a single reference year.</li>
       <li><span class="tag">(e)</span>The Ludhiana export figure of ₹927 crore is reported jointly for Ludhiana, Amritsar, and Jalandhar and is not isolable to Ludhiana alone.</li>
+      <li><span class="tag">(f)</span>Jharkhand's textile factory count ranges from 4 to 26 across the series (2014-15 to 2023-24), the smallest base of any reporting state. Percentage growth figures computed on this base are mathematically correct but should not be read as evidence of a meaningful shift in the sector's geography; the state's absolute contribution and share of national GVO remain negligible throughout.</li>
     </ul>
 
     <div class="colophon">Institute of Manufacturing and Economy · Manufacturing Sector Working Paper Series · Paper 9 of 11 · NIC Divisions 13, 14 · Primary research: Dhairya Shah · Compiled by: Riddhi Bhargava</div>
