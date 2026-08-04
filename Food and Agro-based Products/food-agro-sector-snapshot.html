@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food and Agro-based Products: Large, Steady, and Slow — Sector Snapshot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon: #7A1F2E;
+    --maroon-deep: #5A1420;
+    --navy: #1C2B44;
+    --ivory: #FAF7F0;
+    --paper: #FEFDFA;
+    --card: #FFFFFF;
+    --gold: #B8862E;
+    --ink: #262220;
+    --ink-soft: #5C5650;
+    --ink-faint: #8A8377;
+    --rule: #E9E1D0;
+    --rule-strong: #D2C39D;
+    --up: #3E6B4F;
+    --down: #A63A2E;
+    --hatch: #C9B98C;
+    --gold-soft: #E4CC98;
+    --serif: 'Newsreader', Georgia, serif;
+    --heading: 'Playfair Display', Georgia, serif;
+    --sans: 'JetBrains Mono', 'SF Mono', monospace;
+    --sidebar-w: 272px;
+    --content-w: 700px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); line-height:1.7; font-size:16.5px; -webkit-font-smoothing:antialiased; padding-left:var(--sidebar-w);}
+  ::selection{background:var(--gold-soft); color:var(--maroon-deep);}
+  .wrap{max-width:var(--content-w); margin:0 auto; padding:0 30px 80px;}
+  .prose{max-width:660px;}
+  .rule-thin{border:none; border-top:1px solid var(--rule); margin:44px 0;}
+  .page-nav{display:none;}
+  .sidebar-scrim{display:none; position:fixed; inset:0; background:rgba(20,15,12,.4); z-index:210;}
+  .sidebar-scrim.show{display:block;}
+  .sidebar{position:fixed; left:0; top:0; height:100vh; width:var(--sidebar-w); z-index:220; padding:26px 22px 20px; border-right:1px solid var(--rule); overflow-y:auto; overflow-x:hidden; display:flex; flex-direction:column; background:var(--paper);}
+  .sidebar::-webkit-scrollbar{width:5px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--rule-strong); border-radius:10px;}
+  .sidebar > *{transition:opacity .16s ease;}
+  .brand{font-family:var(--sans); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); line-height:1.5; padding-bottom:16px; border-bottom:1px solid var(--rule); margin-bottom:18px; white-space:normal;}
+  .brand b{display:block; color:var(--maroon-deep); font-weight:700; font-size:11px; margin-bottom:2px;}
+  .meta-chip{font-family:var(--sans); font-size:10px; color:var(--ink-faint); margin-bottom:20px; display:flex; flex-direction:column; gap:4px; white-space:normal;}
+  .meta-chip span{display:flex; gap:6px; align-items:center;}
+  nav.toc{display:flex; flex-direction:column; margin-bottom:auto;}
+  nav.toc a{display:flex; align-items:baseline; gap:6px; text-decoration:none; color:var(--ink-soft); font-family:var(--sans); font-size:11.5px; font-weight:500; padding:8px 2px; position:relative; transition:color .15s ease; border-bottom:1px solid var(--rule);}
+  nav.toc a .tlabel{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  nav.toc a .tleader{flex:1; height:1px; margin:0 2px 2px; background-image:radial-gradient(circle, var(--rule-strong) 1px, transparent 1px); background-size:4px 1px; background-repeat:repeat-x; background-position:bottom;}
+  nav.toc a .tnum{font-size:10px; color:var(--gold); font-weight:600; flex:none;}
+  nav.toc a:hover{color:var(--maroon);}
+  nav.toc a.active{color:var(--maroon-deep); font-weight:600;}
+  nav.toc a.active .tnum{color:var(--maroon);}
+  .sidebar-foot{padding-top:16px; margin-top:16px; border-top:1px solid var(--rule);}
+  .totop-btn{font-family:var(--sans); font-size:10.5px; color:var(--ink-faint); text-decoration:none; display:inline-flex; gap:6px; align-items:center;}
+  .totop-btn:hover{color:var(--maroon);}
+  .hamburger{display:none;}
+  .back-to-top{position:fixed;right:20px;bottom:20px;z-index:30;border:none;border-radius:999px;padding:10px 12px;background:var(--maroon);color:#fff;box-shadow:0 10px 25px rgba(122,31,46,.22);cursor:pointer;opacity:0;transform:translateY(12px);pointer-events:none;transition:all .25s ease;}
+  .back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .back-to-top:hover{transform:translateY(-2px);}
+
+  .masthead{display:none;}
+  .masthead .series{font-weight:700; color:var(--maroon-deep);}
+
+  header.hero{padding:34px 0 30px; border-bottom:1px solid var(--rule);}
+  .paper-meta{font-family:var(--sans); font-size:11px; color:var(--ink-soft); margin-bottom:16px; display:flex; gap:18px; flex-wrap:wrap; font-weight:500; text-transform:uppercase; letter-spacing:.03em;}
+  .paper-meta span::before{content:"·"; margin-right:18px; color:var(--rule-strong);}
+  .paper-meta span:first-child::before{content:""; margin-right:0;}
+  h1{font-family:var(--heading); font-weight:700; font-style:italic; font-size:clamp(2rem, 4.4vw, 3rem); line-height:1.1; margin:0 0 20px; color:var(--maroon-deep); letter-spacing:-0.01em;}
+  .byline-block{display:flex; flex-wrap:wrap; gap:28px; margin-bottom:26px; padding-bottom:22px; border-bottom:1px solid var(--rule);}
+  .byline-block .role{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); display:block; margin-bottom:3px; font-weight:600;}
+  .byline-block .who{font-size:14px; color:var(--ink); font-weight:600; font-family:var(--sans);}
+
+  .abstract{background:var(--ivory); border-left:2px solid var(--gold); padding:22px 24px; margin-bottom:8px;}
+  .abstract .label{font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
+  .abstract p{margin:0; color:var(--ink); font-size:15px;}
+  .keywords{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); margin-top:14px; line-height:1.7;}
+  .keywords b{color:var(--ink); font-weight:600;}
+
+  .hero-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:22px;}
+  .hero-stat{background:var(--ivory); padding:16px 15px;}
+  .hero-stat .num{font-family:var(--sans); font-weight:700; font-size:1.55rem; color:var(--navy); display:block; line-height:1;}
+  .hero-stat .num.up{color:var(--up);}
+  .hero-stat .num.down{color:var(--down);}
+  .hero-stat .lbl{font-family:var(--sans); font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-top:6px; display:block; line-height:1.4; font-weight:500;}
+
+  .stat-grid{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); margin:18px 0 6px;}
+  .stat-grid.cols-5{grid-template-columns:repeat(5,1fr);}
+  .stat-grid.cols-4{grid-template-columns:repeat(4,1fr);}
+  .stat-grid.cols-3{grid-template-columns:repeat(3,1fr);}
+  .stat-box{background:var(--ivory); padding:15px 13px;}
+  .stat-box .num{font-family:var(--sans); font-weight:800; font-size:1.3rem; color:var(--navy); display:block; line-height:1.1;}
+  .stat-box .lbl{font-family:var(--sans); font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.02em; margin-top:6px; display:block; line-height:1.35; font-weight:500;}
+
+  section{padding:8px 0 42px;}
+  .section-head{display:flex; align-items:baseline; gap:16px; margin-bottom:24px; padding-bottom:14px; border-bottom:1px solid var(--ink);}
+  .section-tag{font-family:var(--sans); font-size:2.05rem; color:var(--gold); opacity:.55; font-weight:400; white-space:nowrap; line-height:1;}
+    h2{font-family:var(--heading); font-weight:700; font-size:1.55rem; color:var(--maroon-deep); margin:0;}
+  p{margin:0 0 15px; color:var(--ink);}
+  strong{color:var(--maroon-deep); font-weight:700;}
+  sup.cite{font-family:var(--sans); font-size:10px; color:var(--maroon); font-weight:700; margin-left:1px;}
+  sup.note{font-family:var(--sans); font-size:10px; color:var(--navy); font-weight:700; margin-left:1px;}
+
+  .figure{border:1px solid var(--rule); background:#FFFFFF; padding:18px 18px 14px; margin:20px 0;}
+    .figure{border-top:1px solid var(--rule); padding:20px 0 4px; margin:24px 0;}
+  .figure img{width:100%; height:auto; display:block; background:#fff; border:1px solid var(--rule);}
+    .fig-label{font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
+  .fig-caption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:640px; font-family:var(--serif); font-style:italic;}
+  svg text{font-family:var(--sans);}
+  .axis-label{font-size:9.5px; fill:var(--ink-soft);}
+  .legend{display:flex; gap:18px; font-size:11.5px; color:var(--ink-soft); margin-top:8px; flex-wrap:wrap; font-family:var(--sans);}
+  .legend .dot{display:inline-block; width:8px; height:8px; border-radius:1px; margin-right:5px; vertical-align:middle;}
+
+  .two-col{display:grid; grid-template-columns:1.05fr .95fr; gap:30px; align-items:start;}
+
+  .data-table{width:100%; border-collapse:collapse; font-size:13px; margin:14px 0;}
+  .data-table caption{caption-side:top; text-align:left; font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
+  .data-table th{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); text-align:left; padding:7px 10px; border-bottom:2px solid var(--ink); background:var(--ivory); font-weight:600;}
+    .data-table td{padding:8px 10px; border-bottom:1px solid var(--rule); vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:1px solid var(--ink);}
+  .data-table td.num{font-family:var(--sans); color:var(--navy); white-space:nowrap;}
+
+  .insight-box{border:1px solid var(--ink); border-left:4px solid var(--gold); padding:18px 22px; margin:22px 0; background:var(--ivory);}
+    .insight-box .label{font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon); font-weight:700; margin-bottom:8px;}
+  .insight-box p{margin:0; font-size:14.5px;}
+
+  footer{border-top:2px solid var(--ink); margin-top:10px; padding:28px 0 60px;}
+  footer h3{font-family:var(--sans); font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon-deep); margin:0 0 12px; font-weight:700;}
+  .ref-list{list-style:none; margin:0 0 26px; padding:0; font-size:12.6px; color:var(--ink-soft); counter-reset:refnum;}
+  .ref-list li{counter-increment:refnum; padding:5px 0 5px 26px; position:relative; border-bottom:1px solid var(--rule);}
+  .ref-list li::before{content:"[" counter(refnum) "]"; position:absolute; left:0; font-family:var(--sans); color:var(--maroon); font-size:11px; font-weight:600;}
+  .note-list{list-style:none; margin:0; padding:0; font-size:12.6px; color:var(--ink-soft);}
+  .note-list li{padding:5px 0 5px 26px; position:relative; border-bottom:1px solid var(--rule);}
+  .note-list li .tag{position:absolute; left:0; font-family:var(--sans); color:var(--navy); font-size:11px; font-weight:700;}
+  .colophon{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); margin-top:24px; padding-top:16px; border-top:1px solid var(--rule);}
+
+  @media (max-width:960px){body{padding-left:0;} .sidebar{transform:translateX(-100%); transition:transform .25s ease; box-shadow:0 0 40px rgba(0,0,0,.2); width:280px;} .sidebar.open{transform:translateX(0);} .hamburger{display:flex; position:sticky; top:14px; left:0; margin:14px 0 0 0; z-index:150; width:42px; height:42px; border-radius:50%; background:var(--card); border:1px solid var(--rule); align-items:center; justify-content:center; box-shadow:var(--shadow); cursor:pointer;} .hamburger span, .hamburger span::before, .hamburger span::after{content:""; display:block; width:16px; height:2px; background:var(--ink); position:relative; transition:.2s;} .hamburger span::before{position:absolute; top:-5px;} .hamburger span::after{position:absolute; top:5px;} .sidebar-scrim{display:none; position:fixed; inset:0; background:rgba(20,15,12,.4); z-index:210;} .sidebar-scrim.show{display:block;} }
+  @media (max-width:680px){
+    .hero-stats{grid-template-columns:1fr;}
+    .stat-grid.cols-5{grid-template-columns:repeat(2,1fr);}
+    .stat-grid.cols-4{grid-template-columns:repeat(2,1fr);}
+    .stat-grid.cols-3{grid-template-columns:1fr;}
+    .two-col{grid-template-columns:1fr;}
+    .data-table{font-size:11.5px;}
+    .paper-meta{gap:10px;}
+    .paper-meta span::before{margin-right:10px;}
+      .page-nav{flex-direction:column;align-items:flex-start;padding:10px 12px;}
+      .page-nav .nav-links{gap:6px;}
+      .back-to-top{right:12px;bottom:12px;}
+  }
+  html{scroll-behavior:smooth;}
+  body{scroll-padding-top:92px;}
+  .page-nav{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;margin:0 auto 16px;max-width:960px;border:1px solid var(--rule);background:rgba(254,253,249,.96);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(90,20,32,.06);}
+  .page-nav .nav-brand{font-family:var(--sans);font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--maroon-deep);text-decoration:none;}
+  .page-nav .nav-links{display:flex;flex-wrap:wrap;gap:8px;}
+  .page-nav a{font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;padding:6px 8px;border-radius:999px;transition:all .2s ease;}
+  .page-nav a:hover, .page-nav a.is-active{color:var(--maroon);background:var(--ivory);}
+  .back-to-top{position:fixed;right:20px;bottom:20px;z-index:30;border:none;border-radius:999px;padding:10px 12px;background:var(--maroon);color:#fff;box-shadow:0 10px 25px rgba(122,31,46,.22);cursor:pointer;opacity:0;transform:translateY(12px);pointer-events:none;transition:all .25s ease;}
+  .back-to-top.visible{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .back-to-top:hover{transform:translateY(-2px);}
+  .abstract, .hero-stat, .stat-box, .figure, .insight-box, .data-table, .cluster-card{transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;}
+  .abstract:hover, .hero-stat:hover, .stat-box:hover, .figure:hover, .insight-box:hover, .data-table:hover, .cluster-card:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(90,20,32,.05);}
+  .figure img{transition:transform .35s ease;}
+  .figure:hover img{transform:scale(1.01);}
+  section{scroll-margin-top:96px;}
+  @media (max-width:680px){.page-nav{flex-direction:column;align-items:flex-start;padding:10px 12px;}.page-nav .nav-links{gap:6px;}.back-to-top{right:12px;bottom:12px;}}
+</style>
+</head>
+<body>
+<div class="sidebar-scrim" id="scrim"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="brand"><b>Institute of Manufacturing and Economy</b>Manufacturing Sector Working Paper Series</div>
+  <div class="meta-chip">
+    <span>Sector 05 of 11 · NIC Divisions 10, 11, 12</span>
+  </div>
+  <nav class="toc" id="tocNav">
+    <a href="#scale"><span class="tlabel">The Scale</span><span class="tleader"></span><span class="tnum">01</span></a>
+    <a href="#output"><span class="tlabel">The Slowdown</span><span class="tleader"></span><span class="tnum">02</span></a>
+    <a href="#trade"><span class="tlabel">The Surplus</span><span class="tleader"></span><span class="tnum">03</span></a>
+    <a href="#structure"><span class="tlabel">The Structure</span><span class="tleader"></span><span class="tnum">04</span></a>
+    <a href="#firms"><span class="tlabel">The Firms</span><span class="tleader"></span><span class="tnum">05</span></a>
+    <a href="#policy"><span class="tlabel">The Support</span><span class="tleader"></span><span class="tnum">06</span></a>
+    <a href="#states"><span class="tlabel">Where It Is Made: States</span><span class="tleader"></span><span class="tnum">07</span></a>
+    <a href="#clusters"><span class="tlabel">Where It Is Made: Clusters</span><span class="tleader"></span><span class="tnum">08</span></a>
+    <a href="#summary"><span class="tlabel">Summary</span><span class="tleader"></span><span class="tnum">09</span></a>
+  </nav>
+  <div class="sidebar-foot">
+    <a href="#top" class="totop-btn">↑ Back to top</a>
+  </div>
+</aside>
+<button class="hamburger" id="hamburger" aria-label="Open navigation"><span></span></button>
+<button class="back-to-top" aria-label="Back to top">↑</button>
+<div class="wrap" id="top">
+
+  <div class="masthead">
+    <span class="series">Institute of Manufacturing and Economy</span>
+    <span>Manufacturing Sector Working Paper Series</span>
+  </div>
+
+  <header class="hero">
+    <div class="paper-meta">
+      <span>Sector — of 11 (numbering to be confirmed)</span>
+      <span>NIC Divisions 10, 11, 12</span>
+      <span>August 2026</span>
+    </div>
+    <h1>Food and Agro-based Products: Large, Steady, and Slow</h1>
+    <div class="byline-block">
+      <div><span class="role">Primary Research</span><span class="who">Dhairya Shah</span></div>
+      <div><span class="role">Compiled by</span><span class="who">Riddhi Bhargava</span></div>
+      <div><span class="role">Series</span><span class="who">Sector Snapshots</span></div>
+    </div>
+
+    <div class="abstract">
+      <div class="label">Abstract</div>
+      <p>India's food and agro-based products sector operates 47,238 registered factories, the largest factory count of any sector examined in this series so far, engaging 27.9 lakh persons and producing a Gross Value of Output of ₹22.41 lakh crore in 2023-24, up 129.9% from 2014-15. The sector carries the third-largest weight of any Index of Industrial Production category in this series, behind only Chemicals and Metals, yet its output performance is the opposite of Transport Equipment's: it ranks 8th of 11 sectors on index level, growth, and CAGR alike, and has sat below the overall manufacturing benchmark in 13 of the last 14 years. Financially, the picture is stronger: PAT margin nearly quintupled over the decade and leverage has fallen by half, even as the sector's trade surplus of ₹1.20 lakh crore masks a structural dependence on imported edible oils and a recent swing to a net foreign-exchange deficit on a company-financials basis. This paper sets out the sector's scale, output trajectory, trade position, cost and capital structure, policy support and investment pipeline, principal production clusters, and state-level footprint, drawing on the Annual Survey of Industries, the Index of Industrial Production, CMIE, DGCI&amp;S trade data, and the institute's internal cluster registry.</p>
+    </div>
+    <div class="keywords"><b>Keywords:</b> Food and Agro-based Products, Food Processing, Index of Industrial Production, Annual Survey of Industries, edible oil imports, PLI Scheme for Food Processing Industry, industrial clusters, trade balance</div>
+
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num down">7.67 / 11</span><span class="lbl">Average rank across level, growth, CAGR, and volatility (lowest = strongest), of 11 sectors tracked</span></div>
+      <div class="hero-stat"><span class="num down">+0.80%</span><span class="lbl">Latest IIP growth, 2025-26 — 7th of 11 sectors</span></div>
+      <div class="hero-stat"><span class="num up">+₹1.20 L cr</span><span class="lbl">Trade surplus, FY24-25</span></div>
+    </div>
+  </header>
+
+  <!-- SCALE -->
+  <section id="scale">
+    <div class="section-head" id="scale"><span class="section-tag">§1</span><h2>The Scale</h2></div>
+    <div class="prose">
+      <p>Food and agro-based products is the largest sector by factory count in this series: <strong>47,238 factories</strong> were registered under the Annual Survey of Industries in 2023-24 (39,560 in operation), producing a combined <strong>Gross Value of Output of ₹22.41 lakh crore</strong>, up from ₹9.75 lakh crore in 2014-15, a 129.9% increase over the decade.<sup class="cite">[1]</sup> The sector also carries a substantial weight in India's industrial output: its Index of Industrial Production item weight of 7.14% is the third-largest of any sector in this series, behind only Chemicals (25.04%) and Metals (15.46%), equivalent to roughly 9.5% of the entire manufacturing IIP.<sup class="cite">[2]</sup></p>
+      <p>Employment grew far more slowly than output: total persons engaged rose 26.1%, from 22.12 lakh to 27.90 lakh, over the same period, meaning output-per-worker gains came mostly from productivity rather than headcount. The workforce also became relatively less female over the decade: the directly-employed women workers' share fell from 19.17% in 2014-15 to 14.27% in 2023-24.<sup class="cite">[1]</sup></p>
+    </div>
+    <table class="data-table">
+      <caption>Table 1. Scale indicators, Annual Survey of Industries, 2023-24</caption>
+      <thead><tr><th>Indicator</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Factories registered</td><td class="num">47,238</td></tr>
+        <tr><td>Factories in operation</td><td class="num">39,560</td></tr>
+        <tr><td>Total persons engaged</td><td class="num">27.90 lakh</td></tr>
+        <tr><td>Workers (directly employed)</td><td class="num">12.37 lakh</td></tr>
+        <tr><td>Gross Value of Output, 2023-24</td><td class="num">₹22.41 lakh crore</td></tr>
+        <tr><td>Gross Value Added, 2023-24</td><td class="num">₹2.39 lakh crore</td></tr>
+        <tr><td>Output per worker, 2023-24</td><td class="num">₹1.02 crore</td></tr>
+        <tr><td>Net Value Added per worker, 2023-24</td><td class="num">₹9.33 lakh</td></tr>
+      </tbody>
+    </table>
+    <div class="figure">
+      <div class="fig-label">Figure 1. Gross Value of Output, national, 2014-15 to 2023-24 (₹ lakh crore)</div>
+      <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="Food and Agro GVO trend 2014-15 to 2023-24">
+        <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+        <text x="14" y="30" class="axis-label">₹23 L cr</text>
+        <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="101" class="axis-label">₹16 L cr</text>
+        <line x1="10" y1="98" x2="630" y2="98" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="171" class="axis-label">₹9 L cr</text>
+        <polyline points="10.0,166.1 78.9,165.0 147.8,148.9 216.7,139.3 285.6,128.9 354.4,123.8 423.3,110.9 492.2,92.3 561.1,60.1 630.0,33.2"
+          fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+        <circle cx="10.0" cy="166.1" r="3.5" fill="#55504A"/>
+        <text x="12" y="188" class="axis-label">14-15: ₹9.75 L cr</text>
+        <circle cx="630.0" cy="33.2" r="4" fill="#1C2B44"/>
+        <text x="500" y="26" font-size="10" fill="#1C2B44" font-weight="600">23-24: ₹22.41 L cr</text>
+        <text x="10" y="196" class="axis-label">14-15</text>
+        <text x="147.8" y="196" class="axis-label">16-17</text>
+        <text x="285.6" y="196" class="axis-label">18-19</text>
+        <text x="423.3" y="196" class="axis-label">20-21</text>
+        <text x="561.1" y="196" class="axis-label">22-23</text>
+      </svg>
+      <div class="fig-caption">Growth was continuous through the decade with no COVID-year contraction in output value, unlike most other sectors in this series. Source: Annual Survey of Industries, National Totals.<sup class="cite">[1]</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- SLOWDOWN -->
+  <section id="output">
+    <div class="section-head" id="output"><span class="section-tag">§2</span><h2>The Slowdown</h2></div>
+    <div class="prose">
+      <p>On the Index of Industrial Production, food and agro-based products is a consistent mid-to-back-of-pack performer: an index level of 124.39 in 2025-26 (rank 8 of 11), latest-year growth of just 0.80% (rank 7 of 11), and a full-period CAGR (2012-13 to 2025-26) of only 1.37% (rank 8 of 11), among the slowest of any sector tracked.<sup class="cite">[2]</sup> Growth did pick up modestly after COVID: the pre-COVID CAGR was 1.79% against a post-COVID CAGR of 2.48%, but both remain well below the overall manufacturing CAGR of 3.21% over the same full period.<sup class="cite">[2]</sup></p>
+      <p>The sector is also one of the more stable in this series: its full-period growth volatility (standard deviation of YoY growth) of 5.04 is the second-lowest of any sector tracked (rank 10 of 11), behind only Chemicals. The COVID shock was comparatively mild, a 6.75% contraction in 2020-21 followed by a 12.28% recovery by 2022-23, a net gain of 4.70% relative to the pre-COVID 2018-19 level.<sup class="cite">[2]</sup> Year-by-year, the sector has sat below the overall manufacturing index in 13 of the last 14 years, above it only in 2014-15, earning a "Mixed" classification that in practice reads as a consistent laggard on growth rate even as its absolute output scale (§1) is among the largest in the country.<sup class="cite">[2]</sup></p>
+    </div>
+    <div class="stat-grid cols-4">
+      <div class="stat-box"><span class="num">124.39</span><span class="lbl">IIP index level, 2025-26 (rank 8 of 11)</span></div>
+      <div class="stat-box"><span class="num">+0.80%</span><span class="lbl">Latest growth, 2025-26 (rank 7 of 11)</span></div>
+      <div class="stat-box"><span class="num">1.37%</span><span class="lbl">Full-period CAGR, 2012-13 to 2025-26 (rank 8 of 11)</span></div>
+      <div class="stat-box"><span class="num">5.04</span><span class="lbl">Growth volatility, StdDev of YoY% (rank 10 of 11, i.e. 2nd-most stable)</span></div>
+    </div>
+    <div class="figure">
+      <div class="fig-label">Figure 2. IIP index level, food and agro-based products, 2012-13 to 2025-26 (base 2011-12 = 100)</div>
+      <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="Food and Agro IIP index level trend">
+        <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+        <text x="14" y="30" class="axis-label">130</text>
+        <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="102" class="axis-label">112.5</text>
+        <line x1="10" y1="99" x2="630" y2="99" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="171" class="axis-label">95</text>
+        <rect x="343.8" y="10" width="47.7" height="164" fill="#A63A2E" opacity="0.08"/>
+        <text x="346" y="22" font-size="9.5" fill="#A63A2E">COVID</text>
+        <polyline points="10.0,135.1 57.7,128.0 105.4,99.4 153.1,115.4 200.8,145.1 248.5,126.7 296.2,83.6 343.8,77.3 391.5,110.7 439.2,79.7 486.9,54.0 534.6,47.6 582.3,54.7 630.0,50.5"
+          fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+        <circle cx="343.8" cy="77.3" r="4" fill="#B8862E"/>
+        <text x="270" y="70" font-size="9.5" fill="#B8862E">pre-COVID peak 118.0 (19-20)</text>
+        <circle cx="391.5" cy="110.7" r="4" fill="#A63A2E"/>
+        <text x="393" y="124" font-size="9.5" fill="#A63A2E">110.1 (20-21)</text>
+        <circle cx="534.6" cy="47.6" r="4" fill="#1C2B44"/>
+        <text x="420" y="40" font-size="9.5" fill="#1C2B44">125.1 (all-time high, 23-24)</text>
+        <circle cx="630.0" cy="50.5" r="4" fill="#262220"/>
+        <text x="560" y="66" font-size="9.5" fill="#262220">124.4 (latest)</text>
+        <text x="10" y="196" class="axis-label">12-13</text>
+        <text x="105.4" y="196" class="axis-label">14-15</text>
+        <text x="200.8" y="196" class="axis-label">16-17</text>
+        <text x="296.2" y="196" class="axis-label">18-19</text>
+        <text x="391.5" y="196" class="axis-label">20-21</text>
+        <text x="486.9" y="196" class="axis-label">22-23</text>
+        <text x="582.3" y="196" class="axis-label">24-25</text>
+      </svg>
+      <div class="fig-caption">Item-group weights per the MoSPI IIP Manual, Annexure I, summed to NIC 2-digit level (Food and Agro = NIC 10 + 11 + 12). Index has drifted sideways since 2023-24 rather than continuing its earlier climb. Confirmed identical between the 11-sector corrected workbook and a second 12-sector reference file for this sector; see note (a).<sup class="cite">[2]</sup><sup class="note">(a)</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- TRADE -->
+  <section id="trade">
+    <div class="section-head" id="trade"><span class="section-tag">§3</span><h2>The Surplus</h2></div>
+    <div class="prose">
+      <p><em>Figures in this section are directional rather than exact.</em> The underlying HS-to-NIC concordance maps a defined share of export and import value to each sector; the remainder is unclassified and excluded rather than estimated, so totals should be read as a close approximation of trade flows, not an exact reconciliation.<sup class="note">(b)</sup></p>
+      <p>Food and agro-based products runs a healthy trade surplus of <strong>₹1,20,081.5 crore</strong> in FY24-25, on exports of ₹4,29,115.1 crore against imports of ₹3,09,033.6 crore, with import dependency at 41.9%.<sup class="cite">[3]</sup> Unlike most sectors in this series, import growth is currently outpacing export growth: imports rose 17.9% year-on-year in FY24-25 against export growth of 9.6%, and the five-year import CAGR (17.4%) is well ahead of the five-year export CAGR (12.9%), a gap that, if sustained, would erode the surplus over time.<sup class="cite">[3]</sup> Leading export partners are the USA, UAE, China, Saudi Arabia and Bangladesh; leading import sources are Russia, the USA, UAE, China and Switzerland.<sup class="cite">[3]</sup></p>
+      <p>The export basket is dominated by a single product line: semi/wholly milled rice accounts for ₹1,00,721 crore, nearly a quarter of total exports on its own, well ahead of frozen shrimp and prawns (₹38,096 crore) and boneless meat (₹31,072 crore). The import basket tells a different story: crude and refined edible oils, palm, soybean, and sunflower/safflower combined, account for roughly ₹1,24,400 crore, about 40% of total imports, confirming the sector's often-cited structural dependence on imported edible oil even as it runs an overall surplus.<sup class="cite">[3]</sup></p>
+    </div>
+    <div class="two-col">
+      <div class="figure">
+        <div class="fig-label">Figure 3. Exports and imports, FY19-20 to FY25-26 (₹ lakh crore)</div>
+        <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="Food and Agro exports and imports trend">
+          <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+          <text x="14" y="30" class="axis-label">₹5.0 L cr</text>
+          <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <text x="14" y="102" class="axis-label">₹3.0 L cr</text>
+          <line x1="10" y1="99" x2="630" y2="99" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <text x="14" y="171" class="axis-label">₹1.0 L cr</text>
+          <polyline points="10.0,124.8 113.3,104.7 216.7,83.4 320.0,58.3 423.3,66.9 526.7,53.1 630.0,40.4"
+            fill="none" stroke="#3E6B4F" stroke-width="2.5"/>
+          <polyline points="10.0,159.7 113.3,153.6 216.7,125.4 320.0,112.3 423.3,114.4 526.7,97.2 630.0,87.7"
+            fill="none" stroke="#A63A2E" stroke-width="2.5"/>
+          <circle cx="630.0" cy="40.4" r="4" fill="#3E6B4F"/>
+          <text x="500" y="33" font-size="10" fill="#3E6B4F" font-weight="600">Exports ₹4.64 L cr (25-26)</text>
+          <circle cx="630.0" cy="87.7" r="4" fill="#A63A2E"/>
+          <text x="500" y="102" font-size="10" fill="#A63A2E" font-weight="600">Imports ₹3.35 L cr (25-26)</text>
+          <text x="10" y="196" class="axis-label">19-20</text>
+          <text x="216.7" y="196" class="axis-label">21-22</text>
+          <text x="423.3" y="196" class="axis-label">23-24</text>
+          <text x="590" y="196" class="axis-label">25-26</text>
+        </svg>
+        <div class="fig-caption">Directional estimate; see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
+      </div>
+      <div class="figure">
+        <div class="fig-label">Figure 4. Import basket by product, FY24-25 (₹ crore)</div>
+        <svg viewBox="0 0 320 190" width="100%" height="190" role="img" aria-label="Top import products bar chart">
+          <text x="10" y="18" font-size="10.5" fill="#262220" font-weight="600">Crude palm oil</text>
+          <rect x="10" y="24" width="280" height="16" fill="#A63A2E"/>
+          <text x="16" y="36" font-size="10" fill="#F6EFE1" font-weight="600">₹53,961 cr</text>
+          <text x="10" y="60" font-size="10.5" fill="#262220" font-weight="600">Soya bean crude oil</text>
+          <rect x="10" y="66" width="205" height="16" fill="#A63A2E"/>
+          <text x="16" y="78" font-size="10" fill="#F6EFE1" font-weight="600">₹39,451 cr</text>
+          <text x="10" y="102" font-size="10.5" fill="#262220" font-weight="600">Sunflower/safflower oil</text>
+          <rect x="10" y="108" width="161" height="16" fill="#A63A2E"/>
+          <text x="16" y="120" font-size="10" fill="#F6EFE1" font-weight="600">₹30,988 cr</text>
+          <text x="10" y="144" font-size="10.5" fill="#262220" font-weight="600">Refined palm oil</text>
+          <rect x="10" y="150" width="84" height="16" fill="#A63A2E"/>
+          <text x="98" y="162" font-size="10" fill="#262220" font-weight="600">₹16,237 cr</text>
+        </svg>
+        <div class="fig-caption">Three of the four largest import lines are crude/refined edible oils. Directional estimate; see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- STRUCTURE -->
+  <section id="structure">
+    <div class="section-head" id="structure"><span class="section-tag">§4</span><h2>The Structure</h2></div>
+    <div class="prose">
+      <p>On an aggregate, all-companies basis, food and agro-based products carries a Raw Material Cost of 56.94% of sales in 2024-25, up from 53.84% in 2014-15, consistent with a processing industry where the input commodity dominates the cost base. Employee Cost is comparatively small, 4.29% of sales (up marginally from 3.90%), and Power &amp; Fuel Cost is 1.47% of sales, both far below labour-intensive sectors like textiles. R&amp;D spend is essentially flat and negligible: 0.0875% of sales in 2014-15 versus 0.0831% in 2024-25, likely the lowest R&amp;D intensity of any sector examined in this series so far, consistent with food processing being a scale-and-commodity business rather than a technology-driven one.<sup class="cite">[8]</sup> Cross-sector comparison on these measures is deferred until aggregate-basis figures are available for all sectors in this series.</p>
+      <p>Capital intensity (Gross Fixed Assets ÷ Sales) was 0.322× in 2014-15 and 0.310× in 2024-25, essentially flat over the decade, but with a sharp, likely anomalous spike to 0.533× in 2020-21 driven by a one-year 61% jump in reported Gross Fixed Assets that partially reversed the following year; see note (d).<sup class="cite">[8]</sup></p>
+    </div>
+
+    <div class="stat-grid cols-5">
+      <div class="stat-box"><span class="num">₹1.02 Cr</span><span class="lbl">Output per worker, GVO ÷ workers, 2023-24 (ASI)</span></div>
+      <div class="stat-box"><span class="num">₹9.33 L</span><span class="lbl">Net Value Added per worker, 2023-24 (ASI)</span></div>
+      <div class="stat-box"><span class="num">56.94%</span><span class="lbl">Raw material cost, share of sales (CMIE aggregate, 2024-25)</span></div>
+      <div class="stat-box"><span class="num">4.29%</span><span class="lbl">Employee cost, share of sales (CMIE aggregate, 2024-25)</span></div>
+      <div class="stat-box"><span class="num">0.310×</span><span class="lbl">Capital intensity, GFA-to-sales (CMIE aggregate, 2024-25)</span></div>
+    </div>
+    <p class="fig-caption" style="margin:4px 0 18px;">ASI figures (first two boxes) are sector-wide averages on ASI-reported workers; CMIE figures (remaining three) are aggregate, all-companies basis. The two data families are not on the same base and should not be divided against each other.<sup class="cite">[1],[8]</sup></p>
+
+    <div class="figure">
+      <div class="fig-label">Figure 5. Raw Material Cost and Employee Cost, share of sales, 2014-15 vs 2024-25 (aggregate basis)</div>
+      <svg viewBox="0 0 640 130" width="100%" height="130" role="img" aria-label="Food and Agro raw material and employee cost trend">
+        <text x="15" y="24" font-size="11" fill="#262220" font-weight="600">Raw Material Cost % of Sales</text>
+        <rect x="230" y="14" width="341.1" height="16" fill="#D9CBB0"/>
+        <rect x="230" y="34" width="360.6" height="16" fill="#7A1F2E"/>
+        <text x="576" y="26" font-size="10.5" fill="#262220" font-weight="600">53.84%</text>
+        <text x="595" y="46" font-size="10.5" fill="#7A1F2E" font-weight="600">56.94%</text>
+        <text x="15" y="76" font-size="11" fill="#262220" font-weight="600">Employee Cost % of Sales</text>
+        <rect x="230" y="66" width="247.0" height="16" fill="#D9CBB0"/>
+        <rect x="230" y="86" width="271.7" height="16" fill="#1C2B44"/>
+        <text x="482" y="78" font-size="10.5" fill="#262220" font-weight="600">3.90%</text>
+        <text x="507" y="98" font-size="10.5" fill="#1C2B44" font-weight="600">4.29%</text>
+        <text x="230" y="118" class="axis-label">0</text>
+      </svg>
+      <div class="legend"><span><span class="dot" style="background:#D9CBB0;"></span>2014-15</span><span><span class="dot" style="background:#7A1F2E;"></span>2024-25 (Raw Material)</span><span><span class="dot" style="background:#1C2B44;"></span>2024-25 (Employee)</span></div>
+      <div class="fig-caption">Raw material cost rose faster than sales over the decade; employee cost stayed roughly flat as a share of sales. Source: CMIE Industry Outlook, aggregate all-companies basis, Distribution of Cost.<sup class="cite">[8]</sup></div>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 6. Ownership split, share of sales, 2024-25</div>
+      <svg viewBox="0 0 620 70" width="100%" height="70" role="img" aria-label="Food and Agro ownership split bar chart">
+        <rect x="10" y="10" width="16.98" height="30" fill="#B8862E"/>
+        <rect x="26.98" y="10" width="466.56" height="30" fill="#3E6B4F"/>
+        <rect x="493.54" y="10" width="116.46" height="30" fill="#1C2B44"/>
+        <text x="230" y="30" fill="#F6EFE1" font-size="12" font-weight="600">Private Domestic 77.76%</text>
+        <text x="500" y="55" fill="#1C2B44" font-size="12" font-weight="600">Private Foreign 19.41%</text>
+        <text x="10" y="55" fill="#B8862E" font-size="11" font-weight="600">Govt 2.83%</text>
+      </svg>
+      <p class="fig-caption">Private Domestic firms hold a large majority of sector sales; the Private Foreign share is smaller than in Transport Equipment but earns a disproportionately higher margin (see below). Government share is negligible. Source: CMIE Industry Outlook, aggregate all-companies basis, Sales by Ownership.<sup class="cite">[8]</sup></p>
+    </div>
+
+    <h3 style="font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--maroon-deep); margin:28px 0 12px;">§4.1 Returns, Leverage and Liquidity</h3>
+    <div class="prose">
+      <p>Returns have improved substantially over the decade even as output growth (§2) stayed muted. PAT margin rose from 1.19% in 2014-15 to 5.92% in 2024-25, nearly a five-fold increase, ROE from 5.28% to 15.04%, and ROCE (derived as PBIT ÷ Capital Employed) from 11.99% to 18.29%. Debt-to-Equity fell from 1.07× to 0.53×, roughly halving, and Interest Cover improved from 2.17× to 5.7×. Current Ratio improved modestly, from 1.05 to 1.35.<sup class="cite">[8]</sup></p>
+      <p>Free Cash Flow, however, tells a more cautious story: it fell from ₹13,642.4 crore in 2014-15 to ₹9,887.1 crore in 2024-25, despite operating cash flow rising from ₹34,624.4 crore to ₹58,515.8 crore, because Purchase of Fixed Assets more than doubled over the same period (₹20,982.0 crore to ₹48,628.7 crore), indicating the sector's improved profitability is being substantially reinvested in capacity rather than distributed or retained as cash.<sup class="cite">[8]</sup></p>
+    </div>
+    <div class="stat-grid cols-5">
+      <div class="stat-box"><span class="num">18.29%</span><span class="lbl">ROCE, 2024-25 (up from 11.99% in 2014-15)</span></div>
+      <div class="stat-box"><span class="num">15.04%</span><span class="lbl">ROE, 2024-25 (up from 5.28% in 2014-15)</span></div>
+      <div class="stat-box"><span class="num">0.53×</span><span class="lbl">Debt-to-Equity, 2024-25 (down from 1.07× in 2014-15)</span></div>
+      <div class="stat-box"><span class="num">5.7×</span><span class="lbl">Interest Cover, 2024-25 (up from 2.17× in 2014-15)</span></div>
+      <div class="stat-box"><span class="num">1.35</span><span class="lbl">Current Ratio, 2024-25</span></div>
+    </div>
+    <p class="fig-caption" style="margin:8px 0 0;">Source: CMIE Industry Outlook, aggregate all-companies basis. ROA, ROE and PAT Margin are CMIE's own reported ratios, pulled directly; ROCE is derived per this series' agreed formula (PBIT ÷ Capital Employed).<sup class="cite">[8]</sup></p>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- FIRM-LEVEL -->
+  <section id="firms">
+    <div class="section-head" id="firms"><span class="section-tag">§5</span><h2>The Firms</h2></div>
+    <div class="prose">
+      <p>I T C Ltd. is the unchallenged leader of the top-20 sales panel, holding rank 1 in every single year from FY14 to FY25, with sales rising 57.3% over the period (₹46,712.6 crore to ₹73,464.6 crore), the steadiest position of any firm in the panel.<sup class="cite">[4]</sup> Below it, the ranking is considerably more fluid: A W L Agri Business climbed from rank 5 to a settled rank 2 (sales up 317.6%, ₹14,746.1 crore to ₹61,573.4 crore), and Patanjali Foods, after slipping from rank 2 to rank 7 in the middle years, recovered to rank 3 by FY23 and has held it since.<sup class="cite">[4]</sup></p>
+      <p>The most dramatic mover in the panel is Gokul Agro Resources, which entered the ranking at rank 20 in FY15 with sales of just ₹691.7 crore and climbed to rank 10 by FY25 on sales of ₹17,080.9 crore, a 24-fold increase, the single largest percentage gain of any firm tracked. Radico Khaitan (rank 14 → 9, sales up 468.9%) and A W L Agri Business also posted outsized gains. At the other end, Shree Renuka Sugars fell from rank 10 to rank 20, Hindustan Coca-Cola Beverages from rank 7 to rank 16, and Mondelez India Foods from rank 11 (FY15) to rank 18, in each case despite continuing to grow sales in absolute terms, they simply grew more slowly than the rest of the panel.<sup class="cite">[4]</sup></p>
+      <p>Panel churn, defined as an established firm dropping out of continuous reporting, was zero: all 20 firms present at any point in the panel are still reporting in FY25. Three firms (Nestle India, Gokul Agro Resources, and Mondelez India Foods) have no FY14 figure and enter the panel from FY15, most likely a data-availability gap for that single year rather than genuine market entry, since all three are long-established players. This is a materially more stable panel, in terms of firms remaining in continuous reporting, than would be expected in a sector with the IIP-level stagnation described in §2; the churn is in relative rank, not in survival.<sup class="cite">[4]</sup></p>
+      <p>Market concentration has fallen steadily and sits well within the "Competitive" band (Herfindahl-Hirschman Index under 1,500) throughout the observable period: from an HHI of 1,292 in 2015-16 to 771 in 2024-25, a 40.3% decline, with the combined Top-3 sales share falling from 48.2% to 38.1% over the same years. The 2014-15 HHI value in the source file is 10,000, the maximum possible (single-firm) reading; given that roughly 17 of the panel's 20 firms already had reported sales that year, this almost certainly reflects a data-population artefact for that one year rather than a genuine monopoly, and is excluded from the trend read here; see note (g).<sup class="cite">[6]</sup></p>
+      <p>Separately, from the aggregate ownership-split data in §4, Private Domestic firms account for the large majority of sector sales (77.76% in 2024-25) but the smaller Private Foreign segment (19.41% of sales) earns a markedly higher margin: PAT Margin by ownership in 2024-25 was 15.19% for Private Foreign firms against 3.65% for Private Domestic and 0.41% for Government-owned firms, consistent with multinational branded-food players commanding stronger pricing power than the largely commodity-processing domestic base.<sup class="cite">[5]</sup></p>
+    </div>
+
+    <table class="data-table">
+      <caption>Table 5. Largest rank gains and losses, top-20 sales panel, first reported year to FY25</caption>
+      <thead><tr><th>Company</th><th>Rank, first year</th><th>Rank, FY25</th><th class="num">Sales growth</th></tr></thead>
+      <tbody>
+        <tr><td>Gokul Agro Resources Ltd.</td><td class="num">20 (FY15)</td><td class="num">10</td><td class="num">+2,369.5%</td></tr>
+        <tr><td>Radico Khaitan Ltd.</td><td class="num">14 (FY14)</td><td class="num">9</td><td class="num">+468.9%</td></tr>
+        <tr><td>A W L Agri Business Ltd.</td><td class="num">5 (FY14)</td><td class="num">2</td><td class="num">+317.6%</td></tr>
+        <tr><td>Pernod Ricard India Pvt. Ltd.</td><td class="num">6 (FY14)</td><td class="num">4</td><td class="num">+217.8%</td></tr>
+        <tr><td colspan="4" style="border-bottom:2px solid var(--ink); padding-top:2px; padding-bottom:2px;"></td></tr>
+        <tr><td>Shree Renuka Sugars Ltd.</td><td class="num">10 (FY14)</td><td class="num">20</td><td class="num">+57.6%</td></tr>
+        <tr><td>Hindustan Coca-Cola Beverages Pvt. Ltd.</td><td class="num">7 (FY14)</td><td class="num">16</td><td class="num">+66.7%</td></tr>
+        <tr><td>Mondelez India Foods Pvt. Ltd.</td><td class="num">11 (FY15)</td><td class="num">18</td><td class="num">+81.2%</td></tr>
+        <tr><td>Cargill India Pvt. Ltd.</td><td class="num">8 (FY14)</td><td class="num">14</td><td class="num">+99.8%</td></tr>
+      </tbody>
+    </table>
+    <p class="fig-caption" style="margin:4px 0 18px;">Sales growth is nominal, first reported year to FY25. Source: CMIE Prowess IQ, top-20 companies by sales, Food &amp; Agro sector panel.<sup class="cite">[4]</sup></p>
+
+    <div class="two-col">
+      <div class="figure">
+        <div class="fig-label">Figure 7a. Herfindahl-Hirschman Index, 2015-16 to 2024-25</div>
+        <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="HHI trend food and agro">
+          <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+          <text x="14" y="30" class="axis-label">1,350</text>
+          <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <text x="14" y="171" class="axis-label">700</text>
+          <line x1="10" y1="107" x2="630" y2="107" stroke="#B8862E" stroke-width="0.75" stroke-dasharray="3,2"/>
+          <text x="480" y="104" font-size="9" fill="#B8862E">"Competitive" threshold, 1,500</text>
+          <polyline points="10.0,40.1 78.9,79.7 147.8,129.0 216.7,137.6 285.6,146.6 354.4,148.2 423.3,150.5 492.2,155.9 561.1,164.5 630.0,157.9"
+            fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+          <circle cx="10.0" cy="40.1" r="3.5" fill="#55504A"/>
+          <text x="14" y="24" class="axis-label">1,292 (15-16)</text>
+          <circle cx="630.0" cy="157.9" r="4" fill="#1C2B44"/>
+          <text x="510" y="150" font-size="10" fill="#1C2B44" font-weight="600">771 (24-25)</text>
+          <text x="10" y="196" class="axis-label">15-16</text>
+          <text x="216.7" y="196" class="axis-label">17-18</text>
+          <text x="423.3" y="196" class="axis-label">21-22</text>
+          <text x="630" y="196" class="axis-label" text-anchor="end">24-25</text>
+        </svg>
+        <div class="fig-caption">2014-15 (HHI 10,000) excluded as a likely data-population artefact; see note (g). Source: internal firm-financials workbook, HHI Concentration tab.<sup class="cite">[6]</sup></div>
+      </div>
+      <div class="figure">
+        <div class="fig-label">Figure 7b. Top-3 combined sales share, 2015-16 to 2024-25 (%)</div>
+        <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="Top 3 share trend food and agro">
+          <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+          <text x="14" y="30" class="axis-label">50%</text>
+          <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+          <text x="14" y="171" class="axis-label">35%</text>
+          <polyline points="10.0,44.6 78.9,47.6 147.8,93.6 216.7,111.3 285.6,127.9 354.4,125.0 423.3,128.9 492.2,142.6 561.1,160.3 630.0,143.6"
+            fill="none" stroke="#1C2B44" stroke-width="2.5"/>
+          <circle cx="10.0" cy="44.6" r="3.5" fill="#55504A"/>
+          <text x="14" y="24" class="axis-label">48.2% (15-16)</text>
+          <circle cx="630.0" cy="143.6" r="4" fill="#7A1F2E"/>
+          <text x="500" y="137" font-size="10" fill="#7A1F2E" font-weight="600">38.1% (24-25)</text>
+          <text x="10" y="196" class="axis-label">15-16</text>
+          <text x="216.7" y="196" class="axis-label">17-18</text>
+          <text x="423.3" y="196" class="axis-label">21-22</text>
+          <text x="630" y="196" class="axis-label" text-anchor="end">24-25</text>
+        </svg>
+        <div class="fig-caption">Source: internal firm-financials workbook, Top-3 Combined Market Share tab.<sup class="cite">[6]</sup></div>
+      </div>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 7c. PAT Margin by ownership group, 2024-25 (% of total income)</div>
+      <svg viewBox="0 0 320 150" width="100%" height="150" role="img" aria-label="PAT margin by ownership group bar chart">
+        <line x1="60" y1="120" x2="300" y2="120" stroke="#D9CBB0" stroke-width="1"/>
+        <rect x="70" y="117.4" width="40" height="2.6" fill="#B8862E"/>
+        <rect x="150" y="94.6" width="40" height="25.4" fill="#3E6B4F"/>
+        <rect x="230" y="26.8" width="40" height="93.2" fill="#1C2B44"/>
+        <text x="66" y="112" font-size="10" fill="#262220" font-weight="600">0.41%</text>
+        <text x="146" y="89" font-size="10" fill="#262220" font-weight="600">3.65%</text>
+        <text x="226" y="21" font-size="10" fill="#262220" font-weight="600">15.19%</text>
+        <text x="60" y="136" class="axis-label">Government</text>
+        <text x="140" y="136" class="axis-label">Private Domestic</text>
+        <text x="230" y="136" class="axis-label">Private Foreign</text>
+      </svg>
+      <div class="fig-caption">Source: CMIE Industry Outlook, aggregate all-companies basis, PAT Margin by Ownership.<sup class="cite">[5]</sup></div>
+    </div>
+
+    <div class="insight-box">
+      <div class="label">Observation</div>
+      <p>The combination of falling concentration (§5) and stagnant IIP-measured output growth (§2) suggests the sector's slow aggregate growth is not a story of a few large incumbents coasting: the top of the market is becoming more contested, not less, even as the sector-wide growth rate stays low. Fast risers like Gokul Agro Resources and Radico Khaitan appear to be taking share primarily from mid-table peers rather than from the very top, since I T C's rank-1 position was never at risk.</p>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- SUPPORT -->
+  <section id="policy">
+    <div class="section-head" id="policy"><span class="section-tag">§6</span><h2>The Support</h2></div>
+    <div class="prose">
+      <p>CMIE's Industry Outlook file records no PLI Scheme Expenditure (Budget or Revised Estimate) for food and agro-based products in any year; every cell in that series is marked N/A, unlike Transport Equipment and Textiles where actual disbursement is tracked. This is treated as a data gap rather than evidence of no PLI support; see note (e).<sup class="cite">[8]</sup> The relevant scheme, the Production Linked Incentive Scheme for Food Processing Industry (PLISFPI), run by the Ministry of Food Processing Industries, has an approved outlay of ₹10,900 crore for FY 2021-22 to FY 2026-27. As of mid-2026, cumulative incentive disbursement stood at ₹3,271.44 crore, against 163 applications from 127 companies (69 of them MSMEs) across 22 states and 212 locations; approved applicants have invested ₹9,207 crore against a committed investment of ₹7,722 crore, and the scheme has generated an estimated 3.35 lakh direct and indirect jobs against a 2.5 lakh target.<sup class="cite">[10]</sup></p>
+      <p>The sector has swung from a net exporter to a net importer of foreign exchange on a company-financials basis (distinct from the customs-based trade surplus in §3): Net Forex was +₹24,978.0 crore in 2014-15 but had turned to &minus;₹11,531.3 crore by 2024-25, with the flip occurring from 2022-23 onward, consistent with the edible-oil-driven import dependence noted in §3.<sup class="cite">[8]</sup> Contribution to Exchequer (total taxes) rose from ₹77,242.2 crore in 2014-15 to ₹1,48,937.2 crore in 2024-25, a 92.8% increase.<sup class="cite">[8]</sup></p>
+    </div>
+
+    <div class="insight-box">
+      <div class="label">Observation</div>
+      <p>The sector's net-forex position inverted in the same years (2022-23 onward) that its trade balance in §3 shows import growth outpacing export growth, both consistent with rising edible-oil import costs. The customs-based trade account still shows an overall surplus because rice and marine exports remain larger in absolute terms than the oil import bill, but the company-financials view suggests the margin of comfort is narrowing.</p>
+    </div>
+
+    <h3 style="font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--maroon-deep); margin:28px 0 12px;">§6.1 Investment Pipeline</h3>
+    <div class="prose">
+      <p>Total investment outstanding reached ₹15,70,096.7 crore in 2025-26 (555 projects), up from ₹9,22,121.0 crore in 2014-15, a 70.3% increase, and by far the largest outstanding pipeline of any sector examined in this series to date. Growth was not continuous: outstanding value declined in four of the years between 2016-17 and 2022-23 before resuming a sharp climb in the final three years of the series.<sup class="cite">[8]</sup><sup class="note">(c)</sup></p>
+      <p>New Investments Announced were ₹4,21,394.9 crore in 2025-26 (134 projects), essentially flat on 2024-25's ₹4,47,342.9 crore. Investments Completed rose sharply to ₹1,11,398.6 crore (60 projects) in 2025-26 from ₹74,832.5 crore (41 projects) the year before. Implementation Stalled stood at ₹65,030.2 crore across 30 projects in 2025-26, a stalled share of only 4.14% of total outstanding value, a comparatively low bottleneck rate for a pipeline this large.<sup class="cite">[8]</sup><sup class="note">(c)</sup></p>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 8. Total Investments Outstanding, national, 2014-15 to 2025-26 (₹ lakh crore)</div>
+      <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="Total investments outstanding multi-year trend, food and agro">
+        <line x1="10" y1="180" x2="630" y2="180" stroke="#D9CBB0" stroke-width="1"/>
+        <text x="14" y="30" class="axis-label">₹16 L cr</text>
+        <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="105" class="axis-label">₹12 L cr</text>
+        <line x1="10" y1="100" x2="630" y2="100" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="177" class="axis-label">₹8 L cr</text>
+        <polyline points="10.0,156.6 66.4,124.9 122.7,113.4 179.1,132.0 235.5,147.8 291.8,158.9 348.2,160.6 404.5,177.8 460.9,174.1 517.3,135.7 573.6,75.2 630.0,32.7"
+          fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+        <circle cx="10.0" cy="156.6" r="3.5" fill="#55504A"/>
+        <text x="14" y="200" class="axis-label">14-15: ₹9.22 L cr</text>
+        <circle cx="630.0" cy="32.7" r="4" fill="#B8862E"/>
+        <text x="460" y="20" font-size="10" fill="#B8862E" font-weight="600">₹15.70 L cr (25-26)</text>
+        <text x="122.7" y="196" class="axis-label">16-17</text>
+        <text x="235.5" y="196" class="axis-label">18-19</text>
+        <text x="348.2" y="196" class="axis-label">20-21</text>
+        <text x="460.9" y="196" class="axis-label">22-23</text>
+        <text x="573.6" y="196" class="axis-label">24-25</text>
+      </svg>
+      <div class="fig-caption">Values shown are corrected for a column-label swap identified in the underlying CMIE export; see note (c). The pipeline dipped through the middle years before climbing sharply from 2022-23. Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></div>
+    </div>
+
+    <div class="figure">
+      <div class="fig-label">Figure 9. New Investments Announced, Completed, and Dropped, 2014-15 to 2025-26 (₹ lakh crore)</div>
+      <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="New investments announced completed dropped multi-year trend, food and agro">
+        <line x1="10" y1="180" x2="630" y2="180" stroke="#D9CBB0" stroke-width="1"/>
+        <text x="14" y="30" class="axis-label">₹4.5 L cr</text>
+        <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="105" class="axis-label">₹2.25 L cr</text>
+        <line x1="10" y1="100" x2="630" y2="100" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="177" class="axis-label">₹0</text>
+        <polyline points="10.0,131.1 66.4,80.3 122.7,65.0 179.1,117.8 235.5,123.8 291.8,150.5 348.2,145.5 404.5,115.7 460.9,120.1 517.3,67.4 573.6,27.9 630.0,36.7"
+          fill="none" stroke="#7A1F2E" stroke-width="2.25"/>
+        <polyline points="10.0,161.1 66.4,160.7 122.7,144.3 179.1,148.1 235.5,153.6 291.8,168.6 348.2,168.2 404.5,155.8 460.9,150.6 517.3,142.9 573.6,154.6 630.0,142.1"
+          fill="none" stroke="#3E6B4F" stroke-width="2.25"/>
+        <polyline points="10.0,140.7 66.4,154.0 122.7,109.9 179.1,110.9 235.5,119.0 291.8,128.2 348.2,132.8 404.5,103.3 460.9,154.7 517.3,162.6 573.6,133.7 630.0,146.1"
+          fill="none" stroke="#A63A2E" stroke-width="2.25" stroke-dasharray="4,2"/>
+        <circle cx="573.6" cy="27.9" r="4" fill="#7A1F2E"/>
+        <text x="440" y="20" font-size="10" fill="#7A1F2E" font-weight="600">Announced ₹4.47 L cr (24-25)</text>
+        <circle cx="630.0" cy="142.1" r="3.5" fill="#3E6B4F"/>
+        <text x="500" y="204" font-size="10" fill="#3E6B4F" font-weight="600">Completed ₹1.11 L cr (25-26)</text>
+        <circle cx="122.7" cy="109.9" r="3.5" fill="#A63A2E"/>
+        <text x="70" y="103" font-size="10" fill="#A63A2E" font-weight="600">Dropped ₹2.06 L cr (16-17)</text>
+        <text x="10" y="196" class="axis-label">14-15</text>
+        <text x="122.7" y="196" class="axis-label">16-17</text>
+        <text x="235.5" y="196" class="axis-label">18-19</text>
+        <text x="348.2" y="196" class="axis-label">20-21</text>
+        <text x="460.9" y="196" class="axis-label">22-23</text>
+        <text x="573.6" y="196" class="axis-label">24-25</text>
+      </svg>
+      <div class="legend">
+        <span><span class="dot" style="background:#7A1F2E;"></span>New Investments Announced</span>
+        <span><span class="dot" style="background:#3E6B4F;"></span>Investments Completed</span>
+        <span><span class="dot" style="background:#A63A2E;"></span>Investments Dropped</span>
+      </div>
+      <div class="fig-caption">Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></div>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- STATES -->
+  <section id="states">
+    <div class="section-head" id="states"><span class="section-tag">§7</span><h2>Where It Is Made: States</h2></div>
+    <div class="prose">
+      <p>Maharashtra leads on both Gross Value of Output and Gross Value Added in 2023-24, followed closely by Uttar Pradesh. Gujarat ranks 3rd by GVO but 4th by GVA, while Karnataka, absent from the GVO top 5 entirely, ranks 3rd by GVA, suggesting comparatively higher value-addition efficiency relative to raw throughput in Karnataka's food-processing base. At the other end, Goa, Jharkhand and Himachal Pradesh occupy the bottom of both rankings, reflecting their small industrial bases generally rather than a food-and-agro-specific weakness.<sup class="cite">[1]</sup></p>
+    </div>
+    <table class="data-table">
+      <caption>Table 2. Top and bottom 5 states by Gross Value of Output, 2023-24</caption>
+      <thead><tr><th>Rank</th><th>Top 5 (GVO)</th><th class="num">₹ crore</th><th>Bottom 5 (GVO)</th><th class="num">₹ crore</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Maharashtra</td><td class="num">2,96,292</td><td>Goa</td><td class="num">5,282</td></tr>
+        <tr><td>2</td><td>Uttar Pradesh</td><td class="num">2,78,350</td><td>Jharkhand</td><td class="num">7,974</td></tr>
+        <tr><td>3</td><td>Gujarat</td><td class="num">2,58,244</td><td>Himachal Pradesh</td><td class="num">10,060</td></tr>
+        <tr><td>4</td><td>Haryana</td><td class="num">2,15,750</td><td>Uttarakhand</td><td class="num">17,939</td></tr>
+        <tr><td>5</td><td>Andhra Pradesh</td><td class="num">1,81,370</td><td>Assam</td><td class="num">20,419</td></tr>
+      </tbody>
+    </table>
+    <table class="data-table">
+      <caption>Table 3. Top and bottom 5 states by Gross Value Added, 2023-24</caption>
+      <thead><tr><th>Rank</th><th>Top 5 (GVA)</th><th class="num">₹ crore</th><th>Bottom 5 (GVA)</th><th class="num">₹ crore</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Maharashtra</td><td class="num">39,739</td><td>Jharkhand</td><td class="num">797</td></tr>
+        <tr><td>2</td><td>Uttar Pradesh</td><td class="num">31,615</td><td>Goa</td><td class="num">1,390</td></tr>
+        <tr><td>3</td><td>Karnataka</td><td class="num">22,773</td><td>Himachal Pradesh</td><td class="num">2,005</td></tr>
+        <tr><td>4</td><td>Gujarat</td><td class="num">22,088</td><td>Uttarakhand</td><td class="num">3,314</td></tr>
+        <tr><td>5</td><td>Tamil Nadu</td><td class="num">17,093</td><td>Odisha</td><td class="num">3,623</td></tr>
+      </tbody>
+    </table>
+    <p class="fig-caption" style="margin:4px 0 18px;">Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup></p>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- CLUSTERS -->
+  <section id="clusters">
+    <div class="section-head" id="clusters"><span class="section-tag">§8</span><h2>Where It Is Made: Clusters</h2></div>
+    <div class="prose">
+      <p>The institute's cluster registry logs five food and agro-based clusters, all currently in Gujarat: Veraval (seafood processing), Bhavnagar/Mahuva (onion dehydration), Unjha (spice and psyllium processing and trading), Navsari (mango and rice processing), and Anand (dairy, via GCMMF/Amul). This is a partial national picture rather than a complete one; food processing clusters elsewhere in India (for example, Punjab's agro-processing belt or Andhra Pradesh's seafood-export corridor implied by its GVO ranking in §7) have not yet been logged in this registry.<sup class="cite">[7]</sup></p>
+    </div>
+    <table class="data-table">
+      <caption>Table 4. Principal food and agro-based clusters, selected indicators (all Gujarat)</caption>
+      <thead>
+        <tr><th>Cluster</th><th>District</th><th>Units (est.)</th><th>Anchor firms</th><th>Linkage verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Veraval Seafood Processing</td><td>Gir Somnath</td><td class="num">~60 processing units</td><td>J M Marine Exports, Jini Marines, Shivganga Marine</td><td>Partially Linked</td></tr>
+        <tr><td>Bhavnagar (Mahuva) Onion Dehydration</td><td>Bhavnagar</td><td class="num">~71&ndash;120+ (sources conflict)</td><td>Maharaja Dehydration, Allium Dehydrates</td><td>Partially Linked</td></tr>
+        <tr><td>Unjha Spice &amp; Isabgol Market</td><td>Mehsana</td><td class="num">~800 registered firms (APMC)</td><td>PJM Exports and others at Unjha APMC</td><td>Partially Linked</td></tr>
+        <tr><td>Navsari Mango &amp; Rice Processing</td><td>Navsari</td><td class="num">No cluster-wide data found</td><td>J R Foods &amp; Beverages</td><td>Insufficient Data</td></tr>
+        <tr><td>Anand Dairy &amp; Milk Processing</td><td>Anand</td><td class="num">18,600 village societies (statewide)</td><td>GCMMF (Amul), Kaira District Union</td><td>Tightly Linked</td></tr>
+      </tbody>
+    </table>
+    <div class="insight-box">
+      <div class="label">Observation</div>
+      <p>Anand's dairy cluster is the only one in this sector's registry with a "Tightly Linked" verdict, on the strength of GCMMF/Amul's documented three-tier cooperative structure feeding a single federated marketing body, an unusually clean and well-evidenced linkage compared with the "Agglomeration Only" pattern (shared infrastructure and geographic proximity, but no confirmed firm-to-firm transactions) that recurs across Veraval, Bhavnagar, and Unjha.<sup class="cite">[7]</sup></p>
+    </div>
+  </section>
+
+  <hr class="rule-thin">
+
+  <!-- CLOSING -->
+  <section id="closing">
+    <div class="section-head" id="summary"><span class="section-tag">§9</span><h2>Summary</h2></div>
+    <div class="prose">
+      <p>Food and agro-based products is, by scale, one of the two or three largest sectors examined in this series: the most factories of any sector so far, the third-largest IIP weight, and a Gross Value of Output that has more than doubled over the decade. Yet on the measures that capture output momentum rather than absolute size, it is a consistent laggard, ranking 8th of 11 sectors on IIP level and CAGR alike, and sitting below the overall manufacturing index in all but one of the last fourteen years. Financially, the sector has strengthened markedly. PAT margin nearly quintupled and leverage roughly halved even as growth stayed muted, though Free Cash Flow has fallen as rising profitability is reinvested into capacity. The trade account shows a healthy ₹1.20 lakh crore surplus built substantially on rice and marine exports, but import growth is currently outpacing export growth and the sector's company-level net-forex position has flipped to a deficit since 2022-23, both traceable to a structural dependence on imported edible oils. R&amp;D intensity, at under a tenth of one percent of sales, is likely the lowest of any sector in this series. Firm-level concentration and named leader/laggard analysis could not be completed this session and remain the clearest open item before this paper is treated as final.</p>
+    </div>
+    <div class="stat-grid cols-5">
+      <div class="stat-box"><span class="num">+129.9%</span><span class="lbl">GVO growth, 2014-15 → 2023-24</span></div>
+      <div class="stat-box"><span class="num">8 / 11</span><span class="lbl">IIP rank by level and by full-period CAGR</span></div>
+      <div class="stat-box"><span class="num">1.19%→5.92%</span><span class="lbl">PAT Margin, 2014-15 → 2024-25</span></div>
+      <div class="stat-box"><span class="num">+₹1.20 L cr</span><span class="lbl">Trade surplus, FY24-25 (import growth outpacing export growth)</span></div>
+      <div class="stat-box"><span class="num">0.083%</span><span class="lbl">R&amp;D spend, share of sales, 2024-25</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <h3>References</h3>
+    <ol class="ref-list">
+      <li>Annual Survey of Industries, Ministry of Statistics and Programme Implementation, National and State Summary Tables, 2014-15 to 2023-24.</li>
+      <li>Index of Industrial Production, Base 2011-12, Ministry of Statistics and Programme Implementation; 11-sector weighted-composite cut, 2012-13 to 2025-26.</li>
+      <li>Directorate General of Commercial Intelligence and Statistics, TradeStat / Trade Intelligence and Analytics Portal, FY19-20 to FY25-26.</li>
+      <li>Centre for Monitoring Indian Economy, Prowess IQ database, fixed 20-firm panel by sector, FY14 to FY25 (not available in this session; see note (g)).</li>
+      <li>Centre for Monitoring Indian Economy, Industry Outlook, cost and capital-structure aggregates, FY14-15 to FY25-26.</li>
+      <li>Internal firm-financials workbook, Herfindahl-Hirschman Index and Top-3 concentration tabs (not available in this session; see note (g)).</li>
+      <li>Cluster Supply Chain Linkage Workbook, Cluster Register, Cluster Linkage Map, and Cluster Summary Scorecard tabs, compiled from published cluster studies and industry-body profiles (Veraval, Bhavnagar/Mahuva, Unjha, Navsari, Anand).</li>
+      <li>CMIE Industry Outlook, Food and Agro sector, aggregate all-companies basis (Income &amp; Expenditure, Balance Sheet, Distribution of Cost, Profitability &amp; Return Ratios, Ownership Split, Investment Pipeline/CapEx, PLI Scheme Expenditure), 2014-15 to 2025-26.</li>
+      <li>Institute of Manufacturing and Economy, internal note on data availability for this paper (this session).</li>
+      <li>Ministry of Food Processing Industries / Press Information Bureau, Production Linked Incentive Scheme for Food Processing Industry (PLISFPI), press releases on scheme outlay and disbursement, 2026.</li>
+    </ol>
+
+    <h3>Methodological Notes</h3>
+    <ul class="note-list">
+      <li><span class="tag">(a)</span>This paper's IIP figures were cross-checked between two source files supplied this session: an 11-sector "corrected" workbook (Chemicals and Pharmaceuticals combined) and a second, otherwise-identical 12-sector workbook (Chemicals and Pharmaceuticals reported separately). Because Food and Agro-based Products is entirely unaffected by that Chemicals/Pharmaceuticals split, every Food and Agro figure across all fourteen years and all eight analysis tabs was found to be numerically identical between the two files, down to the eleventh decimal place. Unlike the prior Transport Equipment paper in this series, no duplicated-row or mismatched-value issue was found for this sector in either file. This paper therefore uses the 11-sector workbook throughout without reservation.</li>
+      <li><span class="tag">(b)</span>Trade figures in §3 use the same HS-to-NIC concordance and directional-estimate caveat described elsewhere in this series; the specific coverage percentages for Food and Agro-based Products were not independently re-confirmed in this session and should be checked against the source methodology tab before publication.</li>
+      <li><span class="tag">(c)</span>The underlying CMIE CapEx export appears to have its "Count" and "Cost" columns swapped specifically for the "Under Implementation" and "Total Investments Outstanding" line items: the values in the "Count" column for these two lines are of the same order of magnitude (hundreds of thousands) as the correctly-labelled "Cost" columns in every other Investment Pipeline line (Announced, Completed, Dropped, Revived, Stalled), while the values in their own "Cost" columns are small integers consistent with a project count. This paper reports the swapped-back interpretation (treating the large-magnitude column as Cost and the small-magnitude column as Count) for internal consistency with every other line in the same block, but this has not been confirmed with Riddhi and should be checked against the raw CMIE export before publication.</li>
+      <li><span class="tag">(d)</span>Gross Fixed Assets jumped from ₹3,40,789.4 crore in 2019-20 to ₹5,49,805.4 crore in 2020-21 (a 61% one-year increase) before falling back to ₹3,78,990.2 crore in 2021-22. This produces an isolated spike in Capital Intensity (to 0.533×) and an isolated trough in Asset Turnover (to 1.88×) in 2020-21 alone. It was not independently re-verified against the underlying CMIE export in this session and is flagged here as a likely data-entry or classification anomaly rather than a genuine one-year capital-structure shift; it is excluded from the headline capital-intensity comparison in §4, which instead compares 2014-15 to 2024-25 directly.</li>
+      <li><span class="tag">(e)</span>CMIE's Industry Outlook file records "N/A" for PLI Scheme Expenditure (both Budget and Revised Estimate) for Food and Agro-based Products in every year, 2014-15 to 2025-26. This is treated as a coverage gap in CMIE's own classification for this sector (possibly because PLISFPI is structured and reported differently from the PLI schemes CMIE tracks for other manufacturing sectors) rather than evidence that the scheme has zero disbursement; the Ministry-level total outlay and disbursement figures reported in §6 come from Ministry of Food Processing Industries and Press Information Bureau sources instead, consistent with this series' practice of citing both a policy-design (Ministry) and execution (CMIE) figure wherever both exist. Only the Ministry-level figure could be obtained here.</li>
+      <li><span class="tag">(f)</span>CSR Spend data is missing in the CMIE source from 2021-22 through 2024-25 (marked N/A), consistent with the pattern noted for other sectors in this series' data-source rules, and is therefore not reported in this paper.</li>
+      <li><span class="tag">(g)</span>The fixed 20-firm sales panel (used elsewhere in this series for named leader/laggard identification and churn) and the internal firm-financials workbook (used for Herfindahl-Hirschman Index and Top-3 concentration) were not included among the files supplied for this session. §5 of this paper is accordingly limited to aggregate ownership-split data from CMIE Industry Outlook and does not contain named-firm analysis, concentration measures, or a churn assessment. This is the single largest open item in this paper and should be addressed, using the same two files as the Textiles and Transport Equipment papers in this series, before this paper is treated as final.</li>
+      <li><span class="tag">(h)</span>The cluster registry's Sector Coverage Tracker tab shows "0" clusters with a summary verdict for Food and Agro-based Products, which appears to be a stale figure: the Cluster Summary Scorecard tab itself contains verdicts (Partially Linked ×3, Tightly Linked ×1, Insufficient Data ×1) for all five registered clusters. This paper uses the Scorecard tab's verdicts directly; the Coverage Tracker's "0" figure should be corrected at source.</li>
+    </ul>
+
+    <div class="colophon">Institute of Manufacturing and Economy · Manufacturing Sector Working Paper Series · Sector numbering to be confirmed · NIC Divisions 10, 11, 12 · Primary research: Dhairya Shah · Compiled by: Riddhi Bhargava</div>
+  </footer>
+
+</div>
+<script>
+  const navLinks = Array.from(document.querySelectorAll('#tocNav a[href^="#"]'));
+  const targets = Array.from(document.querySelectorAll('section[id], header.hero[id], .wrap[id]'));
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  const scrim = document.getElementById('scrim');
+  const backToTop = document.querySelector('.back-to-top');
+  const closeSidebar = () => {
+    sidebar.classList.remove('open');
+    scrim.classList.remove('show');
+  };
+
+  if (hamburger) {
+    hamburger.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      scrim.classList.toggle('show');
+    });
+  }
+
+  if (scrim) {
+    scrim.addEventListener('click', closeSidebar);
+  }
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', closeSidebar);
+  });
+
+  const setActiveLink = () => {
+    const offset = window.scrollY + 120;
+    let currentId = 'top';
+    targets.forEach((target) => {
+      if (offset >= target.offsetTop) currentId = target.id;
+    });
+    navLinks.forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + currentId);
+    });
+    if (backToTop) {
+      backToTop.classList.toggle('visible', window.scrollY > 500);
+    }
+  };
+
+  window.addEventListener('scroll', setActiveLink, { passive: true });
+
+  if (backToTop) {
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+  setActiveLink();
+</script>
+</body>
+</html>

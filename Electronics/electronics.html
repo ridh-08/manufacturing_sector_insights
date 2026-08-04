@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electronics: Surging Output, Fading Value Capture — Sector Snapshot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --maroon: #7A1F2E;
+    --maroon-deep: #5A1420;
+    --navy: #1C2B44;
+    --ivory: #FAF7F0;
+    --paper: #FEFDFA;
+    --card: #FFFFFF;
+    --gold: #B8862E;
+    --gold-soft: #E4CC98;
+    --ink: #262220;
+    --ink-soft: #5C5650;
+    --ink-faint: #8A8377;
+    --rule: #E9E1D0;
+    --rule-strong: #D2C39D;
+    --up: #3E6B4F;
+    --down: #A63A2E;
+    --serif: 'Newsreader', Georgia, serif;
+    --heading: 'Playfair Display', Georgia, serif;
+    --sans: 'JetBrains Mono', 'SF Mono', monospace;
+    --sidebar-w: 272px;
+    --content-w: 700px;
+    --radius: 0px;
+    --shadow: none;
+    --shadow-hover: none;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); line-height:1.7; font-size:16.5px; -webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--gold-soft); color:var(--maroon-deep);}
+
+  /* ---------- progress bar ---------- */
+  .progress-track{position:fixed; top:0; left:0; width:100%; height:3px; background:transparent; z-index:200;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--gold), var(--maroon)); transition:width .08s linear;}
+
+  /* ---------- app shell ---------- */
+  .app-shell{display:flex; align-items:flex-start; max-width:1360px; margin:0 auto;}
+
+  /* ---------- sidebar ---------- */
+  .sidebar{
+    position:sticky; top:0; height:100vh; width:var(--sidebar-w); flex:0 0 var(--sidebar-w);
+    padding:26px 22px 20px; border-right:1px solid var(--rule); overflow-y:auto; overflow-x:hidden;
+    display:flex; flex-direction:column;
+    transition:width .28s cubic-bezier(.4,0,.2,1), padding .28s cubic-bezier(.4,0,.2,1), border-color .28s ease;
+  }
+  .sidebar::-webkit-scrollbar{width:5px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--rule-strong); border-radius:10px;}
+  .sidebar > *{transition:opacity .16s ease;}
+  .sidebar.collapsed{width:0; flex:0 0 0; padding-left:0; padding-right:0; border-right-color:transparent;}
+  .sidebar.collapsed > *{opacity:0; pointer-events:none;}
+
+  .rail-toggle{
+    position:sticky; top:26px; align-self:flex-start; flex:none;
+    width:26px; height:26px; margin:26px 0 0 -13px; z-index:160;
+    border-radius:50%; background:var(--card); border:1px solid var(--rule-strong);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    color:var(--ink-soft); font-family:var(--sans); font-size:11px; line-height:1;
+    box-shadow:0 2px 6px rgba(90,20,32,.08); transition:transform .28s cubic-bezier(.4,0,.2,1), background .15s ease, color .15s ease;
+  }
+  .rail-toggle:hover{background:var(--ivory); color:var(--maroon-deep);}
+  .rail-toggle .arrow{transition:transform .28s cubic-bezier(.4,0,.2,1); display:inline-block;}
+  .sidebar.collapsed + .rail-toggle .arrow{transform:rotate(180deg);}
+  .sidebar.collapsed + .rail-toggle{margin-left:6px;}
+  .brand{font-family:var(--sans); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); line-height:1.5; padding-bottom:16px; border-bottom:1px solid var(--rule); margin-bottom:18px; white-space:normal;}
+  .brand b{display:block; color:var(--maroon-deep); font-weight:700; font-size:11px; margin-bottom:2px;}
+  .meta-chip{font-family:var(--sans); font-size:10px; color:var(--ink-faint); margin-bottom:20px; display:flex; flex-direction:column; gap:4px; white-space:normal;}
+  .meta-chip span{display:flex; gap:6px; align-items:center;}
+  .meta-chip svg{width:11px; height:11px; flex:none; opacity:.6;}
+
+  nav.toc{display:flex; flex-direction:column; margin-bottom:auto;}
+  nav.toc a{
+    display:flex; align-items:baseline; gap:6px; text-decoration:none; color:var(--ink-soft);
+    font-family:var(--sans); font-size:11.5px; font-weight:500; padding:8px 2px;
+    position:relative; transition:color .15s ease; border-bottom:1px solid var(--rule);
+  }
+  nav.toc a .tlabel{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  nav.toc a .tlabel{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  nav.toc a .tleader{flex:1; height:1px; margin:0 2px 2px; background-image:radial-gradient(circle, var(--rule-strong) 1px, transparent 1px); background-size:4px 1px; background-repeat:repeat-x; background-position:bottom;}
+  nav.toc a .tnum{font-size:10px; color:var(--gold); font-weight:600; flex:none;}
+  nav.toc a:hover{color:var(--maroon);}
+  nav.toc a.active{color:var(--maroon-deep); font-weight:600;}
+  nav.toc a.active .tnum{color:var(--maroon);}
+
+  .sidebar-foot{padding-top:16px; margin-top:16px; border-top:1px solid var(--rule);}
+  .totop-btn{font-family:var(--sans); font-size:10.5px; color:var(--ink-faint); text-decoration:none; display:inline-flex; gap:6px; align-items:center;}
+  .totop-btn:hover{color:var(--maroon);}
+
+  .hamburger{display:none;}
+  .sidebar-scrim{display:none;}
+
+  /* ---------- main content ---------- */
+  main{flex:1; min-width:0; padding:0 40px 80px;}
+  .wrap{max-width:var(--content-w); margin:0 auto;}
+  .prose{max-width:var(--content-w);}
+  .rule-thin{border:none; border-top:1px solid var(--rule); margin:48px 0;}
+
+  header.hero{padding:44px 0 34px;}
+  .paper-meta{font-family:var(--sans); font-size:11px; color:var(--ink-faint); margin-bottom:18px; display:flex; gap:16px; flex-wrap:wrap; font-weight:500; text-transform:uppercase; letter-spacing:.04em;}
+  .paper-meta span::before{content:"·"; margin-right:16px; color:var(--rule-strong);}
+  .paper-meta span:first-child::before{content:""; margin-right:0;}
+  h1{font-family:var(--heading); font-weight:700; font-style:italic; font-size:clamp(2.1rem, 4.6vw, 3.1rem); line-height:1.12; margin:0 0 22px; color:var(--maroon-deep); letter-spacing:-0.01em;}
+  .byline-block{display:flex; flex-wrap:wrap; gap:26px; margin-bottom:24px; padding-bottom:22px; border-bottom:1px solid var(--rule);}
+  .byline-block .role{font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); display:block; margin-bottom:3px; font-weight:600;}
+  .byline-block .who{font-size:14px; color:var(--ink); font-weight:600; font-family:var(--sans);}
+
+  .abstract{border-left:2px solid var(--gold); padding:2px 0 2px 22px; margin-bottom:8px;}
+  .abstract .label{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--maroon); font-weight:600; margin-bottom:10px;}
+  .abstract p{margin:0; color:var(--ink); font-size:16px; font-style:italic; font-family:var(--serif);}
+  .keywords{font-family:var(--sans); font-size:10.5px; color:var(--ink-faint); margin-top:16px; line-height:1.9; padding-left:22px;}
+  .keywords b{color:var(--ink-soft); font-weight:600;}
+
+  .hero-stats{display:grid; grid-template-columns:1.3fr 1fr; grid-template-rows:auto auto; gap:6px 44px; margin-top:38px; padding-top:24px; border-top:1px solid var(--ink);}
+  .hero-stat:nth-child(1){grid-column:1; grid-row:1/3; padding-right:36px; border-right:1px solid var(--rule);}
+  .hero-stat:nth-child(1) .num{font-size:4.4rem; letter-spacing:-.02em;}
+  .hero-stat:nth-child(2){grid-column:2; grid-row:1; align-self:end;}
+  .hero-stat:nth-child(3){grid-column:2; grid-row:2; align-self:start;}
+  .hero-stat .num{font-family:var(--sans); font-weight:600; font-size:1.6rem; color:var(--navy); display:block; line-height:.95;}
+  .hero-stat .num.down{color:var(--down);}
+  .hero-stat .lbl{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-top:10px; display:block; line-height:1.4; font-weight:500;}
+
+  .stat-grid{display:flex; flex-wrap:wrap; gap:36px 44px; margin:26px 0 12px; padding-top:20px; border-top:1px solid var(--rule);}
+  .stat-grid > div{flex:1 1 140px; min-width:120px;}
+  .stat-box .num{font-family:var(--sans); font-weight:600; font-size:1.3rem; color:var(--navy); display:block; line-height:1.15;}
+  .stat-box .lbl{font-family:var(--sans); font-size:9.8px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.02em; margin-top:7px; display:block; line-height:1.35; font-weight:500;}
+
+  section{padding:14px 0 50px; scroll-margin-top:24px;}
+  .section-head{display:flex; align-items:flex-end; gap:16px; margin-bottom:26px; padding-bottom:14px; border-bottom:1px solid var(--ink);}
+  .section-tag{font-family:var(--sans); font-size:2.1rem; font-weight:400; color:var(--gold); opacity:.55; white-space:nowrap; letter-spacing:-.02em; line-height:1;}
+  h3{font-family:var(--heading); font-weight:700; font-size:1.2rem; color:var(--maroon-deep); margin:34px 0 14px; display:flex; align-items:baseline; gap:12px;}
+  .sub-tag{font-family:var(--sans); font-size:11px; color:var(--gold); font-weight:600;}
+  h2{font-family:var(--heading); font-weight:700; font-size:1.65rem; color:var(--maroon-deep); margin:0;}
+  p{margin:0 0 15px; color:var(--ink);}
+  strong{color:var(--maroon-deep); font-weight:700;}
+  sup.cite{font-family:var(--sans); font-size:10px; color:var(--maroon); font-weight:700; margin-left:1px; cursor:default;}
+  sup.note{font-family:var(--sans); font-size:10px; color:var(--navy); font-weight:700; margin-left:1px; cursor:default;}
+
+  .figure{border-top:1px solid var(--rule); padding:20px 0 4px; margin:28px 0;}
+  .figure img{width:100%; height:auto; display:block; background:#fff; cursor:zoom-in;}
+  .fig-label{font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:600; margin-bottom:14px;}
+  .fig-caption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:640px; font-family:var(--serif); font-style:italic;}
+  svg text{font-family:var(--sans);}
+  .axis-label{font-size:9.5px; fill:var(--ink-soft);}
+  .legend{display:flex; gap:18px; font-size:11.5px; color:var(--ink-soft); margin-top:8px; flex-wrap:wrap; font-family:var(--sans);}
+  .legend .dot{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; vertical-align:middle;}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start;}
+  .two-col .figure{margin:0;}
+
+  .data-table{width:100%; border-collapse:collapse; font-size:13.5px; margin:20px 0;}
+  .data-table caption{caption-side:top; text-align:left; font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:600; padding:0 0 10px;}
+  .data-table th{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); text-align:left; padding:8px 14px 8px 0; border-bottom:1px solid var(--ink); font-weight:600;}
+  .data-table td{padding:9px 14px 9px 0; border-bottom:1px solid var(--rule); vertical-align:top;}
+  .data-table tr:last-child td{border-bottom:1px solid var(--ink);}
+  .data-table tbody tr:hover{background:var(--ivory);}
+  .data-table td.num{font-family:var(--sans); color:var(--navy); white-space:nowrap;}
+
+  .section-footnote{font-family:var(--serif); font-style:italic; font-size:12px; color:var(--ink-faint); margin:26px 0 0; padding-top:14px; border-top:1px solid var(--rule);}
+  .section-footnote sup.note{font-style:normal;}
+
+  .insight-box{border-left:2px solid var(--gold); padding:2px 0 2px 22px; margin:28px 0;}
+  .insight-box .label{font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--maroon); font-weight:600; margin-bottom:8px;}
+  .insight-box p{margin:0; font-size:15px; font-style:italic; font-family:var(--serif); color:var(--maroon-deep);}
+
+  .flag{font-family:var(--sans); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon-deep); background:var(--gold-soft); padding:2px 7px; border-radius:2px; margin-right:6px; display:inline-block; vertical-align:middle;}
+
+  /* ---------- footer / accordions ---------- */
+  footer{border-top:2px solid var(--ink); margin-top:10px; padding:30px 0 60px;}
+  footer > h3{font-family:var(--sans); font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon-deep); margin:0 0 12px; font-weight:700;}
+  details.accordion{border-top:1px solid var(--rule); margin-bottom:0;}
+  details.accordion:last-of-type{border-bottom:1px solid var(--rule);}
+  details.accordion summary{list-style:none; cursor:pointer; padding:15px 2px; font-family:var(--sans); font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon-deep); display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  details.accordion summary::-webkit-details-marker{display:none;}
+  details.accordion summary .chev{font-size:12px; color:var(--ink-faint); transition:transform .2s ease; flex:none;}
+  details.accordion[open] summary .chev{transform:rotate(180deg);}
+  details.accordion .accordion-body{padding:0 2px 18px;}
+  .ref-list{list-style:none; margin:0; padding:0; font-size:12.6px; color:var(--ink-soft); counter-reset:refnum;}
+  .ref-list li{counter-increment:refnum; padding:7px 0 7px 28px; position:relative; border-bottom:1px solid var(--rule);}
+  .ref-list li:last-child{border-bottom:none;}
+  .ref-list li::before{content:"[" counter(refnum) "]"; position:absolute; left:0; font-family:var(--sans); color:var(--maroon); font-size:11px; font-weight:600;}
+  .note-list{list-style:none; margin:0; padding:0; font-size:12.6px; color:var(--ink-soft);}
+  .note-list li{padding:7px 0 7px 28px; position:relative; border-bottom:1px solid var(--rule);}
+  .note-list li:last-child{border-bottom:none;}
+  .note-list li .tag{position:absolute; left:0; font-family:var(--sans); color:var(--navy); font-size:11px; font-weight:700;}
+  .colophon{font-family:var(--sans); font-size:10.5px; color:var(--ink-faint); margin-top:24px; padding-top:16px; border-top:1px solid var(--rule);}
+
+  /* ---------- back to top ---------- */
+  .fab-top{position:fixed; right:26px; bottom:26px; width:42px; height:42px; border-radius:50%; background:var(--maroon-deep); color:#fff; border:none; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-hover); cursor:pointer; opacity:0; pointer-events:none; transform:translateY(8px); transition:opacity .2s ease, transform .2s ease; z-index:150;}
+  .fab-top.show{opacity:1; pointer-events:auto; transform:translateY(0);}
+  .fab-top:hover{background:var(--maroon);}
+
+  /* ---------- reveal-on-scroll ---------- */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);}
+  .reveal.in-view{opacity:1; transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+  }
+
+  /* ---------- lightbox ---------- */
+  .lightbox{position:fixed; inset:0; background:rgba(28,20,17,.86); display:none; align-items:center; justify-content:center; z-index:300; padding:40px; cursor:zoom-out;}
+  .lightbox.show{display:flex;}
+  .lightbox img{max-width:100%; max-height:100%; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .lightbox-close{position:absolute; top:20px; right:26px; color:#fff; font-family:var(--sans); font-size:13px; opacity:.75; background:rgba(255,255,255,.12); border:none; padding:8px 14px; border-radius:20px; cursor:pointer;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .sidebar{
+      position:fixed; left:0; top:0; height:100vh; z-index:220; background:var(--paper);
+      transform:translateX(-100%); transition:transform .25s ease; box-shadow:0 0 40px rgba(0,0,0,.2);
+      width:280px; flex:0 0 280px;
+    }
+    .sidebar.open{transform:translateX(0);}
+    .sidebar-scrim{display:none; position:fixed; inset:0; background:rgba(20,15,12,.4); z-index:210;}
+    .sidebar-scrim.show{display:block;}
+    main{padding:0 20px 70px;}
+    .hamburger{
+      display:flex; position:sticky; top:14px; left:0; margin:14px 0 0 0; z-index:150;
+      width:42px; height:42px; border-radius:50%; background:var(--card); border:1px solid var(--rule);
+      align-items:center; justify-content:center; box-shadow:var(--shadow); cursor:pointer;
+    }
+    .hamburger span, .hamburger span::before, .hamburger span::after{content:""; display:block; width:16px; height:2px; background:var(--ink); position:relative; transition:.2s;}
+    .hamburger span::before{position:absolute; top:-5px;}
+    .hamburger span::after{position:absolute; top:5px;}
+  }
+  @media (max-width:680px){
+    body{font-size:15.5px;}
+    .hero-stats{grid-template-columns:1fr; grid-template-rows:auto; gap:18px;}
+    .hero-stat:nth-child(1){grid-column:1; grid-row:auto; padding-right:0; padding-bottom:16px; border-right:none; border-bottom:1px solid var(--rule);}
+    .hero-stat:nth-child(1) .num{font-size:3.2rem;}
+    .hero-stat:nth-child(2), .hero-stat:nth-child(3){grid-column:1;}
+    .stat-grid{flex-direction:column; gap:18px;}
+    .stat-grid > div{border-right:none; margin-right:0; padding:10px 0; border-bottom:1px solid var(--rule);}
+    .stat-grid > div:last-child{border-bottom:none;}
+    .two-col{grid-template-columns:1fr;}
+    .data-table{font-size:11.5px;}
+    .paper-meta{gap:8px;}
+    .paper-meta span::before{margin-right:8px;}
+    .fab-top{right:16px; bottom:16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<div class="sidebar-scrim" id="scrim"></div>
+
+<div class="app-shell">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><b>Institute of Manufacturing and Economy</b>Manufacturing Sector Working Paper Series</div>
+    <div class="meta-chip">
+      <span>Sector 03 of 11 · NIC Division 26</span>
+    </div>
+    <nav class="toc" id="tocNav">
+      <a href="#scale"><span class="tlabel">The Scale</span><span class="tleader"></span><span class="tnum">01</span></a>
+      <a href="#climb-back"><span class="tlabel">The Climb Back</span><span class="tleader"></span><span class="tnum">02</span></a>
+      <a href="#gap"><span class="tlabel">The Gap</span><span class="tleader"></span><span class="tnum">03</span></a>
+      <a href="#structure"><span class="tlabel">The Structure</span><span class="tleader"></span><span class="tnum">04</span></a>
+      <a href="#firms"><span class="tlabel">The Firms</span><span class="tleader"></span><span class="tnum">05</span></a>
+      <a href="#support"><span class="tlabel">The Support</span><span class="tleader"></span><span class="tnum">06</span></a>
+      <a href="#states"><span class="tlabel">States</span><span class="tleader"></span><span class="tnum">07</span></a>
+      <a href="#clusters"><span class="tlabel">Clusters</span><span class="tleader"></span><span class="tnum">08</span></a>
+      <a href="#closing"><span class="tlabel">Summary</span><span class="tleader"></span><span class="tnum">09</span></a>
+    </nav>
+    <div class="sidebar-foot">
+      <a href="#top" class="totop-btn">↑ Back to top</a>
+    </div>
+  </aside>
+
+  <main>
+    <button class="hamburger" id="hamburger" aria-label="Open navigation"><span></span></button>
+    <div class="wrap" id="top">
+
+      <header class="hero">
+        <div class="paper-meta">
+          <span>Sector 03 of 11</span>
+          <span>NIC Division 26</span>
+        </div>
+        <h1>Electronics: Surging Output, Fading Value Capture</h1>
+        <div class="byline-block">
+          <div><span class="role">Primary Research</span><span class="who">Dhairya Shah</span></div>
+          <div><span class="role">Compiled by</span><span class="who">Riddhi Bhargava</span></div>
+          <div><span class="role">Series</span><span class="who">Sector Snapshots</span></div>
+        </div>
+
+        <div class="abstract">
+          <div class="label">Abstract</div>
+          <p>Electronics output (ASI Gross Value of Output) grew 331% between 2014-15 and 2023-24, the fastest expansion of any sector in this series, while the value-added share of that output fell from roughly 19.4% to 13.2%. Exports have grown even faster, up 5.4 times since 2019-20 on the back of smartphone assembly, but imports have kept pace, leaving a widening trade deficit and an import dependency ratio of 71.6%. Concentration has eased sharply: the sector was Highly Concentrated (HHI above 2,500) as recently as 2016-17 and is now Competitive (HHI 1,292) as new contract manufacturers such as Foxconn and Tata Electronics have scaled up alongside Samsung. Investment pipeline activity has grown roughly ninefold since 2020-21, concentrated overwhelmingly (over 88%) in Indian private capital, with Maharashtra's outstanding pipeline dwarfing that of higher-output states Uttar Pradesh and Tamil Nadu.</p>
+        </div>
+        <div class="keywords"><b>Keywords:</b> Electronics manufacturing, Index of Industrial Production, Annual Survey of Industries, trade deficit, import dependency, firm concentration, Production-Linked Incentive scheme, investment pipeline, industrial clusters</div>
+
+        <div class="hero-stats">
+          <div class="hero-stat"><span class="num">+331%</span><span class="lbl">GVO growth, 2014-15 → 2023-24 — the fastest of any sector in this series</span></div>
+          <div class="hero-stat"><span class="num down">71.6%</span><span class="lbl">Import dependency ratio, FY24-25</span></div>
+          <div class="hero-stat"><span class="num">1,292</span><span class="lbl">HHI concentration index, 2024-25 (Competitive, from 3,446 in 2016-17)</span></div>
+        </div>
+      </header>
+      <!-- SCALE -->
+      <section id="scale">
+        <div class="section-head"><span class="section-tag">01</span><h2>The Scale</h2></div>
+        <div class="prose">
+          <p>India's electronics manufacturing base has expanded rapidly on every ASI-measured dimension over the past decade. The number of registered factories rose from 2,351 in 2014-15 to 2,516 in 2023-24<sup class="cite">[1]</sup>, a modest 7.0% increase, while the sector's Gross Value of Output (GVO) grew far faster, from ₹1.22 lakh crore to ₹5.24 lakh crore over the same period, a 331% increase. This divergence, output scaling more than 47 times faster than the factory count, points to intensive growth within existing plants rather than a proportional expansion of the manufacturing footprint.</p>
+        </div>
+
+        <table class="data-table">
+          <caption>Table 1. Scale indicators, Annual Survey of Industries, 2023-24</caption>
+          <thead><tr><th>Indicator</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Factories registered</td><td class="num">2,516</td></tr>
+            <tr><td>Gross Value of Output, 2023-24</td><td class="num">₹5.24 lakh crore</td></tr>
+            <tr><td>Total employees, ASI (2023-24)</td><td class="num">4,67,510</td></tr>
+            <tr><td>GVO growth, 2014-15 → 2023-24</td><td class="num">+331%</td></tr>
+          </tbody>
+        </table>
+
+        <div class="figure">
+  <div class="fig-label">Figure 1. Gross Value of Output, Electronics, 2014-15 to 2023-24</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="194" x2="630" y2="194" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="194.0" x2="630" y2="194.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="191.0" class="axis-label">₹0.0 L cr</text>
+        <line x1="10" y1="107.0" x2="630" y2="107.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="104.0" class="axis-label">₹2.6 L cr</text>
+        <line x1="10" y1="20.0" x2="630" y2="20.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="17.0" class="axis-label">₹5.2 L cr</text>
+        <rect x="19.3" y="153.6" width="43.4" height="40.4" fill="#7A1F2E"/>
+        <text x="41.0" y="148.6" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">1.22</text>
+        <text x="41.0" y="208" class="axis-label" text-anchor="middle">14-15</text>
+        <rect x="81.3" y="147.5" width="43.4" height="46.5" fill="#7A1F2E"/>
+        <text x="103.0" y="142.5" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">1.40</text>
+        <text x="103.0" y="208" class="axis-label" text-anchor="middle">15-16</text>
+        <rect x="143.3" y="139.2" width="43.4" height="54.8" fill="#7A1F2E"/>
+        <text x="165.0" y="134.2" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">1.65</text>
+        <text x="165.0" y="208" class="axis-label" text-anchor="middle">16-17</text>
+        <rect x="205.3" y="127.7" width="43.4" height="66.3" fill="#7A1F2E"/>
+        <text x="227.0" y="122.7" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.00</text>
+        <text x="227.0" y="208" class="axis-label" text-anchor="middle">17-18</text>
+        <rect x="267.3" y="113.4" width="43.4" height="80.6" fill="#7A1F2E"/>
+        <text x="289.0" y="108.4" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.43</text>
+        <text x="289.0" y="208" class="axis-label" text-anchor="middle">18-19</text>
+        <rect x="329.3" y="122.5" width="43.4" height="71.5" fill="#7A1F2E"/>
+        <text x="351.0" y="117.5" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.15</text>
+        <text x="351.0" y="208" class="axis-label" text-anchor="middle">19-20</text>
+        <rect x="391.3" y="123.3" width="43.4" height="70.7" fill="#7A1F2E"/>
+        <text x="413.0" y="118.3" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.13</text>
+        <text x="413.0" y="208" class="axis-label" text-anchor="middle">20-21</text>
+        <rect x="453.3" y="82.7" width="43.4" height="111.3" fill="#7A1F2E"/>
+        <text x="475.0" y="77.7" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">3.35</text>
+        <text x="475.0" y="208" class="axis-label" text-anchor="middle">21-22</text>
+        <rect x="515.3" y="49.7" width="43.4" height="144.3" fill="#7A1F2E"/>
+        <text x="537.0" y="44.7" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">4.35</text>
+        <text x="537.0" y="208" class="axis-label" text-anchor="middle">22-23</text>
+        <rect x="577.3" y="20.0" width="43.4" height="174.0" fill="#7A1F2E"/>
+        <text x="599.0" y="15.0" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">5.24</text>
+        <text x="599.0" y="208" class="axis-label" text-anchor="middle">23-24</text>
+</svg>
+  <div class="fig-caption">Source: ASI (Annual Survey of Industries), National Totals, Electronics sector. Values in &#8377; lakh crore. <sup class="cite">[1]</sup></div>
+</div>
+
+        <div class="prose">
+          <p>Employment on the ASI count (total employees, all categories) grew from 2,12,248 in 2014-15 to 4,67,510 in 2023-24, a 120.2% increase, notably slower than output growth, consistent with rising capital and materials intensity per worker. Wages per worker roughly doubled over the same period (from an ASI-reported ₹1,65,851 to ₹4,29,515 per annum), while women's share of the workforce rose from 13.4% to 16.3%.</p>
+          <p>The more striking trend sits underneath the headline growth. GVA (Gross Value Added) as a share of GVO, a rough proxy for how much of each rupee of output is genuinely created within the sector versus passed through as bought-in materials and components, fell from 19.4% in 2014-15 to 13.2% in 2023-24<sup class="cite">[1]</sup>, with a peak of 20.5% in 2015-16 before a fairly steady decline.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 2. Value-added intensity (GVA as % of GVO), Electronics, 2014-15 to 2023-24</div>
+  <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="174.0" x2="630" y2="174.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="171.0" class="axis-label">12%</text>
+        <line x1="10" y1="99.5" x2="630" y2="99.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="96.5" class="axis-label">17%</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">22%</text>
+        <polyline points="10.0,63.4 78.9,47.1 147.8,62.0 216.7,111.1 285.6,137.9 354.4,129.6 423.3,94.9 492.2,150.2 561.1,155.2 630.0,156.1" fill="none" stroke="#B8862E" stroke-width="2.5"/>
+        <circle cx="10.0" cy="63.4" r="3" fill="#B8862E"/>
+        <circle cx="78.9" cy="47.1" r="3" fill="#B8862E"/>
+        <circle cx="147.8" cy="62.0" r="3" fill="#B8862E"/>
+        <circle cx="216.7" cy="111.1" r="3" fill="#B8862E"/>
+        <circle cx="285.6" cy="137.9" r="3" fill="#B8862E"/>
+        <circle cx="354.4" cy="129.6" r="3" fill="#B8862E"/>
+        <circle cx="423.3" cy="94.9" r="3" fill="#B8862E"/>
+        <circle cx="492.2" cy="150.2" r="3" fill="#B8862E"/>
+        <circle cx="561.1" cy="155.2" r="3" fill="#B8862E"/>
+        <circle cx="630.0" cy="156.1" r="3" fill="#B8862E"/>
+        <text x="10.0" y="55.4" font-size="9.5" fill="#B8862E" font-weight="600">19.42% (14-15)</text>
+        <text x="68.9" y="39.1" font-size="9.5" fill="#B8862E" font-weight="600">peak 20.52% (15-16)</text>
+        <text x="600.0" y="172.1" font-size="9.5" fill="#A63A2E" font-weight="600">13.20% (23-24)</text>
+        <text x="10.0" y="190" class="axis-label" text-anchor="middle">14-15</text>
+        <text x="78.9" y="190" class="axis-label" text-anchor="middle">15-16</text>
+        <text x="147.8" y="190" class="axis-label" text-anchor="middle">16-17</text>
+        <text x="216.7" y="190" class="axis-label" text-anchor="middle">17-18</text>
+        <text x="285.6" y="190" class="axis-label" text-anchor="middle">18-19</text>
+        <text x="354.4" y="190" class="axis-label" text-anchor="middle">19-20</text>
+        <text x="423.3" y="190" class="axis-label" text-anchor="middle">20-21</text>
+        <text x="492.2" y="190" class="axis-label" text-anchor="middle">21-22</text>
+        <text x="561.1" y="190" class="axis-label" text-anchor="middle">22-23</text>
+        <text x="630.0" y="190" class="axis-label" text-anchor="middle">23-24</text>
+</svg>
+  <div class="fig-caption">Source: ASI, National Totals, Electronics sector. GVA/GVO computed from RAW GVA and GVO figures. <sup class="cite">[1]</sup></div>
+</div>
+
+        <div class="insight-box">
+          <div class="label">Reading it together</div>
+          <p>Section 4 below shows the same pattern from the company-financials side: Raw Material Cost as a share of Sales rose from 46.5% to 71.2% over roughly the same period. Both data sources, independently sourced (ASI vs. CMIE Industry Outlook), point to the same structural story — India's electronics sector is scaling primarily as final assembly, with a rising share of output value embedded in imported inputs and components rather than captured domestically.</p>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- CLIMB BACK -->
+      <section id="climb-back">
+        <div class="section-head"><span class="section-tag">02</span><h2>The Climb Back</h2></div>
+        <div class="prose">
+          <p>The Index of Industrial Production (IIP) for Electronics has followed a genuinely volatile path since 2012-13, not a simple growth curve. The index rose steadily through the mid-2010s, then surged in 2017-18 and 2018-19 (growth of 17.2% and 13.6% respectively) to a peak of 168.7 in 2018-19<sup class="cite">[2]</sup>. It then fell for two consecutive years (−10.5% in 2019-20, −12.6% in 2020-21) through the pre-COVID slowdown and the pandemic itself, before a partial rebound. A second, less-discussed trough followed: after recovering to 146.6 in 2021-22, the index fell again to 137.2 (2022-23) and then sharply to 121.7 in 2023-24, a level below even the COVID-year trough of 132.0. The most recent two years show renewed growth, +9.3% (2024-25) and +6.9% (2025-26), bringing the index to 142.2, still 15.7% below the 2018-19 peak.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 3. IIP index level, Electronics, 2012-13 to 2025-26 (base year per official series)</div>
+  <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="170" x2="630" y2="170" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="160.9" x2="630" y2="160.9" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="157.9" class="axis-label">100</text>
+        <line x1="10" y1="88.4" x2="630" y2="88.4" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="85.4" class="axis-label">140</text>
+        <polyline points="10.0,159.9 57.7,133.4 105.4,129.0 153.1,118.2 200.8,112.5 248.5,73.0 296.2,36.4 343.8,68.5 391.5,102.9 439.2,76.5 486.9,93.5 534.6,121.6 582.3,101.1 630.0,84.5" fill="none" stroke="#7A1F2E" stroke-width="2.3"/>
+        <circle cx="10.0" cy="159.9" r="2.3" fill="#7A1F2E"/>
+        <circle cx="57.7" cy="133.4" r="2.3" fill="#7A1F2E"/>
+        <circle cx="105.4" cy="129.0" r="2.3" fill="#7A1F2E"/>
+        <circle cx="153.1" cy="118.2" r="2.3" fill="#7A1F2E"/>
+        <circle cx="200.8" cy="112.5" r="2.3" fill="#7A1F2E"/>
+        <circle cx="248.5" cy="73.0" r="2.3" fill="#7A1F2E"/>
+        <circle cx="296.2" cy="36.4" r="3.2" fill="#7A1F2E"/>
+        <circle cx="343.8" cy="68.5" r="2.3" fill="#7A1F2E"/>
+        <circle cx="391.5" cy="102.9" r="2.3" fill="#7A1F2E"/>
+        <circle cx="439.2" cy="76.5" r="2.3" fill="#7A1F2E"/>
+        <circle cx="486.9" cy="93.5" r="2.3" fill="#7A1F2E"/>
+        <circle cx="534.6" cy="121.6" r="3.2" fill="#7A1F2E"/>
+        <circle cx="582.3" cy="101.1" r="2.3" fill="#7A1F2E"/>
+        <circle cx="630.0" cy="84.5" r="3.2" fill="#7A1F2E"/>
+        <text x="296.2" y="28.4" font-size="8.7" fill="#7A1F2E" font-weight="700" text-anchor="middle">168.7 peak</text>
+        <text x="534.6" y="135.6" font-size="8.7" fill="#A63A2E" font-weight="700" text-anchor="middle">121.7 trough</text>
+        <text x="630.0" y="76.5" font-size="8.7" fill="#262220" font-weight="700" text-anchor="middle">142.2</text>
+        <text x="10.0" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">12-13</text>
+        <text x="57.7" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">13-14</text>
+        <text x="105.4" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">14-15</text>
+        <text x="153.1" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">15-16</text>
+        <text x="200.8" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">16-17</text>
+        <text x="248.5" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">17-18</text>
+        <text x="296.2" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">18-19</text>
+        <text x="343.8" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">19-20</text>
+        <text x="391.5" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">20-21</text>
+        <text x="439.2" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">21-22</text>
+        <text x="486.9" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">22-23</text>
+        <text x="534.6" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">23-24</text>
+        <text x="582.3" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">24-25</text>
+        <text x="630.0" y="185" font-size="7.6" fill="#7A6F5C" text-anchor="middle">25-26</text>
+</svg>
+  <div class="fig-caption">Source: IIP, Ministry of Statistics and Programme Implementation; Electronics is a single-sector NIC mapping requiring no sub-component weighting. Item-level weights reconcile to 75.11% of official manufacturing weight vs. 77.63% official total; this residual does not affect relative sector ranking <sup class="cite">[2]</sup>.</div>
+</div>
+
+        <div class="stat-grid cols-5">
+          <div class="stat-box"><span class="num">142.2</span><span class="lbl">Latest index, 2025-26</span></div>
+          <div class="stat-box"><span class="num">Rank 5 / 11</span><span class="lbl">By index level</span></div>
+          <div class="stat-box"><span class="num">2.70%</span><span class="lbl">CAGR, full period</span></div>
+          <div class="stat-box"><span class="num">Rank 4 / 11</span><span class="lbl">Most volatile (StdDev)</span></div>
+        </div>
+
+        <div class="prose">
+          <p>On a compound basis, Electronics grew at 5.97% CAGR pre-COVID (2012-13 to 2019-20) but only 1.50% CAGR post-COVID (2020-21 to 2025-26), a marked deceleration in trend growth even though the sector's most recent two years show renewed double-digit-adjacent momentum. Volatility (standard deviation of year-on-year growth) is 10.37 percentage points over the full period, the 4th-highest of 11 sectors, and this volatility has not eased post-COVID (10.09pp) relative to pre-COVID (9.62pp). Combining level, latest growth, and CAGR into a single average rank, Electronics places 5th of 11 sectors (average rank 4.67), behind Metals, Transport Equipment, Construction Materials, and Chemicals<sup class="cite">[2]</sup>.</p>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+      <!-- TRADE -->
+      <section id="gap">
+        <div class="section-head"><span class="section-tag">03</span><h2>The Gap</h2></div>
+        <div class="prose">
+          <p>Electronics trade is tagged directional throughout this section: the HS-to-NIC concordance used here maps 95% of export value and 89% of import value, with the remainder excluded rather than estimated<sup class="cite">[3]</sup>.</p>
+          <p>Electronics exports reached ₹3,03,963 crore in FY2024-25, up 36.1% year-on-year and up 5.4 times since FY2019-20 (a 33.1% five-year CAGR)<sup class="cite">[3]</sup>. Imports, however, are more than double exports at ₹7,67,465 crore, up 13.1% year-on-year, leaving a trade deficit of ₹4,63,502 crore and an import dependency ratio of 71.6%, meaning imports are equivalent to nearly three-quarters of the sector's apparent domestic demand as approximated by trade flows.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 4. Exports, imports and trade balance, Electronics, FY2024-25</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">₹0.0L cr</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">₹3.8L cr</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">₹7.7L cr</text>
+        <rect x="10.0" y="117.4" width="128.1" height="60.6" fill="#7A1F2E"/>
+        <text x="74.1" y="112.4" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹3.04 L cr</text>
+        <text x="74.1" y="192" class="axis-label" text-anchor="middle">Exports</text>
+        <rect x="255.9" y="25.0" width="128.1" height="153.0" fill="#7A1F2E"/>
+        <text x="320.0" y="20.0" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹7.67 L cr</text>
+        <text x="320.0" y="192" class="axis-label" text-anchor="middle">Imports</text>
+        <rect x="501.9" y="178.0" width="128.1" height="92.6" fill="#7A1F2E"/>
+        <text x="565.9" y="173.0" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹4.64 L cr deficit</text>
+        <text x="565.9" y="192" class="axis-label" text-anchor="middle">Trade Balance</text>
+</svg>
+  <div class="fig-caption">Source: DGCI&amp;S TradeStat, HS-to-NIC concordance, directional basis. Values in &#8377; lakh crore. <sup class="cite">[3]</sup></div>
+</div>
+
+        <div class="insight-box">
+          <div class="label">Smartphones carry the export story</div>
+          <p>A single product line, mobile phones (HS 851713), accounted for ₹2,05,017 crore of exports in FY2024-25, 67.4% of the sector's entire export value<sup class="cite">[3]</sup>. The next largest export line, photovoltaic cells and modules, is an order of magnitude smaller at ₹9,463 crore. Electronics' export boom is, to a substantial degree, a smartphone-assembly and re-export boom.</p>
+        </div>
+
+        <h3><span class="sub-tag">3.1</span>Trade partners and products</h3>
+        <div class="prose">
+          <p>The United States is by far the largest export destination (₹1,14,405 crore, 37.6% of exports), consistent with the smartphone re-export pattern, followed by the UAE, Netherlands, UK, and Germany. On the import side, China dominates (₹2,95,242 crore, 38.5% of imports), more than three-and-a-half times the next-largest source, Hong Kong (₹80,960 crore)<sup class="cite">[3]</sup>. Processors and controllers (₹1,28,117 crore) and laptops (₹51,772 crore) are the largest identifiable import product lines after the unclassified "Other" residual.</p>
+        </div>
+
+        <div class="two-col">
+          <div class="figure">
+  <div class="fig-label">Figure 5a. Top 5 export destinations, Electronics, FY2024-25</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">₹0.0L cr</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">₹0.6L cr</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">₹1.1L cr</text>
+        <rect x="10.0" y="25.0" width="76.9" height="153.0" fill="#8C6D2F"/>
+        <text x="48.4" y="20.0" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹1.14L cr</text>
+        <text x="48.4" y="192" class="axis-label" text-anchor="middle">USA</text>
+        <rect x="145.8" y="138.2" width="76.9" height="39.8" fill="#8C6D2F"/>
+        <text x="184.2" y="133.2" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.30L cr</text>
+        <text x="184.2" y="192" class="axis-label" text-anchor="middle">UAE</text>
+        <rect x="281.6" y="148.4" width="76.9" height="29.6" fill="#8C6D2F"/>
+        <text x="320.0" y="143.4" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.22L cr</text>
+        <text x="320.0" y="192" class="axis-label" text-anchor="middle">Netherlands</text>
+        <rect x="417.3" y="157.6" width="76.9" height="20.4" fill="#8C6D2F"/>
+        <text x="455.8" y="152.6" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.15L cr</text>
+        <text x="455.8" y="192" class="axis-label" text-anchor="middle">UK</text>
+        <rect x="553.1" y="166.2" width="76.9" height="11.8" fill="#8C6D2F"/>
+        <text x="591.6" y="161.2" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.09L cr</text>
+        <text x="591.6" y="192" class="axis-label" text-anchor="middle">Germany</text>
+</svg>
+  <div class="fig-caption">Source: DGCI&amp;S TradeStat. Values in &#8377; lakh crore. <sup class="cite">[3]</sup></div>
+</div>
+          <div class="figure">
+  <div class="fig-label">Figure 5b. Top 5 import origins, Electronics, FY2024-25</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">₹0.0L cr</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">₹1.5L cr</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">₹3.0L cr</text>
+        <rect x="10.0" y="25.0" width="76.9" height="153.0" fill="#A63A2E"/>
+        <text x="48.4" y="20.0" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹2.95L cr</text>
+        <text x="48.4" y="192" class="axis-label" text-anchor="middle">China</text>
+        <rect x="145.8" y="136.0" width="76.9" height="42.0" fill="#A63A2E"/>
+        <text x="184.2" y="131.0" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.81L cr</text>
+        <text x="184.2" y="192" class="axis-label" text-anchor="middle">Hong Kong</text>
+        <rect x="281.6" y="154.5" width="76.9" height="23.5" fill="#A63A2E"/>
+        <text x="320.0" y="149.5" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.45L cr</text>
+        <text x="320.0" y="192" class="axis-label" text-anchor="middle">USA</text>
+        <rect x="417.3" y="174.6" width="76.9" height="3.4" fill="#A63A2E"/>
+        <text x="455.8" y="169.6" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.07L cr</text>
+        <text x="455.8" y="192" class="axis-label" text-anchor="middle">Switzerland</text>
+        <rect x="553.1" y="176.8" width="76.9" height="1.2" fill="#A63A2E"/>
+        <text x="591.6" y="171.8" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">₹0.02L cr</text>
+        <text x="591.6" y="192" class="axis-label" text-anchor="middle">UAE</text>
+</svg>
+  <div class="fig-caption">Source: DGCI&amp;S TradeStat. Values in &#8377; lakh crore. <sup class="cite">[3]</sup></div>
+</div>
+        </div>
+              </section>
+
+      <hr class="rule-thin">
+      <!-- STRUCTURE -->
+      <section id="structure">
+        <div class="section-head"><span class="section-tag">04</span><h2>The Structure</h2></div>
+        <div class="prose">
+          <p>Cost, capital, and returns indicators in this section are sourced from CMIE Industry Outlook on an aggregate basis (all companies, listed and unlisted), which corrects for a top-20-firm-panel distortion identified during the Textiles sector analysis earlier in this report series<sup class="cite">[4]</sup>.</p>
+          <p>Sales (aggregate) grew from ₹12,55,529 million in 2014-15 to ₹73,45,898 million in 2024-25, a 485% increase, broadly consistent with the ASI GVO growth trend in Section 1. Raw Material Cost as a share of Sales rose sharply, from 46.5% to 71.2%, while Employee Cost fell from 7.5% to 4.8% and Power &amp; Fuel Cost fell from 5.4% to 3.8%<sup class="cite">[4]</sup>. This is the company-financials mirror of the ASI GVA/GVO decline documented in Section 1: materials, largely imported components and sub-assemblies, have become a steadily larger share of what electronics manufacturers spend, while labour and utilities have become proportionally smaller.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 6. Cost structure shift, Electronics, 2014-15 vs 2024-25</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">0%</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">36%</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">71%</text>
+        <rect x="10.0" y="78.0" width="96.1" height="100.0" fill="#7A1F2E"/>
+        <text x="58.0" y="73.0" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">46.5%</text>
+        <text x="58.0" y="192" class="axis-label" text-anchor="middle">RM cost
+14-15</text>
+        <rect x="184.6" y="25.0" width="96.1" height="153.0" fill="#7A1F2E"/>
+        <text x="232.7" y="20.0" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">71.2%</text>
+        <text x="232.7" y="192" class="axis-label" text-anchor="middle">RM cost
+24-25</text>
+        <rect x="359.3" y="161.9" width="96.1" height="16.1" fill="#7A1F2E"/>
+        <text x="407.3" y="156.9" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">7.5%</text>
+        <text x="407.3" y="192" class="axis-label" text-anchor="middle">Emp cost
+14-15</text>
+        <rect x="533.9" y="167.7" width="96.1" height="10.3" fill="#7A1F2E"/>
+        <text x="581.9" y="162.7" font-size="8.5" fill="#262220" font-weight="600" text-anchor="middle">4.8%</text>
+        <text x="581.9" y="192" class="axis-label" text-anchor="middle">Emp cost
+24-25</text>
+</svg>
+  <div class="fig-caption">Source: CMIE Industry Outlook, Aggregate basis. Raw Material = "Raw material expenses" child line only. Employee Cost = "Compensation to employees." <sup class="cite">[4]</sup></div>
+</div>
+
+        <div class="prose">
+          <p>Capital intensity (Gross Fixed Assets ÷ Sales, aggregate basis) nearly halved, from 0.797× in 2014-15 to 0.480× in 2024-25, indicating that each rupee of sales now requires proportionally less fixed capital than a decade ago, consistent with an increasingly assembly-oriented, lower-capital-intensity production model. R&amp;D spend nearly tripled in absolute terms (₹8,258 million to ₹24,087 million) but R&amp;D as a share of Sales fell from 0.66% to 0.33%, since sales grew even faster than R&amp;D spend.</p>
+        </div>
+
+        <h3><span class="sub-tag">4.1</span>Returns, Leverage and Liquidity</h3>
+        <div class="prose">
+          <p>Profitability and capital efficiency both improved markedly over the decade. ROCE (derived as (PBDITA − Depreciation − Amortisation) ÷ Capital Employed, since CMIE has no direct EBIT-based ROCE line) rose from 11.21% to 20.52%. ROE rose from 5.03% to 15.48%, and ROA from 1.36% to 5.21%<sup class="cite">[4]</sup>. PAT Margin (net of P&amp;E) more than doubled, from 1.86% to 4.70%, even as PBDITA Margin held roughly flat (11.01% to 10.62%), implying the improvement came substantially from below the operating line — lower interest and depreciation burden relative to income.</p>
+        </div>
+
+        <div class="stat-grid cols-5">
+          <div class="stat-box"><span class="num">20.52%</span><span class="lbl">ROCE, 2024-25 (from 11.21%)</span></div>
+          <div class="stat-box"><span class="num">15.48%</span><span class="lbl">ROE, 2024-25 (from 5.03%)</span></div>
+          <div class="stat-box"><span class="num">0.334×</span><span class="lbl">Debt-Equity, implied (from 1.070×)</span></div>
+          <div class="stat-box"><span class="num">5.24×</span><span class="lbl">Interest Cover (from 2.54×)</span></div>
+        </div>
+
+        <div class="prose">
+          <p>Leverage fell substantially: Total Debt rose only modestly (₹4,77,025 million to ₹7,02,029 million) against a near six-fold rise in Capital Employed, and Interest Cover more than doubled from 2.54× to 5.24×. The Current Ratio drifted down slightly, from 1.34 to 1.23, still comfortably above 1, indicating adequate short-term liquidity.</p>
+        </div>
+
+        <h3><span class="sub-tag">4.2</span>Ownership, Forex and Fiscal Contribution</h3>
+        <div class="prose">
+          <p>On a 2024-25 sales basis, Private Foreign firms hold the largest ownership share (48.5%), narrowly ahead of Private Domestic (46.7%), with Government-owned firms accounting for the remaining 4.8%<sup class="cite">[4]</sup>.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 7. Sales by ownership group, Electronics, 2024-25</div>
+  <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg">
+<rect x="180.0" y="40" width="13.5" height="60" fill="#8C6D2F"/>
+        <text x="186.7" y="116" font-size="8.3" fill="#262220" text-anchor="middle">Government</text>
+        <rect x="193.5" y="40" width="130.7" height="60" fill="#7A1F2E"/>
+        <text x="258.8" y="74.0" font-size="10.5" fill="#FBF7EE" font-weight="700" text-anchor="middle">46.7%</text>
+        <text x="258.8" y="116" font-size="8.3" fill="#262220" text-anchor="middle">Private Domestic</text>
+        <rect x="324.2" y="40" width="135.8" height="60" fill="#B8862E"/>
+        <text x="392.1" y="74.0" font-size="10.5" fill="#FBF7EE" font-weight="700" text-anchor="middle">48.5%</text>
+        <text x="392.1" y="116" font-size="8.3" fill="#262220" text-anchor="middle">Private Foreign</text>
+</svg>
+  <div class="fig-caption">Source: CMIE Industry Outlook, Aggregate by Ownership Group. Total sales &#8377;73,45,898 million. <sup class="cite">[4]</sup></div>
+</div>
+
+        <div class="prose">
+          <p>Government-owned firms, however, are disproportionately profitable and R&amp;D-intensive relative to their sales share: PAT Margin for Government firms was 17.1% in 2024-25, well above Private Domestic (2.9%) and Private Foreign (5.1%)<sup class="cite">[4]</sup>. Government firms also contributed ₹16,519 million of the sector's ₹24,087 million total R&amp;D spend in 2024-25, 68.6% of the total, despite holding under 5% of sector sales — a concentration that lines up with the outsized role of defence-linked public-sector electronics manufacturing discussed further in Section 5.</p>
+          <p>The sector's Net Forex position (forex earnings minus forex spending) was deeply and increasingly negative: −₹2,96,569 million in 2014-15, widening to −₹11,85,309 million in 2024-25<sup class="cite">[4]</sup>, consistent with the widening trade deficit in Section 3. Contribution to Exchequer (Total Taxes) grew from ₹86,863 million to ₹1,60,940 million. <span class="flag">Data gap</span>CSR Spend data is missing for the sector in CMIE from 2021-22 through 2024-25 (shown as zero in the source, but per this paper's convention, this is treated as missing rather than a genuine zero disbursement and is not reported as a trend here).</p>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+      <!-- FIRMS -->
+      <section id="firms">
+        <div class="section-head"><span class="section-tag">05</span><h2>The Firms</h2></div>
+        <div class="prose">
+          <p>Electronics is a sector in the middle of a genuine ownership and competitive transition. Concentration (HHI, Herfindahl-Hirschman Index of the top firms, sourced separately from firm-level CMIE data since this measure structurally requires firm-level rather than aggregate figures) was Highly Concentrated as recently as 2016-17 (HHI 3,446, with 2015-16 at 3,392, the first year in this series), driven by Samsung's early dominance, but has fallen steadily and substantially to 1,292 by 2024-25, now in the Competitive band<sup class="cite">[5]</sup>. Top-3 firm share of the top-20 panel fell in parallel, from 83.6% (2015-16) to 54.4% (2024-25).</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 9. HHI concentration index, Electronics, 2015-16 to 2024-25</div>
+  <svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="185" x2="630" y2="185" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="154.2" x2="630" y2="154.2" stroke="#B8862E" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="480" y="151.2" font-size="8" fill="#B8862E" font-weight="600">1500 (Moderate) threshold</text>
+        <line x1="10" y1="92.7" x2="630" y2="92.7" stroke="#B8862E" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="480" y="89.7" font-size="8" fill="#B8862E" font-weight="600">2500 (High) threshold</text>
+        <text x="14" y="182.0" class="axis-label">1000</text>
+        <text x="14" y="102.0" class="axis-label">2300</text>
+        <text x="14" y="22.0" class="axis-label">3600</text>
+        <polyline points="10.0,37.8 78.9,34.5 147.8,100.0 216.7,113.0 285.6,113.0 354.4,128.2 423.3,145.4 492.2,161.3 561.1,164.8 630.0,167.0" fill="none" stroke="#7A1F2E" stroke-width="2.3"/>
+        <circle cx="10.0" cy="37.8" r="3" fill="#7A1F2E"/>
+        <text x="10.0" y="29.8" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">3392</text>
+        <text x="10.0" y="200" class="axis-label" text-anchor="middle">15-16</text>
+        <circle cx="78.9" cy="34.5" r="3" fill="#7A1F2E"/>
+        <text x="78.9" y="26.5" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">3446</text>
+        <text x="78.9" y="200" class="axis-label" text-anchor="middle">16-17</text>
+        <circle cx="147.8" cy="100.0" r="3" fill="#7A1F2E"/>
+        <text x="147.8" y="92.0" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">2382</text>
+        <text x="147.8" y="200" class="axis-label" text-anchor="middle">17-18</text>
+        <circle cx="216.7" cy="113.0" r="3" fill="#7A1F2E"/>
+        <text x="216.7" y="105.0" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">2170</text>
+        <text x="216.7" y="200" class="axis-label" text-anchor="middle">18-19</text>
+        <circle cx="285.6" cy="113.0" r="3" fill="#7A1F2E"/>
+        <text x="285.6" y="105.0" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">2170</text>
+        <text x="285.6" y="200" class="axis-label" text-anchor="middle">19-20</text>
+        <circle cx="354.4" cy="128.2" r="3" fill="#7A1F2E"/>
+        <text x="354.4" y="120.2" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">1923</text>
+        <text x="354.4" y="200" class="axis-label" text-anchor="middle">20-21</text>
+        <circle cx="423.3" cy="145.4" r="3" fill="#7A1F2E"/>
+        <text x="423.3" y="137.4" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">1644</text>
+        <text x="423.3" y="200" class="axis-label" text-anchor="middle">21-22</text>
+        <circle cx="492.2" cy="161.3" r="3" fill="#7A1F2E"/>
+        <text x="492.2" y="153.3" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">1385</text>
+        <text x="492.2" y="200" class="axis-label" text-anchor="middle">22-23</text>
+        <circle cx="561.1" cy="164.8" r="3" fill="#7A1F2E"/>
+        <text x="561.1" y="156.8" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">1328</text>
+        <text x="561.1" y="200" class="axis-label" text-anchor="middle">23-24</text>
+        <circle cx="630.0" cy="167.0" r="3" fill="#7A1F2E"/>
+        <text x="630.0" y="159.0" font-size="7.8" fill="#262220" font-weight="600" text-anchor="middle">1292</text>
+        <text x="630.0" y="200" class="axis-label" text-anchor="middle">24-25</text>
+</svg>
+  <div class="fig-caption">Source: CMIE Prowess IQ (firm-level financials), HHI computed from top-firm market shares within the sector. 2014-15 has no reported value; series starts 2015-16. <sup class="cite">[5]</sup></div>
+</div>
+
+        <div class="prose">
+          <p>The firm-level rank data tell a consistent story of new entrants displacing, rather than replacing, the earlier leadership. Samsung India Electronics has held the #1 rank by sales continuously from FY2013-14 through FY2024-25, growing from ₹39,542 crore to ₹1,07,110 crore. But the fastest-growing firms are contract manufacturers that barely existed in the panel a few years ago: Foxconn Hon Hai entered the top-20 in FY2019-20 at ₹891 crore (rank 12) and reached ₹1,00,359 crore by FY2024-25, the #2 firm in the sector; Tata Electronics Systems Solutions entered in FY2020-21 at ₹1,075 crore (rank 13) and reached ₹62,221 crore (rank 3) by FY2024-25<sup class="cite">[6]</sup>. Over the same window, two of the sector's earlier leaders grew in absolute terms but fell sharply in relative rank: Nokia Solutions grew from ₹8,046 crore to ₹23,591 crore (+193%) but slipped from rank 2 to rank 8, and Bharat Electronics grew from ₹6,174 crore to ₹23,024 crore (+273%) but slipped from rank 3 to rank 9, both outpaced by the entry of Apple-supply-chain contract manufacturers.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 8. Sales of selected firms: entry-year or FY14 baseline vs. FY24-25</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">₹0k cr</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">₹54k cr</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">₹107k cr</text>
+        <rect x="10.0" y="121.5" width="52.7" height="56.5" fill="#7A1F2E"/>
+        <text x="36.4" y="116.5" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹39.5k cr</text>
+        <text x="36.4" y="192" class="axis-label" text-anchor="middle">Samsung
+FY14</text>
+        <rect x="91.0" y="25.0" width="52.7" height="153.0" fill="#7A1F2E"/>
+        <text x="117.4" y="20.0" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹107.1k cr</text>
+        <text x="117.4" y="192" class="axis-label" text-anchor="middle">Samsung
+FY25</text>
+        <rect x="172.1" y="176.7" width="52.7" height="1.3" fill="#7A1F2E"/>
+        <text x="198.4" y="171.7" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹0.9k cr</text>
+        <text x="198.4" y="192" class="axis-label" text-anchor="middle">Foxconn
+FY20</text>
+        <rect x="253.1" y="34.6" width="52.7" height="143.4" fill="#7A1F2E"/>
+        <text x="279.5" y="29.6" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹100.4k cr</text>
+        <text x="279.5" y="192" class="axis-label" text-anchor="middle">Foxconn
+FY25</text>
+        <rect x="334.2" y="166.5" width="52.7" height="11.5" fill="#7A1F2E"/>
+        <text x="360.5" y="161.5" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹8.0k cr</text>
+        <text x="360.5" y="192" class="axis-label" text-anchor="middle">Nokia
+FY14</text>
+        <rect x="415.2" y="144.3" width="52.7" height="33.7" fill="#7A1F2E"/>
+        <text x="441.6" y="139.3" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹23.6k cr</text>
+        <text x="441.6" y="192" class="axis-label" text-anchor="middle">Nokia
+FY25</text>
+        <rect x="496.3" y="169.2" width="52.7" height="8.8" fill="#7A1F2E"/>
+        <text x="522.6" y="164.2" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹6.2k cr</text>
+        <text x="522.6" y="192" class="axis-label" text-anchor="middle">Bharat El.
+FY14</text>
+        <rect x="577.3" y="145.1" width="52.7" height="32.9" fill="#7A1F2E"/>
+        <text x="603.6" y="140.1" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹23.0k cr</text>
+        <text x="603.6" y="192" class="axis-label" text-anchor="middle">Bharat El.
+FY25</text>
+</svg>
+  <div class="fig-caption">Source: CMIE Prowess IQ, Abridged Annual Finance (Standalone), top-20 firm panel by sales, FY13-14 to FY24-25. Foxconn baseline is FY19-20, its first year in the panel. <sup class="cite">[6]</sup></div>
+</div>
+
+        <div class="insight-box">
+          <div class="label">Margin dispersion tracks the assembly-vs-value-add divide</div>
+          <p>Three-year average (FY2022-23 to FY2024-25) PAT margins across the top firms range from 20.4% (Bharat Electronics, defence-linked PSU) down to 0.4% (BYD India, Bhagwati Products), roughly a 50-fold spread<sup class="cite">[7]</sup>. The largest PLI-era contract manufacturers and phone assemblers — Foxconn, Tata Electronics, Oppo, Vivo, DBG Technology, and Padget Electronics — cluster at the very bottom of this range (0.4%–2.0% margin) and simultaneously carry the highest Raw Material Cost as a share of sales among the panel (90%–96%), directly consistent with the thin-margin, high-throughput, low-value-add assembly model implied by the sector-wide GVA/GVO and cost-structure trends in Sections 1 and 4.</p>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+      <!-- SUPPORT -->
+      <section id="support">
+        <div class="section-head"><span class="section-tag">06</span><h2>The Support</h2></div>
+        <div class="prose">
+          <p>Two Production Linked Incentive (PLI) schemes apply to Electronics: the PLI Scheme for Large Scale Electronics Manufacturing (LSEM, mobile phones and specified components) and PLI 2.0 for IT Hardware (laptops, tablets, servers). CMIE-sourced Budget/Revised Estimate figures for these schemes were not available for this sector; the figures below are drawn instead from Press Information Bureau (PIB) releases and are flagged accordingly. <span class="flag">PIB, not CMIE</span></p>
+          <p>Under LSEM, committed investment across 32 approved companies stands at ₹11,324 crore against a production target of ₹10,70,000 crore; cumulative investment realised was ₹8,282 crore (against a committed ₹9,653 crore) as of the most recent PIB update available<sup class="cite">[8]</sup>. The scheme's budgetary outlay was enhanced in the Union Budget 2026 from ₹22,919 crore to ₹40,000 crore, alongside a stated investment target of ₹59,350 crore and investment commitments received of roughly ₹1.15 lakh crore, with an estimated 1.4 lakh jobs<sup class="cite">[8]</sup>. Under PLI 2.0 for IT Hardware, 27 companies have committed ₹2,955 crore of investment against a production target of ₹3,51,647 crore; cumulative disbursed incentives under this scheme stood at ₹82 crore as of the most recent PIB figures<sup class="cite">[9]</sup>. Both schemes' actual disbursement-to-date figures remain small relative to committed investment and production targets, consistent with schemes still in an early-to-mid implementation phase.</p>
+        </div>
+
+        <h3><span class="sub-tag">6.1</span>Investment Pipeline</h3>
+        <div class="prose">
+          <p>National Investments Outstanding (the stock of all live project cost, across Announced, Under Implementation, No Info But Live, and Implementation Stalled categories, which sum to the total) grew from ₹1.39 lakh crore in 2014-15 to ₹12.20 lakh crore in 2025-26<sup class="cite">[10]</sup>, with the clearest inflection after 2020-21 (₹1.99 lakh crore) to 2021-22 (₹5.33 lakh crore), a near-threefold jump in a single year that coincides with the launch of the sector's PLI schemes and the Semiconductor Mission.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 10. Total Investments Outstanding, national, Electronics, 2014-15 to 2025-26</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">₹0L cr</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">₹6L cr</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">₹12L cr</text>
+        <rect x="10.0" y="160.5" width="33.6" height="17.5" fill="#8C6D2F"/>
+        <text x="26.8" y="155.5" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">1.4</text>
+        <text x="26.8" y="192" class="axis-label" text-anchor="middle">14-15</text>
+        <rect x="63.3" y="146.9" width="33.6" height="31.1" fill="#8C6D2F"/>
+        <text x="80.1" y="141.9" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.5</text>
+        <text x="80.1" y="192" class="axis-label" text-anchor="middle">15-16</text>
+        <rect x="116.6" y="151.0" width="33.6" height="27.0" fill="#8C6D2F"/>
+        <text x="133.4" y="146.0" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.2</text>
+        <text x="133.4" y="192" class="axis-label" text-anchor="middle">16-17</text>
+        <rect x="169.9" y="148.2" width="33.6" height="29.8" fill="#8C6D2F"/>
+        <text x="186.7" y="143.2" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.4</text>
+        <text x="186.7" y="192" class="axis-label" text-anchor="middle">17-18</text>
+        <rect x="223.2" y="148.1" width="33.6" height="29.9" fill="#8C6D2F"/>
+        <text x="240.0" y="143.1" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.4</text>
+        <text x="240.0" y="192" class="axis-label" text-anchor="middle">18-19</text>
+        <rect x="276.6" y="154.7" width="33.6" height="23.3" fill="#8C6D2F"/>
+        <text x="293.3" y="149.7" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">1.9</text>
+        <text x="293.3" y="192" class="axis-label" text-anchor="middle">19-20</text>
+        <rect x="329.9" y="153.0" width="33.6" height="25.0" fill="#8C6D2F"/>
+        <text x="346.7" y="148.0" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">2.0</text>
+        <text x="346.7" y="192" class="axis-label" text-anchor="middle">20-21</text>
+        <rect x="383.2" y="111.1" width="33.6" height="66.9" fill="#8C6D2F"/>
+        <text x="400.0" y="106.1" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">5.3</text>
+        <text x="400.0" y="192" class="axis-label" text-anchor="middle">21-22</text>
+        <rect x="436.5" y="79.1" width="33.6" height="98.9" fill="#8C6D2F"/>
+        <text x="453.3" y="74.1" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">7.9</text>
+        <text x="453.3" y="192" class="axis-label" text-anchor="middle">22-23</text>
+        <rect x="489.8" y="61.3" width="33.6" height="116.7" fill="#8C6D2F"/>
+        <text x="506.6" y="56.3" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">9.3</text>
+        <text x="506.6" y="192" class="axis-label" text-anchor="middle">23-24</text>
+        <rect x="543.1" y="40.2" width="33.6" height="137.8" fill="#8C6D2F"/>
+        <text x="559.9" y="35.2" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">11.0</text>
+        <text x="559.9" y="192" class="axis-label" text-anchor="middle">24-25</text>
+        <rect x="596.4" y="25.0" width="33.6" height="153.0" fill="#8C6D2F"/>
+        <text x="613.2" y="20.0" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">12.2</text>
+        <text x="613.2" y="192" class="axis-label" text-anchor="middle">25-26</text>
+</svg>
+  <div class="fig-caption">Source: CMIE CapEx, Investment Trends &gt; Key Indicators &gt; Investments Outstanding. Values in &#8377; lakh crore. <sup class="cite">[10]</sup></div>
+</div>
+
+        <div class="prose">
+          <p>New Investments Announced during 2025-26 totalled ₹1,70,436 crore across 119 projects, and Investments Completed during the year totalled ₹37,007 crore across 21 projects. Investments Dropped rose sharply to ₹40,250 crore (85 projects) in 2025-26, the highest project count in the series, worth watching alongside the strong announcement momentum. <span class="flag">Data note</span>Implementation Stalled cost has shown an identical value, ₹5,310 crore, in every year from 2019-20 through 2025-26 in the source data; this is very likely a carried-forward or unrefreshed figure rather than a genuine seven-year plateau, and is reported here with that caveat rather than treated as a confirmed trend. The stalled share of total outstanding cost, on the (uncertain) numbers as given, has fallen from 11.96% (2014-15) to 0.44% (2025-26).</p>
+          <p>By ownership group, Indian Private capital dominates new investment activity: of the ₹1,70,436 crore in New Investments Announced during 2025-26, Indian Private firms accounted for ₹1,51,287 crore (88.8%), Foreign Private for ₹18,057 crore (10.6%), and Central and State Government combined for under 1% (₹1,092 crore)<sup class="cite">[10]</sup>.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 11. New Investments Announced by ownership group, Electronics, 2025-26</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">₹0k cr</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">₹76k cr</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">₹151k cr</text>
+        <rect x="10.0" y="177.3" width="96.1" height="0.7" fill="#7A1F2E"/>
+        <text x="58.0" y="172.3" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹0.7k cr</text>
+        <text x="58.0" y="192" class="axis-label" text-anchor="middle">Central
+Govt</text>
+        <rect x="184.6" y="177.6" width="96.1" height="0.4" fill="#7A1F2E"/>
+        <text x="232.7" y="172.6" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹0.4k cr</text>
+        <text x="232.7" y="192" class="axis-label" text-anchor="middle">State
+Govt</text>
+        <rect x="359.3" y="25.0" width="96.1" height="153.0" fill="#7A1F2E"/>
+        <text x="407.3" y="20.0" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹151.3k cr</text>
+        <text x="407.3" y="192" class="axis-label" text-anchor="middle">Indian
+Private</text>
+        <rect x="533.9" y="159.7" width="96.1" height="18.3" fill="#7A1F2E"/>
+        <text x="581.9" y="154.7" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹18.1k cr</text>
+        <text x="581.9" y="192" class="axis-label" text-anchor="middle">Foreign
+Private</text>
+</svg>
+  <div class="fig-caption">Source: CMIE CapEx, Investment Trends by Ownership Group. Values in &#8377; thousand crore. <sup class="cite">[10]</sup></div>
+</div>
+
+        <div class="prose">
+          <p>At the state level, Investments Outstanding in 2025-26 is led by Maharashtra (₹2,18,657 crore), well ahead of Uttar Pradesh (₹76,197 crore) and Tamil Nadu (₹66,206 crore)<sup class="cite">[10]</sup>, even though Maharashtra ranks only 3rd of these three states by actual GVO (Section 7). As with the Transport Equipment sector snapshot, pipeline concentration and current output concentration are telling different geographic stories; a large capital pipeline does not necessarily sit in the state with the largest existing manufacturing base.</p>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+      <!-- STATE LEADERS -->
+      <section id="states">
+        <div class="section-head"><span class="section-tag">07</span><h2>Where It Is Made: States</h2></div>
+        <div class="prose">
+          <p>Uttar Pradesh and Tamil Nadu are the clear leaders in Electronics GVO (2023-24, latest available ASI year), at ₹1.60 lakh crore and ₹1.51 lakh crore respectively, roughly three times the level of the next tier, Maharashtra (₹0.59 lakh crore) and Karnataka (₹0.53 lakh crore)<sup class="cite">[1]</sup>.</p>
+        </div>
+
+        <div class="figure">
+  <div class="fig-label">Figure 12. Gross Value of Output by leading state, Electronics, 2023-24</div>
+  <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="178" x2="630" y2="178" stroke="#D9CBB0" stroke-width="1"/>
+        <line x1="10" y1="178.0" x2="630" y2="178.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="175.0" class="axis-label">₹0.0L cr</text>
+        <line x1="10" y1="101.5" x2="630" y2="101.5" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="98.5" class="axis-label">₹0.8L cr</text>
+        <line x1="10" y1="25.0" x2="630" y2="25.0" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+        <text x="14" y="22.0" class="axis-label">₹1.6L cr</text>
+        <rect x="10.0" y="25.0" width="96.1" height="153.0" fill="#7A1F2E"/>
+        <text x="58.0" y="20.0" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹1.59L cr</text>
+        <text x="58.0" y="192" class="axis-label" text-anchor="middle">Uttar
+Pradesh</text>
+        <rect x="184.6" y="33.1" width="96.1" height="144.9" fill="#7A1F2E"/>
+        <text x="232.7" y="28.1" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹1.51L cr</text>
+        <text x="232.7" y="192" class="axis-label" text-anchor="middle">Tamil
+Nadu</text>
+        <rect x="359.3" y="121.4" width="96.1" height="56.6" fill="#7A1F2E"/>
+        <text x="407.3" y="116.4" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹0.59L cr</text>
+        <text x="407.3" y="192" class="axis-label" text-anchor="middle">Maharashtra</text>
+        <rect x="533.9" y="127.2" width="96.1" height="50.8" fill="#7A1F2E"/>
+        <text x="581.9" y="122.2" font-size="8.3" fill="#262220" font-weight="600" text-anchor="middle">₹0.53L cr</text>
+        <text x="581.9" y="192" class="axis-label" text-anchor="middle">Karnataka</text>
+</svg>
+  <div class="fig-caption">Source: ASI, State-Level Data, Electronics sector, latest available year (2023-24). Values in &#8377; lakh crore. <sup class="cite">[1]</sup></div>
+</div>
+
+        <table class="data-table">
+          <caption>Table 2. Gross Value of Output by leading state, Electronics, 2014-15 vs 2023-24</caption>
+          <thead><tr><th>State</th><th>GVO 2014-15*</th><th>GVO 2023-24</th><th>Growth</th></tr></thead>
+          <tbody>
+            <tr><td>Uttar Pradesh</td><td class="num">₹20,053 cr</td><td class="num">₹1,59,539 cr</td><td>large increase</td></tr>
+            <tr><td>Tamil Nadu</td><td class="num">₹46,644 cr</td><td class="num">₹1,51,117 cr</td><td>large increase</td></tr>
+            <tr><td>Maharashtra</td><td class="num">₹17,769 cr</td><td class="num">₹58,980 cr</td><td>large increase</td></tr>
+            <tr><td>Karnataka</td><td>n/a</td><td class="num">₹52,963 cr</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p class="fig-caption" style="margin:4px 0 0;">*2014-15 baseline figures are approximate, drawn from the same ASI state-level blocks; precise per-state 2014-15 figures for all four leading states were not fully cross-verified in this pass and should be treated as indicative pending further review.</p>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- CLUSTERS -->
+      <section id="clusters">
+        <div class="section-head"><span class="section-tag">08</span><h2>Where It Is Made: Clusters</h2></div>
+        <div class="prose">
+          <p>Six Electronics clusters are registered in the cluster database compiled from SAMEEEKSHA and DC-MSME industrial profiles, Cluster Observatory, and company sources: Sriperumbudur-Oragadam (Tamil Nadu), Bengaluru-Mysuru-Dharwad-Tumakuru (Karnataka), Greater Noida (Uttar Pradesh), Pune (Maharashtra), Mumbai-Thane (Maharashtra), and a Gujarat placeholder entry<sup class="cite">[11]</sup>. Of these, Sriperumbudur-Oragadam is assessed as Partially Linked on downstream supply-chain integration, and the Bengaluru-Mysuru corridor as Tightly Linked upstream, reflecting an established PCB and component supply base; most other registered clusters are currently marked Insufficient Data pending further fieldwork.</p>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+      <!-- CLOSING -->
+      <section id="closing">
+        <div class="section-head"><span class="section-tag">09</span><h2>Summary</h2></div>
+        <div class="prose">
+          <p>Electronics presents a genuine paradox for India's manufacturing competitiveness story. By almost every scale and growth measure, output, exports, investment pipeline activity, and market structure, the sector is a standout performer: GVO up 331% in a decade, exports up 5.4 times in six years, concentration falling from Highly Concentrated to Competitive, and an investment pipeline that has grown roughly ninefold since 2020-21. Yet the value-added intensity of that output has been falling steadily, raw material costs have risen from under half to over seven-tenths of sales, and the trade deficit has widened even as exports surge, because assembly-stage growth pulls in imported inputs faster than it displaces them. The firm-level data sharpen this picture further: the fastest-growing companies in the sector, Foxconn and the Tata Electronics entities, are also among its thinnest-margin, highest-material-cost firms, while the one segment combining strong margins with heavy R&amp;D investment, government-owned, defence-linked manufacturing, holds under 5% of sector sales. Whether India's electronics sector deepens into higher-value component and sub-assembly manufacturing, or continues to scale primarily as a final-assembly base for imported inputs, is likely to be the central question for this sector's next decade, and is not yet resolved by the data through 2024-25.</p>
+        </div>
+        <div class="stat-grid cols-5">
+          <div class="stat-box"><span class="num">+331%</span><span class="lbl">GVO growth, 2014-15 → 2023-24</span></div>
+          <div class="stat-box"><span class="num">19.4→13.2%</span><span class="lbl">GVA share of GVO, 2014-15 → 2023-24</span></div>
+          <div class="stat-box"><span class="num">71.6%</span><span class="lbl">Import dependency ratio, FY24-25</span></div>
+          <div class="stat-box"><span class="num">3,446→1,292</span><span class="lbl">HHI, 2016-17 → 2024-25 (Highly Concentrated → Competitive)</span></div>
+          <div class="stat-box"><span class="num">₹1.39L→₹12.20L cr</span><span class="lbl">Investment pipeline outstanding, 2014-15 → 2025-26</span></div>
+        </div>
+      </section>
+
+      <footer>
+        <details class="accordion">
+          <summary>References <span class="chev">▾</span></summary>
+          <div class="accordion-body">
+            <ol class="ref-list">
+              <li>ASI (Annual Survey of Industries), Ministry of Statistics and Programme Implementation, State-Level and National-Totals data, Electronics sector.</li>
+              <li>IIP (Index of Industrial Production), Ministry of Statistics and Programme Implementation. Electronics is a single NIC-mapped sector requiring no sub-component weighting.</li>
+              <li>DGCI&amp;S (Directorate General of Commercial Intelligence and Statistics) TradeStat, HS-to-NIC concordance, directional basis.</li>
+              <li>CMIE Industry Outlook, Aggregate (all companies, listed and unlisted) basis, Electronics sector.</li>
+              <li>CMIE Prowess IQ, firm-level HHI concentration computation, Electronics sector.</li>
+              <li>CMIE Prowess IQ, Abridged Annual Finance (Standalone), top-20 firm panel by sales, Electronics sector, FY13-14 to FY24-25.</li>
+              <li>CMIE Prowess IQ, Firm Scorecard, 3-year average (FY22-23 to FY24-25), Electronics sector firms.</li>
+              <li>Press Information Bureau, Ministry of Electronics and Information Technology, PLI Scheme for Large Scale Electronics Manufacturing releases (most recent available at time of writing).</li>
+              <li>Press Information Bureau, Ministry of Electronics and Information Technology, PLI 2.0 for IT Hardware releases (most recent available at time of writing).</li>
+              <li>CMIE CapEx, Investment Trends, Key Indicators (National, by State, by Ownership Group), Electronics sector.</li>
+              <li>Cluster register compiled from SAMEEEKSHA cluster profiles, DC-MSME industrial profiles, Cluster Observatory, and company sources, Electronics-tagged clusters.</li>
+            </ol>
+          </div>
+        </details>
+
+        <details class="accordion">
+          <summary>Methodological Notes <span class="chev">▾</span></summary>
+          <div class="accordion-body">
+            <ul class="note-list">
+              <li><span class="tag">(a)</span>The ASI dataset's Electronics tab carries stale header text and NIC-mapping-note text left over from an earlier sector (Food &amp; Agro-based Products, NIC Div 10/11/12) in cells A1 and A5. Per confirmation for this paper, the underlying row data is treated as genuine Electronics-sector data; the header text is a labelling artifact only and does not reflect the data's actual source scope.</li>
+              <li><span class="tag">(b)</span>This paper covers only the workbook sheet named "Electronics." Two related CMIE sheets, "Electronics Commercial" and "Consumer Electronics," exist separately; the cross-mapping question (Consumer Electronics sits under "Consumer Goods" in CMIE's own tree but under "Electronics" per this paper's NIC mapping) remains an open reconciliation item for a future pass and is not resolved in this paper.</li>
+              <li><span class="tag">(c)</span>Cross-sector "highest/lowest of 11" comparative claims are avoided in this paper except where sourced directly from a pre-built cross-sector ranking table (IIP Sector Ranking sheet), consistent with this report series' current hold on ad hoc cross-sector comparisons while sector sheets are filled in one at a time.</li>
+              <li><span class="tag">(d)</span>PLI figures in Section 6 are sourced from PIB, not CMIE, and are flagged accordingly; CMIE Budget/Revised Estimate rows for PLI expenditure were blank for this sector at time of writing.</li>
+              <li><span class="tag">(e)</span>The Implementation Stalled cost figure in Section 6.1 is very likely a stale, unrefreshed value in the source CMIE export (identical across seven consecutive years) rather than a genuine plateau; reported with this caveat rather than as a confirmed finding.</li>
+              <li><span class="tag">(f)</span>2014-15 state-level GVO comparison figures in Section 7 are approximate and pending fuller cross-verification.</li>
+            </ul>
+          </div>
+        </details>
+
+        <div class="colophon">Institute of Manufacturing and Economy · Manufacturing Sector Working Paper Series · Paper 3 of 11 · NIC Division 26 · Primary research: Dhairya Shah · Compiled by: Riddhi Bhargava</div>
+      </footer>
+
+    </div>
+  </main>
+</div>
+
+<button class="fab-top" id="fabTop" aria-label="Back to top">↑</button>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">Close ✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+(function(){
+  // Progress bar
+  var fill = document.getElementById('progressFill');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? (scrolled / max) * 100 : 0;
+    fill.style.width = pct + '%';
+    document.getElementById('fabTop').classList.toggle('show', scrolled > 500);
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // Scrollspy
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var idx = sections.indexOf(entry.target);
+      if(idx === -1) return;
+      if(entry.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        links[idx].classList.add('active');
+      }
+    });
+  }, {rootMargin:'-15% 0px -70% 0px', threshold:0});
+  sections.forEach(function(s){ if(s) observer.observe(s); });
+
+  // Mobile sidebar
+  var sidebar = document.getElementById('sidebar');
+  var hamburger = document.getElementById('hamburger');
+  var scrim = document.getElementById('scrim');
+  function closeSidebar(){ sidebar.classList.remove('open'); scrim.classList.remove('show'); }
+  if(hamburger){
+    hamburger.addEventListener('click', function(){
+      sidebar.classList.toggle('open');
+      scrim.classList.toggle('show');
+    });
+  }
+  scrim.addEventListener('click', closeSidebar);
+  links.forEach(function(l){ l.addEventListener('click', closeSidebar); });
+
+  // Back to top
+  document.getElementById('fabTop').addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // Lightbox
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.figure img').forEach(function(img){
+    img.addEventListener('click', function(){
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.classList.add('show');
+    });
+  });
+  function closeLightbox(){ lightbox.classList.remove('show'); lightboxImg.src=''; }
+  lightbox.addEventListener('click', closeLightbox);
+  document.getElementById('lightboxClose').addEventListener('click', function(e){ e.stopPropagation(); closeLightbox(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLightbox(); });
+
+  // Reveal-on-scroll for figures, tables, stat rows, insight boxes
+  var revealTargets = document.querySelectorAll('.figure, .data-table, .stat-grid, .insight-box, .section-footnote, .abstract');
+  revealTargets.forEach(function(el){ el.classList.add('reveal'); });
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  revealTargets.forEach(function(el){ revealObserver.observe(el); });
+
+  // Count-up animation for stat numbers (animates the numeric portion only)
+  function animateCount(el){
+    var raw = el.textContent;
+    var m = raw.match(/^([^0-9]*)([0-9][0-9,]*\.?[0-9]*)(.*)$/);
+    if(!m) return;
+    var prefix = m[1], target = parseFloat(m[2].replace(/,/g,'')), suffix = m[3];
+    var decimals = (m[2].split('.')[1] || '').length;
+    var hasComma = m[2].indexOf(',') !== -1;
+    if(isNaN(target)) return;
+    var start = null, duration = 900;
+    function fmt(n){
+      var s = n.toFixed(decimals);
+      if(hasComma){ s = Number(s).toLocaleString('en-IN', {minimumFractionDigits:decimals, maximumFractionDigits:decimals}); }
+      return s;
+    }
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + fmt(target * eased) + suffix;
+      if(p < 1) requestAnimationFrame(step);
+      else el.textContent = raw;
+    }
+    requestAnimationFrame(step);
+  }
+  var countTargets = document.querySelectorAll('.hero-stat .num, .stat-box .num');
+  var countObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        animateCount(entry.target);
+        countObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.6});
+  countTargets.forEach(function(el){ countObserver.observe(el); });
+})();
+</script>
+
+
+</body>
+</html>

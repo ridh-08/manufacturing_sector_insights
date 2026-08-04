@@ -3,644 +3,952 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Transport Equipment: Scaling, Steady, Structurally Sound — Sector Snapshot</title>
+<title>Transport Equipment: Scaling, Steady, and Structurally Sound — Sector Snapshot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --maroon: #7A1F2E;
     --maroon-deep: #5A1420;
     --navy: #1C2B44;
-    --ivory: #F6EFE1;
-    --paper: #FEFDF9;
+    --ivory: #FAF7F0;
+    --paper: #FEFDFA;
+    --card: #FFFFFF;
     --gold: #B8862E;
+    --gold-soft: #E4CC98;
     --ink: #262220;
-    --ink-soft: #55504A;
-    --rule: #D9CBB0;
-    --rule-strong: #B7A57F;
+    --ink-soft: #5C5650;
+    --ink-faint: #8A8377;
+    --rule: #E9E1D0;
+    --rule-strong: #D2C39D;
     --up: #3E6B4F;
     --down: #A63A2E;
-    --hatch: #C9B98C;
-    --serif: 'Times New Roman', Times, serif;
-    --sans: 'Montserrat', Arial, sans-serif;
+    --serif: 'Newsreader', Georgia, serif;
+    --heading: 'Playfair Display', Georgia, serif;
+    --sans: 'JetBrains Mono', 'SF Mono', monospace;
+    --sidebar-w: 272px;
+    --content-w: 700px;
+    --radius: 0px;
+    --shadow: none;
+    --shadow-hover: none;
   }
   *{box-sizing:border-box;}
-  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); line-height:1.65; font-size:16px;}
-  .wrap{max-width:900px; margin:0 auto; padding:0 30px;}
-  .prose{max-width:660px;}
-  .rule-thin{border:none; border-top:1px solid var(--rule); margin:44px 0;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--serif); line-height:1.7; font-size:16.5px; -webkit-font-smoothing:antialiased;}
+  ::selection{background:var(--gold-soft); color:var(--maroon-deep);}
 
-  .masthead{padding:26px 0 14px; border-bottom:2px solid var(--ink); display:flex; justify-content:space-between; align-items:baseline; font-family:var(--sans); font-size:11px; letter-spacing:.04em; color:var(--ink-soft); text-transform:uppercase;}
-  .masthead .series{font-weight:700; color:var(--maroon-deep);}
+  /* ---------- progress bar ---------- */
+  .progress-track{position:fixed; top:0; left:0; width:100%; height:3px; background:transparent; z-index:200;}
+  .progress-fill{height:100%; width:0%; background:linear-gradient(90deg, var(--gold), var(--maroon)); transition:width .08s linear;}
 
-  header.hero{padding:34px 0 30px; border-bottom:1px solid var(--rule);}
-  .paper-meta{font-family:var(--sans); font-size:11.5px; color:var(--ink-soft); margin-bottom:16px; display:flex; gap:18px; flex-wrap:wrap; font-weight:500;}
-  .paper-meta span::before{content:"·"; margin-right:18px; color:var(--rule-strong);}
+  /* ---------- app shell ---------- */
+  .app-shell{display:flex; align-items:flex-start; max-width:1360px; margin:0 auto;}
+
+  /* ---------- sidebar ---------- */
+  .sidebar{
+    position:sticky; top:0; height:100vh; width:var(--sidebar-w); flex:0 0 var(--sidebar-w);
+    padding:26px 22px 20px; border-right:1px solid var(--rule); overflow-y:auto; overflow-x:hidden;
+    display:flex; flex-direction:column;
+    transition:width .28s cubic-bezier(.4,0,.2,1), padding .28s cubic-bezier(.4,0,.2,1), border-color .28s ease;
+  }
+  .sidebar::-webkit-scrollbar{width:5px;}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--rule-strong); border-radius:10px;}
+  .sidebar > *{transition:opacity .16s ease; white-space:nowrap;}
+  .sidebar.collapsed{width:0; flex:0 0 0; padding-left:0; padding-right:0; border-right-color:transparent;}
+  .sidebar.collapsed > *{opacity:0; pointer-events:none;}
+
+  .rail-toggle{
+    position:sticky; top:26px; align-self:flex-start; flex:none;
+    width:26px; height:26px; margin:26px 0 0 -13px; z-index:160;
+    border-radius:50%; background:var(--card); border:1px solid var(--rule-strong);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    color:var(--ink-soft); font-family:var(--sans); font-size:11px; line-height:1;
+    box-shadow:0 2px 6px rgba(90,20,32,.08); transition:transform .28s cubic-bezier(.4,0,.2,1), background .15s ease, color .15s ease;
+  }
+  .rail-toggle:hover{background:var(--ivory); color:var(--maroon-deep);}
+  .rail-toggle .arrow{transition:transform .28s cubic-bezier(.4,0,.2,1); display:inline-block;}
+  .sidebar.collapsed + .rail-toggle .arrow{transform:rotate(180deg);}
+  .sidebar.collapsed + .rail-toggle{margin-left:6px;}
+  .brand{font-family:var(--sans); font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); line-height:1.5; padding-bottom:16px; border-bottom:1px solid var(--rule); margin-bottom:18px;}
+  .brand b{display:block; color:var(--maroon-deep); font-weight:700; font-size:11px; margin-bottom:2px;}
+  .meta-chip{font-family:var(--sans); font-size:10px; color:var(--ink-faint); margin-bottom:20px; display:flex; flex-direction:column; gap:4px;}
+  .meta-chip span{display:flex; gap:6px; align-items:center;}
+  .meta-chip svg{width:11px; height:11px; flex:none; opacity:.6;}
+
+  nav.toc{display:flex; flex-direction:column; margin-bottom:auto;}
+  nav.toc a{
+    display:flex; align-items:baseline; gap:6px; text-decoration:none; color:var(--ink-soft);
+    font-family:var(--sans); font-size:11.5px; font-weight:500; padding:8px 2px;
+    position:relative; transition:color .15s ease; border-bottom:1px solid var(--rule);
+  }
+  nav.toc a .tlabel{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  nav.toc a .tleader{flex:1; height:1px; margin:0 2px 2px; background-image:radial-gradient(circle, var(--rule-strong) 1px, transparent 1px); background-size:4px 1px; background-repeat:repeat-x; background-position:bottom;}
+  nav.toc a .tnum{font-size:10px; color:var(--gold); font-weight:600; flex:none;}
+  nav.toc a:hover{color:var(--maroon);}
+  nav.toc a.active{color:var(--maroon-deep); font-weight:600;}
+  nav.toc a.active .tnum{color:var(--maroon);}
+
+  .sidebar-foot{padding-top:16px; margin-top:16px; border-top:1px solid var(--rule);}
+  .totop-btn{font-family:var(--sans); font-size:10.5px; color:var(--ink-faint); text-decoration:none; display:inline-flex; gap:6px; align-items:center;}
+  .totop-btn:hover{color:var(--maroon);}
+
+  .hamburger{display:none;}
+  .sidebar-scrim{display:none;}
+
+  /* ---------- main content ---------- */
+  main{flex:1; min-width:0; padding:0 40px 80px;}
+  .wrap{max-width:var(--content-w); margin:0 auto;}
+  .prose{max-width:var(--content-w);}
+  .rule-thin{border:none; border-top:1px solid var(--rule); margin:48px 0;}
+
+  header.hero{padding:44px 0 34px;}
+  .paper-meta{font-family:var(--sans); font-size:11px; color:var(--ink-faint); margin-bottom:18px; display:flex; gap:16px; flex-wrap:wrap; font-weight:500; text-transform:uppercase; letter-spacing:.04em;}
+  .paper-meta span::before{content:"·"; margin-right:16px; color:var(--rule-strong);}
   .paper-meta span:first-child::before{content:""; margin-right:0;}
-  h1{font-family:var(--sans); font-weight:800; font-size:clamp(1.85rem, 4.2vw, 2.7rem); line-height:1.12; margin:0 0 20px; color:var(--maroon-deep); letter-spacing:-0.01em;}
-  .byline-block{display:flex; flex-wrap:wrap; gap:28px; margin-bottom:26px; padding-bottom:22px; border-bottom:1px solid var(--rule);}
-  .byline-block .role{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); display:block; margin-bottom:3px; font-weight:600;}
-  .byline-block .who{font-size:14.5px; color:var(--ink); font-weight:600; font-family:var(--sans);}
+  h1{font-family:var(--heading); font-weight:700; font-style:italic; font-size:clamp(2.1rem, 4.6vw, 3.1rem); line-height:1.12; margin:0 0 22px; color:var(--maroon-deep); letter-spacing:-0.01em;}
+  .byline-block{display:flex; flex-wrap:wrap; gap:26px; margin-bottom:24px; padding-bottom:22px; border-bottom:1px solid var(--rule);}
+  .byline-block .role{font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--gold); display:block; margin-bottom:3px; font-weight:600;}
+  .byline-block .who{font-size:14px; color:var(--ink); font-weight:600; font-family:var(--sans);}
 
-  .abstract{background:var(--ivory); border:1px solid var(--rule); padding:22px 24px; margin-bottom:8px;}
-  .abstract .label{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
-  .abstract p{margin:0; color:var(--ink); font-size:15px;}
-  .keywords{font-family:var(--sans); font-size:11px; color:var(--ink-soft); margin-top:14px;}
-  .keywords b{color:var(--ink); font-weight:600;}
+  .abstract{border-left:2px solid var(--gold); padding:2px 0 2px 22px; margin-bottom:8px;}
+  .abstract .label{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--maroon); font-weight:600; margin-bottom:10px;}
+  .abstract p{margin:0; color:var(--ink); font-size:16px; font-style:italic; font-family:var(--serif);}
+  .keywords{font-family:var(--sans); font-size:10.5px; color:var(--ink-faint); margin-top:16px; line-height:1.9; padding-left:22px;}
+  .keywords b{color:var(--ink-soft); font-weight:600;}
 
-  .hero-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:22px;}
-  .hero-stat{background:var(--ivory); padding:16px 15px;}
-  .hero-stat .num{font-family:var(--sans); font-weight:800; font-size:1.55rem; color:var(--navy); display:block; line-height:1;}
-  .hero-stat .num.up{color:var(--up);}
+  .hero-stats{display:grid; grid-template-columns:1.3fr 1fr; grid-template-rows:auto auto; gap:6px 44px; margin-top:38px; padding-top:24px; border-top:1px solid var(--ink);}
+  .hero-stat:nth-child(1){grid-column:1; grid-row:1/3; padding-right:36px; border-right:1px solid var(--rule);}
+  .hero-stat:nth-child(1) .num{font-size:4.4rem; letter-spacing:-.02em;}
+  .hero-stat:nth-child(2){grid-column:2; grid-row:1; align-self:end;}
+  .hero-stat:nth-child(3){grid-column:2; grid-row:2; align-self:start;}
+  .hero-stat .num{font-family:var(--sans); font-weight:600; font-size:1.6rem; color:var(--navy); display:block; line-height:.95;}
   .hero-stat .num.down{color:var(--down);}
-  .hero-stat .lbl{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-top:6px; display:block; line-height:1.4; font-weight:500;}
+  .hero-stat .lbl{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-top:10px; display:block; line-height:1.4; font-weight:500;}
 
-  .stat-grid{display:grid; gap:1px; background:var(--rule); border:1px solid var(--rule); margin:18px 0 6px;}
-  .stat-grid.cols-5{grid-template-columns:repeat(5,1fr);}
-  .stat-grid.cols-4{grid-template-columns:repeat(4,1fr);}
-  .stat-grid.cols-3{grid-template-columns:repeat(3,1fr);}
-  .stat-box{background:var(--ivory); padding:15px 13px;}
-  .stat-box .num{font-family:var(--sans); font-weight:800; font-size:1.3rem; color:var(--navy); display:block; line-height:1.1;}
-  .stat-box .lbl{font-family:var(--sans); font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.02em; margin-top:6px; display:block; line-height:1.35; font-weight:500;}
+  .stat-grid{display:flex; flex-wrap:wrap; gap:36px 44px; margin:26px 0 12px; padding-top:20px; border-top:1px solid var(--rule);}
+  .stat-grid > div{flex:1 1 140px; min-width:120px;}
+  .stat-box .num{font-family:var(--sans); font-weight:600; font-size:1.3rem; color:var(--navy); display:block; line-height:1.15;}
+  .stat-box .lbl{font-family:var(--sans); font-size:9.8px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.02em; margin-top:7px; display:block; line-height:1.35; font-weight:500;}
 
-  section{padding:8px 0 42px;}
-  .section-head{display:flex; align-items:baseline; gap:12px; margin-bottom:18px; padding-bottom:8px; border-bottom:1px solid var(--rule);}
-  .section-tag{font-family:var(--sans); font-size:13px; color:var(--gold); font-weight:700; white-space:nowrap;}
-  h2{font-family:var(--sans); font-weight:700; font-size:1.35rem; color:var(--maroon-deep); margin:0;}
+  section{padding:14px 0 50px; scroll-margin-top:24px;}
+  .section-head{display:flex; align-items:baseline; gap:16px; margin-bottom:26px; padding-bottom:14px; border-bottom:1px solid var(--ink);}
+  .section-tag{font-family:var(--sans); font-size:2.1rem; font-weight:400; color:var(--gold); opacity:.55; white-space:nowrap; letter-spacing:-.02em; line-height:1;}
+  h3{font-family:var(--heading); font-weight:700; font-size:1.2rem; color:var(--maroon-deep); margin:34px 0 14px; display:flex; align-items:baseline; gap:12px;}
+  .sub-tag{font-family:var(--sans); font-size:11px; color:var(--gold); font-weight:600;}
+  h2{font-family:var(--heading); font-weight:700; font-size:1.65rem; color:var(--maroon-deep); margin:0;}
   p{margin:0 0 15px; color:var(--ink);}
   strong{color:var(--maroon-deep); font-weight:700;}
-  sup.cite{font-family:var(--sans); font-size:10px; color:var(--maroon); font-weight:700; margin-left:1px;}
-  sup.note{font-family:var(--sans); font-size:10px; color:var(--navy); font-weight:700; margin-left:1px;}
+  sup.cite{font-family:var(--sans); font-size:10px; color:var(--maroon); font-weight:700; margin-left:1px; cursor:default;}
+  sup.note{font-family:var(--sans); font-size:10px; color:var(--navy); font-weight:700; margin-left:1px; cursor:default;}
 
-  .figure{border:1px solid var(--rule); background:#FFFFFF; padding:18px 18px 14px; margin:20px 0;}
-  .figure img{width:100%; height:auto; display:block; background:#fff; border:1px solid var(--rule);}
-  .fig-label{font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
+  .figure{border-top:1px solid var(--rule); padding:20px 0 4px; margin:28px 0;}
+  .figure img{width:100%; height:auto; display:block; background:#fff; cursor:zoom-in;}
+  .fig-label{font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:600; margin-bottom:14px;}
   .fig-caption{font-size:12.5px; color:var(--ink-soft); margin-top:10px; max-width:640px; font-family:var(--serif); font-style:italic;}
   svg text{font-family:var(--sans);}
   .axis-label{font-size:9.5px; fill:var(--ink-soft);}
   .legend{display:flex; gap:18px; font-size:11.5px; color:var(--ink-soft); margin-top:8px; flex-wrap:wrap; font-family:var(--sans);}
-  .legend .dot{display:inline-block; width:8px; height:8px; border-radius:1px; margin-right:5px; vertical-align:middle;}
+  .legend .dot{display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; vertical-align:middle;}
 
-  .two-col{display:grid; grid-template-columns:1.05fr .95fr; gap:30px; align-items:start;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start;}
+  .two-col .figure{margin:0;}
 
-  .data-table{width:100%; border-collapse:collapse; font-size:13px; margin:14px 0;}
-  .data-table caption{caption-side:top; text-align:left; font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:700; margin-bottom:10px;}
-  .data-table th{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); text-align:left; padding:7px 10px; border-bottom:2px solid var(--ink); background:var(--ivory); font-weight:600;}
-  .data-table td{padding:8px 10px; border-bottom:1px solid var(--rule); vertical-align:top;}
+  .data-table{width:100%; border-collapse:collapse; font-size:13.5px; margin:20px 0;}
+  .data-table caption{caption-side:top; text-align:left; font-family:var(--sans); font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon); font-weight:600; padding:0 0 10px;}
+  .data-table th{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); text-align:left; padding:8px 14px 8px 0; border-bottom:1px solid var(--ink); font-weight:600;}
+  .data-table td{padding:9px 14px 9px 0; border-bottom:1px solid var(--rule); vertical-align:top;}
   .data-table tr:last-child td{border-bottom:1px solid var(--ink);}
+  .data-table tbody tr:hover{background:var(--ivory);}
   .data-table td.num{font-family:var(--sans); color:var(--navy); white-space:nowrap;}
 
-  .insight-box{border:1px solid var(--ink); border-left:4px solid var(--gold); padding:18px 22px; margin:22px 0; background:var(--ivory);}
-  .insight-box .label{font-family:var(--sans); font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon); font-weight:700; margin-bottom:8px;}
-  .insight-box p{margin:0; font-size:14.5px;}
+  .section-footnote{font-family:var(--serif); font-style:italic; font-size:12px; color:var(--ink-faint); margin:26px 0 0; padding-top:14px; border-top:1px solid var(--rule);}
+  .section-footnote sup.note{font-style:normal;}
 
-  footer{border-top:2px solid var(--ink); margin-top:10px; padding:28px 0 60px;}
-  footer h3{font-family:var(--sans); font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon-deep); margin:0 0 12px; font-weight:700;}
-  .ref-list{list-style:none; margin:0 0 26px; padding:0; font-size:12.6px; color:var(--ink-soft); counter-reset:refnum;}
-  .ref-list li{counter-increment:refnum; padding:5px 0 5px 26px; position:relative; border-bottom:1px solid var(--rule);}
+  .insight-box{border-left:2px solid var(--gold); padding:2px 0 2px 22px; margin:28px 0;}
+  .insight-box .label{font-family:var(--sans); font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--maroon); font-weight:600; margin-bottom:8px;}
+  .insight-box p{margin:0; font-size:15px; font-style:italic; font-family:var(--serif); color:var(--maroon-deep);}
+
+  .flag{font-family:var(--sans); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--maroon-deep); background:var(--gold-soft); padding:2px 7px; border-radius:2px; margin-right:6px; display:inline-block; vertical-align:middle;}
+
+  /* ---------- footer / accordions ---------- */
+  footer{border-top:2px solid var(--ink); margin-top:10px; padding:30px 0 60px;}
+  footer > h3{font-family:var(--sans); font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon-deep); margin:0 0 12px; font-weight:700;}
+  details.accordion{border-top:1px solid var(--rule); margin-bottom:0;}
+  details.accordion:last-of-type{border-bottom:1px solid var(--rule);}
+  details.accordion summary{list-style:none; cursor:pointer; padding:15px 2px; font-family:var(--sans); font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--maroon-deep); display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  details.accordion summary::-webkit-details-marker{display:none;}
+  details.accordion summary .chev{font-size:12px; color:var(--ink-faint); transition:transform .2s ease; flex:none;}
+  details.accordion[open] summary .chev{transform:rotate(180deg);}
+  details.accordion .accordion-body{padding:0 2px 18px;}
+  .ref-list{list-style:none; margin:0; padding:0; font-size:12.6px; color:var(--ink-soft); counter-reset:refnum;}
+  .ref-list li{counter-increment:refnum; padding:7px 0 7px 28px; position:relative; border-bottom:1px solid var(--rule);}
+  .ref-list li:last-child{border-bottom:none;}
   .ref-list li::before{content:"[" counter(refnum) "]"; position:absolute; left:0; font-family:var(--sans); color:var(--maroon); font-size:11px; font-weight:600;}
   .note-list{list-style:none; margin:0; padding:0; font-size:12.6px; color:var(--ink-soft);}
-  .note-list li{padding:5px 0 5px 26px; position:relative; border-bottom:1px solid var(--rule);}
+  .note-list li{padding:7px 0 7px 28px; position:relative; border-bottom:1px solid var(--rule);}
+  .note-list li:last-child{border-bottom:none;}
   .note-list li .tag{position:absolute; left:0; font-family:var(--sans); color:var(--navy); font-size:11px; font-weight:700;}
-  .colophon{font-family:var(--sans); font-size:10.5px; color:var(--ink-soft); margin-top:24px; padding-top:16px; border-top:1px solid var(--rule);}
+  .colophon{font-family:var(--sans); font-size:10.5px; color:var(--ink-faint); margin-top:24px; padding-top:16px; border-top:1px solid var(--rule);}
 
+  /* ---------- back to top ---------- */
+  .fab-top{position:fixed; right:26px; bottom:26px; width:42px; height:42px; border-radius:50%; background:var(--maroon-deep); color:#fff; border:none; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-hover); cursor:pointer; opacity:0; pointer-events:none; transform:translateY(8px); transition:opacity .2s ease, transform .2s ease; z-index:150;}
+  .fab-top.show{opacity:1; pointer-events:auto; transform:translateY(0);}
+  .fab-top:hover{background:var(--maroon);}
+
+  /* ---------- reveal-on-scroll ---------- */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);}
+  .reveal.in-view{opacity:1; transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+  }
+
+  /* ---------- lightbox ---------- */
+  .lightbox{position:fixed; inset:0; background:rgba(28,20,17,.86); display:none; align-items:center; justify-content:center; z-index:300; padding:40px; cursor:zoom-out;}
+  .lightbox.show{display:flex;}
+  .lightbox img{max-width:100%; max-height:100%; border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .lightbox-close{position:absolute; top:20px; right:26px; color:#fff; font-family:var(--sans); font-size:13px; opacity:.75; background:rgba(255,255,255,.12); border:none; padding:8px 14px; border-radius:20px; cursor:pointer;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .sidebar{
+      position:fixed; left:0; top:0; height:100vh; z-index:220; background:var(--paper);
+      transform:translateX(-100%); transition:transform .25s ease; box-shadow:0 0 40px rgba(0,0,0,.2);
+      width:280px; flex:0 0 280px;
+    }
+    .sidebar.open{transform:translateX(0);}
+    .sidebar-scrim{display:none; position:fixed; inset:0; background:rgba(20,15,12,.4); z-index:210;}
+    .sidebar-scrim.show{display:block;}
+    main{padding:0 20px 70px;}
+    .rail-toggle{display:none;}
+    .hamburger{
+      display:flex; position:sticky; top:14px; left:0; margin:14px 0 0 0; z-index:150;
+      width:42px; height:42px; border-radius:50%; background:var(--card); border:1px solid var(--rule);
+      align-items:center; justify-content:center; box-shadow:var(--shadow); cursor:pointer;
+    }
+    .hamburger span, .hamburger span::before, .hamburger span::after{content:""; display:block; width:16px; height:2px; background:var(--ink); position:relative; transition:.2s;}
+    .hamburger span::before{position:absolute; top:-5px;}
+    .hamburger span::after{position:absolute; top:5px;}
+  }
   @media (max-width:680px){
-    .hero-stats{grid-template-columns:1fr;}
-    .stat-grid.cols-5{grid-template-columns:repeat(2,1fr);}
-    .stat-grid.cols-4{grid-template-columns:repeat(2,1fr);}
-    .stat-grid.cols-3{grid-template-columns:1fr;}
+    body{font-size:15.5px;}
+    .hero-stats{grid-template-columns:1fr; grid-template-rows:auto; gap:18px;}
+    .hero-stat:nth-child(1){grid-column:1; grid-row:auto; padding-right:0; padding-bottom:16px; border-right:none; border-bottom:1px solid var(--rule);}
+    .hero-stat:nth-child(1) .num{font-size:3.2rem;}
+    .hero-stat:nth-child(2), .hero-stat:nth-child(3){grid-column:1;}
+    .stat-grid{flex-direction:column; gap:18px;}
+    .stat-grid > div{border-right:none; margin-right:0; padding:10px 0; border-bottom:1px solid var(--rule);}
+    .stat-grid > div:last-child{border-bottom:none;}
     .two-col{grid-template-columns:1fr;}
     .data-table{font-size:11.5px;}
-    .paper-meta{gap:10px;}
-    .paper-meta span::before{margin-right:10px;}
+    .paper-meta{gap:8px;}
+    .paper-meta span::before{margin-right:8px;}
+    .fab-top{right:16px; bottom:16px;}
   }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="masthead">
-    <span class="series">Institute of Manufacturing and Economy</span>
-    <span>Manufacturing Sector Working Paper Series</span>
-  </div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<div class="sidebar-scrim" id="scrim"></div>
 
-  <header class="hero">
-    <div class="paper-meta">
-      <span>Sector — of 11 (numbering to be confirmed)</span>
-      <span>NIC Divisions 29 and 30</span>
-      <span>August 2026</span>
+<div class="app-shell">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><b>Institute of Manufacturing and Economy</b>Manufacturing Sector Working Paper Series</div>
+    <div class="meta-chip">
+      <span>Sector — of 11 (numbering TBC) · NIC Divisions 29 &amp; 30</span>
+      <span>~11 min read</span>
     </div>
-    <h1>Transport Equipment: Scaling, Steady, and Structurally Sound</h1>
-    <div class="byline-block">
-      <div><span class="role">Primary Research</span><span class="who">Nidhi Patel</span></div>
-      <div><span class="role">Compiled by</span><span class="who">Riddhi Bhargava</span></div>
-      <div><span class="role">Series</span><span class="who">Sector Snapshots</span></div>
+    <nav class="toc" id="tocNav">
+      <a href="#scale"><span class="tlabel">The Scale</span><span class="tleader"></span><span class="tnum">01</span></a>
+      <a href="#output"><span class="tlabel">The Surge</span><span class="tleader"></span><span class="tnum">02</span></a>
+      <a href="#trade"><span class="tlabel">The Balance</span><span class="tleader"></span><span class="tnum">03</span></a>
+      <a href="#structure"><span class="tlabel">The Structure</span><span class="tleader"></span><span class="tnum">04</span></a>
+      <a href="#firms"><span class="tlabel">The Firms</span><span class="tleader"></span><span class="tnum">05</span></a>
+      <a href="#policy"><span class="tlabel">The Support</span><span class="tleader"></span><span class="tnum">06</span></a>
+      <a href="#states"><span class="tlabel">States</span><span class="tleader"></span><span class="tnum">07</span></a>
+      <a href="#clusters"><span class="tlabel">Clusters</span><span class="tleader"></span><span class="tnum">08</span></a>
+      <a href="#closing"><span class="tlabel">Summary</span><span class="tleader"></span><span class="tnum">09</span></a>
+    </nav>
+    <div class="sidebar-foot">
+      <a href="#top" class="totop-btn">↑ Back to top</a>
     </div>
+  </aside>
+  <button class="rail-toggle" id="railToggle" aria-label="Collapse sidebar" title="Collapse sidebar"><span class="arrow">‹</span></button>
 
-    <div class="abstract">
-      <div class="label">Abstract</div>
-      <p>India's transport equipment sector operates 8,869 registered factories, employs over 17.9 lakh persons, and produced a Gross Value of Output of ₹16.27 lakh crore in 2023-24, more than two and a half times its 2014-15 level. Unlike several sectors in this series, transport equipment is not a story of scale without structural progress: on the Index of Industrial Production it posted the fastest latest-year growth (11.8%) of any sector under study and now sits at an all-time index high, its balance sheet has deleveraged sharply over the decade, and its investment pipeline has grown to over ₹8.45 lakh crore outstanding with one of the lowest stalled-project rates of any sector tracked. This paper sets out the sector's scale, output trajectory, trade position, cost and capital structure, firm-level dynamics, policy support and investment pipeline, principal production clusters, and state-level footprint, drawing on the Annual Survey of Industries, the Index of Industrial Production, CMIE, DGCI&amp;S trade data, and the institute's internal cluster registry.</p>
+  <main>
+    <button class="hamburger" id="hamburger" aria-label="Open navigation"><span></span></button>
+    <div class="wrap" id="top">
+
+      <header class="hero">
+        <div class="paper-meta">
+          <span>Sector — of 11 (numbering to be confirmed)</span>
+          <span>NIC Divisions 29 and 30</span>
+          <span>August 2026</span>
+        </div>
+        <h1>Transport Equipment: Scaling, Steady, and Structurally Sound</h1>
+        <div class="byline-block">
+          <div><span class="role">Primary Research</span><span class="who">Nidhi Patel</span></div>
+          <div><span class="role">Compiled by</span><span class="who">Riddhi Bhargava</span></div>
+          <div><span class="role">Series</span><span class="who">Sector Snapshots</span></div>
+        </div>
+
+        <div class="abstract">
+          <div class="label">Abstract</div>
+          <p>India's transport equipment sector operates 8,869 registered factories, employs over 17.9 lakh persons, and produced a Gross Value of Output of ₹16.27 lakh crore in 2023-24, more than two and a half times its 2014-15 level. Unlike several sectors in this series, transport equipment is not a story of scale without structural progress: on the Index of Industrial Production it posted the fastest latest-year growth (11.8%) of any sector under study and now sits at an all-time index high, its balance sheet has deleveraged sharply over the decade, and its investment pipeline has grown to over ₹8.45 lakh crore outstanding with one of the lowest stalled-project rates of any sector tracked. This paper sets out the sector's scale, output trajectory, trade position, cost and capital structure, firm-level dynamics, policy support and investment pipeline, principal production clusters, and state-level footprint, drawing on the Annual Survey of Industries, the Index of Industrial Production, CMIE, DGCI&amp;S trade data, and the institute's internal cluster registry.</p>
+        </div>
+        <div class="keywords"><b>Keywords:</b> Transport Equipment, Automotive, Index of Industrial Production, Annual Survey of Industries, trade balance, firm concentration, investment pipeline, industrial clusters, Production-Linked Incentive scheme</div>
+
+        <div class="hero-stats">
+          <div class="hero-stat"><span class="num up">2.67 / 12</span><span class="lbl">Average rank across level, growth, and CAGR (lowest = strongest), of 12 sectors tracked<sup class="note">(a)</sup></span></div>
+          <div class="hero-stat"><span class="num up">+11.8%</span><span class="lbl">Latest IIP growth, 2025-26 — fastest of any sector tracked</span></div>
+          <div class="hero-stat"><span class="num">44.3%</span><span class="lbl">Top-3 firms' combined market share, 2024-25</span></div>
+        </div>
+      </header>
+
+      <!-- SCALE -->
+      <section id="scale">
+        <div class="section-head"><span class="section-tag">01</span><h2>The Scale</h2></div>
+        <div class="prose">
+          <p>Transport equipment is one of the largest sectors in this series by output: <strong>8,869 factories</strong> were registered under the Annual Survey of Industries in 2023-24, producing a combined <strong>Gross Value of Output of ₹16.27 lakh crore</strong>, up from ₹6.17 lakh crore in 2014-15, a 163.6% increase over the decade.<sup class="cite">[1]</sup></p>
+        </div>
+        <table class="data-table">
+          <caption>Table 1. Scale indicators, Annual Survey of Industries, 2023-24</caption>
+          <thead><tr><th>Indicator</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Factories registered</td><td class="num">8,869</td></tr>
+            <tr><td>Total persons engaged</td><td class="num">17.9 lakh</td></tr>
+            <tr><td>Workers (directly employed)</td><td class="num">6.4 lakh</td></tr>
+            <tr><td>Gross Value of Output, 2023-24</td><td class="num">₹16.27 lakh crore</td></tr>
+            <tr><td>Gross Value Added, 2023-24</td><td class="num">₹2.97 lakh crore</td></tr>
+          </tbody>
+        </table>
+
+        <div class="figure">
+          <div class="fig-label">Figure 1. Gross Value of Output (bars) and value-added intensity (line), 2014-15 to 2023-24</div>
+          <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="GVO and GVA-to-GVO ratio chart, transport equipment">
+            <line x1="10" y1="194" x2="630" y2="194" stroke="#D9CBB0" stroke-width="1"/>
+            <rect x="19.3" y="130.8" width="43.4" height="63.2" fill="#7A1F2E"/>
+            <rect x="81.3" y="124.1" width="43.4" height="69.9" fill="#7A1F2E"/>
+            <rect x="143.3" y="120.0" width="43.4" height="74.0" fill="#7A1F2E"/>
+            <rect x="205.3" y="110.2" width="43.4" height="83.8" fill="#7A1F2E"/>
+            <rect x="267.3" y="98.1" width="43.4" height="95.9" fill="#7A1F2E"/>
+            <rect x="329.3" y="105.7" width="43.4" height="88.3" fill="#7A1F2E"/>
+            <rect x="391.3" y="107.5" width="43.4" height="86.5" fill="#7A1F2E"/>
+            <rect x="453.3" y="80.4" width="43.4" height="113.6" fill="#7A1F2E"/>
+            <rect x="515.3" y="48.2" width="43.4" height="145.8" fill="#7A1F2E"/>
+            <rect x="577.3" y="27.5" width="43.4" height="166.5" fill="#7A1F2E"/>
+            <polyline points="41.0,91.6 103.0,59.4 165.0,73.9 227.0,122.1 289.0,89.3 351.0,91.3 413.0,111.9 475.0,144.7 537.0,150.5 599.0,99.2"
+              fill="none" stroke="#B8862E" stroke-width="2.5"/>
+            <g fill="#B8862E">
+              <circle cx="41.0" cy="91.6" r="3"/><circle cx="103.0" cy="59.4" r="3"/><circle cx="165.0" cy="73.9" r="3"/>
+              <circle cx="227.0" cy="122.1" r="3"/><circle cx="289.0" cy="89.3" r="3"/><circle cx="351.0" cy="91.3" r="3"/>
+              <circle cx="413.0" cy="111.9" r="3"/><circle cx="475.0" cy="144.7" r="3"/><circle cx="537.0" cy="150.5" r="3"/>
+              <circle cx="599.0" cy="99.2" r="3"/>
+            </g>
+            <text x="19" y="210" class="axis-label">14-15</text>
+            <text x="143" y="210" class="axis-label">16-17</text>
+            <text x="267" y="210" class="axis-label">18-19</text>
+            <text x="391" y="210" class="axis-label">20-21</text>
+            <text x="515" y="210" class="axis-label">22-23</text>
+            <text x="577" y="210" class="axis-label">23-24</text>
+          </svg>
+          <div class="legend">
+            <span><span class="dot" style="background:#7A1F2E;"></span>GVO, ₹ lakh crore, left scale</span>
+            <span><span class="dot" style="background:#B8862E;"></span>GVA ÷ GVO ratio, 16.5%–19.6% range, right scale</span>
+          </div>
+          <div class="fig-caption">GVO rose 163.6% over the decade, with the sharpest acceleration in the final two years (2021-22 to 2023-24). Unlike output, the value-added share slipped from 18.5% (2014-15) to a low of 16.5% (2022-23) before recovering to 18.3% by 2023-24, a COVID-era cost-pressure dip rather than a structural decline.<sup class="cite">[1]</sup></div>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- OUTPUT PERFORMANCE -->
+      <section id="output">
+        <div class="section-head"><span class="section-tag">02</span><h2>The Surge</h2></div>
+        <div class="prose">
+          <p>Transport equipment is the standout performer on the Index of Industrial Production among the sectors in this series. Its 2025-26 index level of 157.76 is an all-time high, comfortably above its previous 2018-19 peak of 128.86, which it first cleared in 2023-24 (132.33) and has extended every year since. Latest-year growth (11.8%) is the fastest of any of the 12 sectors tracked, and the sector's average rank across index level, latest growth, and full-period CAGR (2.67) is the best of any sector in the composite ranking.<sup class="cite">[2]</sup><sup class="note">(a)</sup></p>
+          <p>This strength is a post-COVID story, not a decade-long one. Pre-COVID CAGR (2012-13 to 2019-20) was a modest 1.38%, and the sector took its hardest hit of any major downturn during COVID itself: the index fell 18.7% from 2019-20 to 2020-21, a sharper shock than textiles or the manufacturing average. What followed was an unusually strong recovery: post-COVID CAGR (2020-21 to 2025-26) runs at 12.04%, the second-highest of the 12 sectors, behind only Construction Material. On the "above/below Overall Manufacturing" classification, the sector was below the composite manufacturing index in all 14 years, a distinct measure from its rank among the 12 sectors: it means transport equipment's own trajectory has tracked persistently just under the broader manufacturing-wide benchmark set largely by other sectors' 2011-12 base, even while comfortably outranking most of them on growth.<sup class="cite">[2]</sup><sup class="note">(a)</sup></p>
+        </div>
+        <div class="figure">
+          <div class="fig-label">Figure 2. IIP index level, transport equipment, 2012-13 to 2025-26 (base 2011-12 = 100)</div>
+          <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="Transport equipment IIP index level trend">
+            <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+            <rect x="343" y="10" width="49" height="164" fill="#A63A2E" opacity="0.08"/>
+            <text x="345" y="22" font-size="9.5" fill="#A63A2E">COVID</text>
+            <polyline points="10.0,145.4 57.7,144.6 105.4,136.3 153.1,137.1 200.8,133.7 248.5,107.2 296.2,89.6 343.8,126.0 391.5,165.6 439.2,143.6 486.9,110.8 534.6,82.9 582.3,66.0 630.0,33.9"
+              fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+            <circle cx="296.2" cy="89.6" r="4" fill="#B8862E"/>
+            <text x="255" y="82" font-size="9.5" fill="#B8862E">pre-COVID peak 128.9</text>
+            <circle cx="391.5" cy="165.6" r="4" fill="#A63A2E"/>
+            <text x="393" y="178" font-size="9.5" fill="#A63A2E">89.4 (20-21)</text>
+            <circle cx="630.0" cy="33.9" r="4" fill="#1C2B44"/>
+            <text x="540" y="26" font-size="9.5" fill="#1C2B44">157.8 (all-time high, latest)</text>
+          </svg>
+          <div class="fig-caption">Item-group weights per the MoSPI IIP Manual, Annexure I, summed to NIC 2-digit level (Transport Equipment = NIC 29 + 30). Latest figures drawn from an indicative 12-sector cut supplied separately (Chemicals and Pharmaceuticals shown apart, rather than the 11-sector weighted composite used elsewhere in this series); Transport Equipment's own figures are unaffected by that split.<sup class="cite">[2]</sup><sup class="note">(a)</sup></div>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- TRADE -->
+      <section id="trade">
+        <div class="section-head"><span class="section-tag">03</span><h2>The Balance<sup class="note" title="Figures in this section are directional rather than exact.">(b)</sup></h2></div>
+        <div class="prose">
+          <p>Transport equipment runs a trade surplus, though a narrower one relative to output than textiles: ₹65,139 crore in FY24-25, on exports of ₹3,46,034 crore against imports of ₹2,80,895 crore. Import dependency is moderate at 44.8%. Export growth is the standout figure here: exports grew 24.7% year-on-year in FY24-25 against 12.0% import growth, and the five-year export CAGR (12.3%) outpaces the five-year import CAGR (7.4%). Leading export partners are the USA, UAE, Singapore, Saudi Arabia and the UK; leading import sources are the USA, UAE, China, Saudi Arabia and Switzerland.<sup class="cite">[3]</sup></p>
+          <p>The product mix is more capital-goods-heavy than a pure automotive read would suggest: the single largest export line is aircraft over 15,000 kg unladen weight (₹46,823 crore), ahead of mid-size passenger vehicles and turbo-jet engines. Aircraft is also the single largest import line, at ₹1,04,810 crore, more than double the export figure for the same product line, indicating the sector's aviation trade is import-heavy even as its automotive trade runs a surplus.<sup class="cite">[3]</sup></p>
+        </div>
+        <div class="two-col">
+          <div class="figure">
+            <div class="fig-label">Figure 3. Exports, imports, and surplus, FY24-25 (₹ lakh crore)</div>
+            <svg viewBox="0 0 320 170" width="100%" height="170" role="img" aria-label="Exports imports surplus bar chart, transport equipment">
+              <line x1="10" y1="148" x2="310" y2="148" stroke="#D9CBB0" stroke-width="1"/>
+              <rect x="35" y="27.4" width="60" height="120.6" fill="#3E6B4F"/>
+              <rect x="130" y="49.2" width="60" height="98.8" fill="#A63A2E"/>
+              <rect x="225" y="124.1" width="60" height="23.9" fill="#B8862E"/>
+              <text x="45" y="20" font-size="10.5" fill="#262220" font-weight="600">3.46</text>
+              <text x="140" y="42" font-size="10.5" fill="#262220" font-weight="600">2.81</text>
+              <text x="235" y="117" font-size="10.5" fill="#262220" font-weight="600">0.65</text>
+              <text x="40" y="163" class="axis-label">Exports</text>
+              <text x="137" y="163" class="axis-label">Imports</text>
+              <text x="230" y="163" class="axis-label">Surplus</text>
+            </svg>
+            <div class="fig-caption">Directional estimate; see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
+          </div>
+          <div class="figure">
+            <div class="fig-label">Figure 4. Leading trade partners, FY24-25 (₹ crore)</div>
+            <svg viewBox="0 0 320 170" width="100%" height="170" role="img" aria-label="Top trade partners bar chart, transport equipment">
+              <text x="10" y="30" font-size="11" fill="#262220" font-weight="600">USA (export)</text>
+              <rect x="10" y="38" width="280" height="20" fill="#3E6B4F"/>
+              <text x="16" y="53" font-size="10.5" fill="#F6EFE1" font-weight="600">₹35,820 cr</text>
+              <text x="10" y="92" font-size="11" fill="#262220" font-weight="600">USA (import)</text>
+              <rect x="10" y="100" width="289.3" height="20" fill="#A63A2E"/>
+              <text x="16" y="115" font-size="10.5" fill="#F6EFE1" font-weight="600">₹37,013 cr</text>
+            </svg>
+            <div class="fig-caption">The USA is the leading partner on both sides of transport equipment's trade, unlike most other sectors in this series where the leading export and import partners differ. Directional estimate; see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
+          </div>
+        </div>
+        <p class="section-footnote"><sup class="note">(b)</sup> Figures in this section are directional rather than exact — the underlying HS-to-NIC concordance maps a defined share of export and import value to a sector; the remainder is unclassified and excluded rather than estimated. The specific coverage percentages for Transport Equipment were not independently re-confirmed in this session and should be checked against the source methodology tab before publication.</p>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- COMPETITIVE STRUCTURE -->
+      <section id="structure">
+        <div class="section-head"><span class="section-tag">04</span><h2>The Structure</h2></div>
+        <div class="prose">
+          <p>On an aggregate, all-companies basis, transport equipment carries a Raw Material Cost of 60.95% of sales and an Employee Cost of 6.05% of sales in 2024-25, materials-heavy but far less labour-intensive than textiles, consistent with an assembly-and-components industry rather than a workforce-heavy one. Capital intensity (Gross Fixed Assets ÷ Sales) stands at 0.45&times;, down from 0.52&times; a decade earlier, and well below textiles' 0.69&times;, suggesting comparatively efficient asset utilisation for a sector this large. Sales per employee has been broadly flat, &#8377;18.85 million in 2014-15 versus &#8377;21.13 million in 2024-25, with a dip to &#8377;13.98 million in the COVID year. R&amp;D spend has fallen as a share of sales, from 0.79% in 2014-15 to 0.40% in 2024-25, even as absolute R&amp;D spend has not kept pace with the sector's sales growth. Cross-sector comparison on these measures is deferred until aggregate-basis figures are available for all sectors in this series.<sup class="cite">[8]</sup></p>
+        </div>
+
+        <div class="stat-grid cols-5">
+          <div class="stat-box"><span class="num">₹90.8 L</span><span class="lbl">Output per worker, GVO ÷ workers, 2023-24 (ASI)</span></div>
+          <div class="stat-box"><span class="num">₹16.6 L</span><span class="lbl">Value added per worker, GVA ÷ workers, 2023-24 (ASI)</span></div>
+          <div class="stat-box"><span class="num">60.95%</span><span class="lbl">Raw material cost, share of sales (CMIE aggregate, 2024-25)</span></div>
+          <div class="stat-box"><span class="num">6.05%</span><span class="lbl">Employee cost, share of sales (CMIE aggregate, 2024-25)</span></div>
+          <div class="stat-box"><span class="num">0.45×</span><span class="lbl">Capital intensity, GFA-to-sales (CMIE aggregate, 2024-25)</span></div>
+        </div>
+        <p class="fig-caption" style="margin:4px 0 18px;">ASI figures (first two boxes) are sector-wide averages on ASI-reported workers (6.4 lakh); CMIE figures (remaining three) are aggregate, all-companies basis. The two data families are not on the same base and should not be divided against each other.<sup class="cite">[1],[8]</sup></p>
+
+        <div class="figure">
+          <div class="fig-label">Figure 5. Capital Intensity and Employee Cost, Transport Equipment, 2014-15 vs 2024-25 (aggregate basis)</div>
+          <svg viewBox="0 0 640 130" width="100%" height="130" role="img" aria-label="Transport equipment capital intensity and employee cost trend">
+            <text x="15" y="24" font-size="11" fill="#262220" font-weight="600">Capital Intensity (GFA / Sales)</text>
+            <rect x="230" y="14" width="52.4" height="16" fill="#D9CBB0"/>
+            <rect x="230" y="34" width="45.3" height="16" fill="#7A1F2E"/>
+            <text x="288" y="27" font-size="10" fill="#55504A">0.52× (14-15)</text>
+            <text x="281" y="47" font-size="10" fill="#7A1F2E" font-weight="600">0.45× (24-25)</text>
+            <text x="15" y="84" font-size="11" fill="#262220" font-weight="600">Employee Cost (% of Sales)</text>
+            <rect x="230" y="74" width="65.7" height="16" fill="#D9CBB0"/>
+            <rect x="230" y="94" width="60.5" height="16" fill="#1C2B44"/>
+            <text x="301" y="87" font-size="10" fill="#55504A">6.57% (14-15)</text>
+            <text x="296" y="107" font-size="10" fill="#1C2B44" font-weight="600">6.05% (24-25)</text>
+          </svg>
+          <p class="fig-caption">Both capital intensity and employee cost share edged down over the decade, a modest efficiency gain on both fronts rather than a labour-for-capital tradeoff. Source: CMIE Industry Outlook, aggregate all-companies basis.<sup class="cite">[8]</sup></p>
+        </div>
+
+        <div class="figure">
+          <div class="fig-label">Figure 6. Sales by ownership group, aggregate all-companies, 2024-25</div>
+          <svg viewBox="0 0 640 70" width="100%" height="70" role="img" aria-label="Sales by ownership stacked bar, transport equipment">
+            <rect x="10" y="20" width="8.8" height="30" fill="#1C2B44"/>
+            <rect x="18.8" y="20" width="371.1" height="30" fill="#7A1F2E"/>
+            <rect x="389.9" y="20" width="240.1" height="30" fill="#B8862E"/>
+            <text x="30" y="15" fill="#1C2B44" font-size="10" font-weight="600">Govt 1.4%</text>
+            <text x="30" y="40" fill="#F6EFE1" font-size="12" font-weight="600">Private Domestic 59.9%</text>
+            <text x="400" y="40" fill="#262220" font-size="12" font-weight="600">Private Foreign 38.7%</text>
+          </svg>
+          <p class="fig-caption">Government-owned enterprises account for a negligible share of sector sales. Private Domestic firms hold a clear majority; Private Foreign firms hold a substantial minority, reflecting the sector's large multinational OEM presence. Source: CMIE Industry Outlook, aggregate all-companies basis, Sales by Ownership.<sup class="cite">[8]</sup></p>
+        </div>
+
+        <h3><span class="sub-tag">4.1</span>Returns, Leverage and Liquidity</h3>
+        <div class="prose">
+          <p>The decade's financial trajectory is one of steady deleveraging alongside improving returns, a stronger and steadier version of the turnaround seen in textiles. PAT margin rose from 2.63% in 2014-15 to 7.21% in 2024-25 (with a COVID-year dip to 1.70%), ROE from 7.32% to 17.53%, and ROCE from 12.37% to 19.95%. Debt-to-Equity fell from 0.62&times; to 0.24&times;, and Interest Cover improved from 3.32&times; to 12.4&times;, among the strongest interest-coverage positions of any sector in this series. Current Ratio improved modestly, from 1.08 to 1.24. Unlike textiles, this sector's Free Cash Flow figures were not separately re-derived this session and are not reported here pending confirmation of the underlying Purchase-of-Fixed-Assets and Operating Cash Flow lines.<sup class="cite">[8]</sup><sup class="note">(c)</sup></p>
+        </div>
+        <div class="stat-grid cols-5">
+          <div class="stat-box"><span class="num">19.95%</span><span class="lbl">ROCE, 2024-25 (up from 12.37% in 2014-15)</span></div>
+          <div class="stat-box"><span class="num">17.53%</span><span class="lbl">ROE, 2024-25 (up from 7.32% in 2014-15)</span></div>
+          <div class="stat-box"><span class="num">0.24×</span><span class="lbl">Debt-to-Equity, 2024-25 (down from 0.62× in 2014-15)</span></div>
+          <div class="stat-box"><span class="num">12.4×</span><span class="lbl">Interest Cover, 2024-25 (up from 3.32× in 2014-15)</span></div>
+          <div class="stat-box"><span class="num">1.24</span><span class="lbl">Current Ratio, 2024-25</span></div>
+        </div>
+        <p class="fig-caption" style="margin:8px 0 0;">Source: CMIE Industry Outlook, aggregate all-companies basis. ROCE, ROA and ROE are CMIE's own reported ratios, pulled directly rather than re-derived, pending the same ROCE-derivation exercise applied in the Textiles paper.<sup class="cite">[8]</sup></p>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- FIRM-LEVEL -->
+      <section id="firms">
+        <div class="section-head"><span class="section-tag">05</span><h2>The Firms</h2></div>
+        <div class="prose">
+          <p><strong>Maruti Suzuki India</strong> has held the number one sales rank in this 20-firm panel continuously from FY14 through FY25, growing from ₹47,823 crore to ₹1,45,115 crore, a 203% increase, the sector's clearest decade-long constant at the top. <strong>Toyota Kirloskar Motor</strong> is the standout riser, climbing from 8th (₹15,873 crore) to 5th (₹64,332 crore), a 305% increase, the largest percentage gain of any firm in the panel. <strong>Chevrolet Sales India</strong> is the sector's clearest collapse: 18th in FY14 at ₹4,549 crore, down to 19th by FY25 at just ₹48 crore, a 99% decline that tracks General Motors' 2017 exit from the Indian passenger-vehicle market. Only one of the original 20 firms, Skoda Auto India Pvt Ltd, dropped out of continuous reporting, having merged into Skoda Auto Volkswagen India, a much lower churn rate than seen in textiles.<sup class="cite">[4]</sup></p>
+          <p>Concentration has eased over the decade rather than risen, a different pattern from textiles. The top-3 firms' combined share was 44.3% in 2024-25, down from 53.8% in 2015-16; the sector's Herfindahl-Hirschman Index fell from 1,297 in 2015-16 to 989 by 2024-25, remaining in the "Competitive" band throughout and drifting toward more competition rather than less, likely reflecting new-entrant and EV-segment fragmentation rather than incumbent consolidation.<sup class="cite">[4],[6]</sup><sup class="note">(d)</sup></p>
+        </div>
+        <div class="figure">
+          <div class="fig-label">Figure 7. Sales, FY14 vs FY25, ₹ crore: leader, riser, laggard</div>
+          <svg viewBox="0 0 640 230" width="100%" height="230" role="img" aria-label="Firm sales FY14 vs FY25 comparison, transport equipment">
+            <line x1="10" y1="190" x2="630" y2="190" stroke="#D9CBB0" stroke-width="1"/>
+            <rect x="34.8" y="139.0" width="66.1" height="51.0" fill="#D9CBB0"/>
+            <rect x="106.9" y="35.2" width="66.1" height="154.8" fill="#7A1F2E"/>
+            <rect x="241.5" y="173.1" width="66.1" height="16.9" fill="#D9CBB0"/>
+            <rect x="313.6" y="121.4" width="66.1" height="68.6" fill="#7A1F2E"/>
+            <rect x="448.1" y="185.2" width="66.1" height="4.8" fill="#D9CBB0"/>
+            <rect x="520.3" y="189.9" width="66.1" height="0.1" fill="#A63A2E"/>
+            <text x="34" y="205" font-size="11" fill="#262220" font-weight="600">Maruti Suzuki</text>
+            <text x="55" y="219" font-size="9.5" fill="#55504A">#1 → #1</text>
+            <text x="248" y="205" font-size="11" fill="#262220" font-weight="600">Toyota Kirloskar</text>
+            <text x="265" y="219" font-size="9.5" fill="#55504A">#8 → #5</text>
+            <text x="440" y="205" font-size="11" fill="#262220" font-weight="600">Chevrolet Sales</text>
+            <text x="450" y="219" font-size="9.5" fill="#A63A2E">#18 → #19</text>
+            <text x="70" y="132" font-size="10" fill="#262220">₹47,823cr</text>
+            <text x="118" y="29" font-size="10" fill="#7A1F2E" font-weight="600">₹1,45,115cr</text>
+            <text x="222" y="167" font-size="10" fill="#262220">₹15,873cr</text>
+            <text x="325" y="115" font-size="10" fill="#7A1F2E" font-weight="600">₹64,332cr</text>
+            <text x="430" y="179" font-size="10" fill="#262220">₹4,549cr</text>
+            <text x="500" y="184" font-size="10" fill="#A63A2E" font-weight="600">₹48cr</text>
+          </svg>
+          <div class="legend"><span><span class="dot" style="background:#D9CBB0;"></span>FY14</span><span><span class="dot" style="background:#7A1F2E;"></span>FY25</span></div>
+          <div class="fig-caption">Fixed 20-firm panel, standalone total sales. Source: CMIE Prowess IQ.<sup class="cite">[4]</sup></div>
+        </div>
+        <div class="figure">
+          <div class="fig-label">Figure 8. Market concentration, Herfindahl-Hirschman Index and Top-3 share, 2015-16 to 2024-25</div>
+          <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="HHI trend transport equipment">
+            <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
+            <text x="14" y="30" class="axis-label">1,350</text>
+            <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+            <text x="14" y="100" class="axis-label">1,100</text>
+            <line x1="10" y1="97" x2="630" y2="97" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+            <text x="14" y="171" class="axis-label">850</text>
+            <polyline points="10.0,36.3 78.9,155.2 147.8,149.7 216.7,146.9 285.6,144.7 354.4,141.4 423.3,138.9 492.2,135.5 561.1,137.3 630.0,131.2"
+              fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+            <circle cx="10.0" cy="36.3" r="4" fill="#B8862E"/>
+            <text x="16" y="30" font-size="10" fill="#B8862E" font-weight="600">HHI 1,297 (15-16)</text>
+            <circle cx="630.0" cy="131.2" r="4" fill="#1C2B44"/>
+            <text x="520" y="122" font-size="10" fill="#1C2B44" font-weight="600">HHI 989 (24-25)</text>
+            <text x="10" y="196" class="axis-label">15-16</text>
+            <text x="147.8" y="196" class="axis-label">17-18</text>
+            <text x="285.6" y="196" class="axis-label">19-20</text>
+            <text x="423.3" y="196" class="axis-label">21-22</text>
+            <text x="561.1" y="196" class="axis-label">23-24</text>
+            <text x="600" y="196" class="axis-label">24-25</text>
+          </svg>
+          <div class="fig-caption">2014-15 excluded as an anomalous single-firm-reporting base year (HHI = 10,000). All 10 years shown remain in the "Competitive" band (HHI &lt; 1,500) throughout. Source: internal firm-financials HHI/concentration tab.<sup class="cite">[6]</sup><sup class="note">(d)</sup></div>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- POLICY -->
+      <section id="policy">
+        <div class="section-head"><span class="section-tag">06</span><h2>The Support</h2></div>
+        <div class="prose">
+          <p>The Production-Linked Incentive scheme's actual disbursement to transport equipment has scaled up sharply and is, in absolute terms, far larger than the textiles equivalent. CMIE's tracked PLI expenditure was ₹3,557 crore (Budget Estimate) and ₹404 crore (Revised Estimate) in 2024-25, rising to a Budget Estimate of ₹2,819 crore and Revised Estimate of ₹2,091 crore for 2025-26. This session's files do not include the Ministry Annual Report total multi-year scheme outlay figure used for textiles' PLI framing (₹10,683 crore there); that total is not stated here and should not be assumed, pending the relevant Ministry of Heavy Industries or NITI Aayog document.<sup class="cite">[8]</sup><sup class="note">(e)</sup></p>
+          <p>The sector is a persistent net importer of foreign exchange on a company-financials basis (distinct from the customs-based trade surplus in Section 3): Net Forex was &minus;₹4,450 crore in 2024-25, negative throughout the decade except for a brief positive stretch in 2021-22 (+₹1,482 crore). Contribution to Exchequer (total taxes) stood at ₹51,459 crore in 2024-25, roughly 65% higher than the 2014-15 figure of ₹75,088 crore once adjusted for the sharp COVID-year fall to ₹18,053 crore in 2020-21.<sup class="cite">[8]</sup></p>
+        </div>
+
+        <div class="insight-box">
+          <div class="label">Observation</div>
+          <p>Actual PLI disbursement to transport equipment in 2024-25 (₹404 crore Revised Estimate) is roughly nine times the equivalent textiles figure (₹45 crore), consistent with the scheme's design emphasis on advanced automotive technology and components. Even so, disbursement remains a small fraction of the sector's ₹18.89 lakh crore 2024-25 sales.</p>
+        </div>
+
+        <h3><span class="sub-tag">6.1</span>Investment Pipeline</h3>
+        <div class="prose">
+          <p>Transport equipment carries by far the largest investment pipeline of any sector examined in this series to date. Total investment outstanding reached ₹8,45,019 crore in 2025-26 (250 projects), up from ₹3,64,634 crore in 2014-15, a 132% increase, and roughly six times the outstanding pipeline size of textiles. Growth has been broadly steady rather than a single-year step-change: the pipeline has grown in 9 of the last 11 years.<sup class="cite">[8]</sup></p>
+        </div>
+
+        <div class="figure">
+          <div class="fig-label">Figure 9. Total Investments Outstanding, national, 2014-15 to 2025-26 (₹ crore)</div>
+          <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="Total investments outstanding multi-year trend, transport equipment">
+            <line x1="10" y1="180" x2="630" y2="180" stroke="#D9CBB0" stroke-width="1"/>
+            <text x="14" y="30" class="axis-label">₹8,70,000 cr</text>
+            <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+            <text x="14" y="105" class="axis-label">₹6,10,000 cr</text>
+            <line x1="10" y1="100" x2="630" y2="100" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+            <text x="14" y="177" class="axis-label">₹3,50,000 cr</text>
+            <polyline points="10.0,175.5 66.4,142.7 122.7,145.0 179.1,131.4 235.5,128.4 291.8,123.2 348.2,114.6 404.5,120.2 460.9,96.3 517.3,73.6 573.6,46.4 630.0,27.7"
+              fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
+            <circle cx="10.0" cy="175.5" r="3.5" fill="#55504A"/>
+            <text x="14" y="196" class="axis-label">14-15</text>
+            <circle cx="573.6" cy="46.4" r="3.5" fill="#1C2B44"/>
+            <text x="470" y="40" font-size="10" fill="#1C2B44" font-weight="600">₹7,84,232 cr (24-25)</text>
+            <circle cx="630.0" cy="27.7" r="4" fill="#B8862E"/>
+            <text x="460" y="20" font-size="10" fill="#B8862E" font-weight="600">₹8,45,019 cr (25-26)</text>
+            <text x="122.7" y="196" class="axis-label">16-17</text>
+            <text x="235.5" y="196" class="axis-label">18-19</text>
+            <text x="348.2" y="196" class="axis-label">20-21</text>
+            <text x="460.9" y="196" class="axis-label">22-23</text>
+            <text x="573.6" y="196" class="axis-label">24-25</text>
+          </svg>
+          <div class="fig-caption">Growth has been steadier than textiles' single-year step-change: a near-continuous climb from ₹3.65 lakh crore to ₹8.45 lakh crore, briefly interrupted only in 2016-17 and 2021-22. Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></div>
+        </div>
+
+        <div class="figure">
+          <div class="fig-label">Figure 10. New Investments Announced, Completed, and Dropped, 2014-15 to 2025-26 (₹ crore)</div>
+          <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="New investments announced completed dropped multi-year trend, transport equipment">
+            <line x1="10" y1="180" x2="630" y2="180" stroke="#D9CBB0" stroke-width="1"/>
+            <text x="14" y="30" class="axis-label">₹1,75,000 cr</text>
+            <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+            <text x="14" y="105" class="axis-label">₹87,500 cr</text>
+            <line x1="10" y1="100" x2="630" y2="100" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
+            <text x="14" y="177" class="axis-label">₹0</text>
+            <polyline points="10.0,146.3 66.4,75.1 122.7,150.5 179.1,148.2 235.5,128.3 291.8,134.7 348.2,129.6 404.5,128.8 460.9,84.2 517.3,83.1 573.6,26.3 630.0,92.9"
+              fill="none" stroke="#7A1F2E" stroke-width="2.25"/>
+            <polyline points="10.0,167.4 66.4,164.1 122.7,171.2 179.1,170.3 235.5,171.2 291.8,164.6 348.2,173.8 404.5,167.1 460.9,173.5 517.3,174.9 573.6,109.9 630.0,172.8"
+              fill="none" stroke="#3E6B4F" stroke-width="2.25"/>
+            <polyline points="10.0,164.0 66.4,175.1 122.7,155.8 179.1,168.7 235.5,158.1 291.8,147.8 348.2,160.2 404.5,146.0 460.9,144.5 517.3,133.3 573.6,148.3 630.0,133.0"
+              fill="none" stroke="#A63A2E" stroke-width="2.25" stroke-dasharray="4,2"/>
+            <circle cx="573.6" cy="26.3" r="4" fill="#7A1F2E"/>
+            <text x="480" y="18" font-size="10" fill="#7A1F2E" font-weight="600">Announced ₹1,68,099 cr (24-25)</text>
+            <circle cx="122.7" cy="171.2" r="3.5" fill="#3E6B4F"/>
+            <circle cx="573.6" cy="109.9" r="3.5" fill="#3E6B4F"/>
+            <text x="500" y="205" font-size="10" fill="#3E6B4F" font-weight="600">Completed ₹76,619 cr (24-25)</text>
+            <circle cx="630.0" cy="133.0" r="3.5" fill="#A63A2E"/>
+            <text x="540" y="146" font-size="10" fill="#A63A2E" font-weight="600">Dropped ₹51,400 cr (25-26)</text>
+            <text x="10" y="196" class="axis-label">14-15</text>
+            <text x="122.7" y="196" class="axis-label">16-17</text>
+            <text x="235.5" y="196" class="axis-label">18-19</text>
+            <text x="348.2" y="196" class="axis-label">20-21</text>
+            <text x="460.9" y="196" class="axis-label">22-23</text>
+            <text x="573.6" y="196" class="axis-label">24-25</text>
+          </svg>
+          <div class="legend">
+            <span><span class="dot" style="background:#7A1F2E;"></span>New Investments Announced</span>
+            <span><span class="dot" style="background:#3E6B4F;"></span>Investments Completed</span>
+            <span><span class="dot" style="background:#A63A2E;"></span>Investments Dropped</span>
+          </div>
+          <div class="fig-caption">2024-25's completion figure (₹76,619 cr) is a genuine outlier, roughly ten times any other year in the series, and should be re-verified against the underlying CMIE CapEx export before being used in headline claims. Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup><sup class="note">(f)</sup></div>
+        </div>
+
+        <div class="insight-box">
+          <div class="label">Observation</div>
+          <p>The Implementation Stalled share of total outstanding investment (Table 2) has stayed consistently low across the full 12-year series, never exceeding 2.3%, and has fallen further to 0.69% by 2025-26. This is a materially lower and more stable stalled rate than textiles (2.0% to 11.4% range), suggesting the transport equipment pipeline converts announcements into active projects considerably more reliably, even as it has grown to six times textiles' pipeline size.</p>
+        </div>
+
+        <table class="data-table">
+          <caption>Table 2. Investment pipeline composition and stalled rate, national, selected years</caption>
+          <thead><tr><th>Year</th><th>Total Outstanding</th><th>Under Implementation</th><th>Implementation Stalled</th><th>Stalled, % of Outstanding</th></tr></thead>
+          <tbody>
+            <tr><td>2014-15</td><td class="num">₹3,64,634 cr</td><td class="num">₹1,78,214 cr</td><td class="num">₹7,769 cr</td><td class="num">2.13%</td></tr>
+            <tr><td>2019-20</td><td class="num">₹5,34,657 cr</td><td class="num">₹2,15,739 cr</td><td class="num">₹12,403 cr</td><td class="num">2.32%</td></tr>
+            <tr><td>2022-23</td><td class="num">₹6,21,941 cr</td><td class="num">₹2,53,574 cr</td><td class="num">₹6,636 cr</td><td class="num">1.07%</td></tr>
+            <tr><td>2024-25</td><td class="num">₹7,84,232 cr</td><td class="num">₹2,94,358 cr</td><td class="num">₹6,006 cr</td><td class="num">0.77%</td></tr>
+            <tr><td>2025-26</td><td class="num">₹8,45,019 cr</td><td class="num">₹3,08,935 cr</td><td class="num">₹5,836 cr</td><td class="num">0.69%</td></tr>
+          </tbody>
+        </table>
+        <p class="fig-caption" style="margin:4px 0 18px;">Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></p>
+
+        <div class="prose">
+          <p>On ownership, new investment in 2025-26 was, as in textiles, overwhelmingly domestic and private: Indian Private Sector accounted for ₹85,985 crore of the ₹95,240 crore national total (90.3%), Foreign Private Sector for ₹6,755 crore (7.1%), and Central and State Government combined for just ₹2,500 crore (2.6%). This is a slightly heavier domestic-private tilt than textiles (82% in 2025-26), and the ownership split is consistent with the sector's overall Sales-by-Ownership pattern in Section 4 (59.9% Private Domestic, 38.7% Private Foreign).<sup class="cite">[8]</sup></p>
+        </div>
+
+        <div class="figure">
+          <div class="fig-label">Figure 11. New Investments Announced by ownership group, 2025-26 (₹ crore)</div>
+          <svg viewBox="0 0 640 150" width="100%" height="150" role="img" aria-label="New investments by ownership group bar chart, transport equipment">
+            <text x="10" y="26" font-size="11" fill="#262220" font-weight="600">Indian Private Sector</text>
+            <rect x="180" y="16" width="440" height="18" fill="#7A1F2E"/>
+            <text x="185" y="29" font-size="10.5" fill="#F6EFE1" font-weight="600">₹85,985 cr</text>
+            <text x="10" y="58" font-size="11" fill="#262220" font-weight="600">Foreign Private Sector</text>
+            <rect x="180" y="48" width="34.6" height="18" fill="#B8862E"/>
+            <text x="221" y="61" font-size="10.5" fill="#262220" font-weight="600">₹6,755 cr</text>
+            <text x="10" y="90" font-size="11" fill="#262220" font-weight="600">State Government</text>
+            <rect x="180" y="80" width="3.6" height="18" fill="#1C2B44"/>
+            <text x="190" y="93" font-size="10.5" fill="#262220" font-weight="600">₹700 cr</text>
+            <text x="10" y="122" font-size="11" fill="#262220" font-weight="600">Central Government</text>
+            <rect x="180" y="112" width="9.2" height="18" fill="#3E6B4F"/>
+            <text x="196" y="125" font-size="10.5" fill="#262220" font-weight="600">₹1,800 cr</text>
+            <text x="180" y="142" font-size="9" fill="#55504A">Bar widths to scale, 0 to ₹85,985 cr (Indian Private Sector = full scale)</text>
+          </svg>
+          <div class="fig-caption">Indian Private Sector and Foreign Private Sector together account for 97.4% of new investment announced in 2025-26; combined government share is 2.6%. Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></div>
+        </div>
+
+        <div class="prose">
+          <p>State-level, the investment pipeline is tracked for the three leading GVO states, Tamil Nadu, Maharashtra, and Haryana, and it diverges sharply from the state-level GVO ranking in Section 7. Maharashtra carries by far the largest outstanding pipeline of the three, ₹1,80,515 crore in 2025-26, more than double Tamil Nadu's ₹85,334 crore, even though the two states are within 7% of each other on current GVO. Haryana's outstanding pipeline is smaller still at ₹18,102 crore, and its new investment flow in 2025-26 (₹297 crore) is a small fraction of Tamil Nadu's (₹23,629 crore) or Maharashtra's (₹20,508 crore), suggesting Haryana's cluster (see Section 8) is comparatively mature, with less new capital actively flowing in relative to its existing output base.<sup class="cite">[8]</sup></p>
+        </div>
+
+        <div class="stat-grid cols-5">
+          <div class="stat-box"><span class="num">₹8,45,019 cr</span><span class="lbl">Total investment outstanding, 2025-26 (250 projects)</span></div>
+          <div class="stat-box"><span class="num">0.69%</span><span class="lbl">Implementation stalled, share of outstanding, 2025-26</span></div>
+          <div class="stat-box"><span class="num">90.3%</span><span class="lbl">Indian Private Sector share of 2025-26 new investment announced</span></div>
+          <div class="stat-box"><span class="num">MH &gt; TN &gt; HR</span><span class="lbl">Outstanding pipeline by state, 2025-26 (Maharashtra more than double Tamil Nadu)</span></div>
+        </div>
+        <p class="fig-caption" style="margin:8px 0 0;">Source: CMIE Industry Outlook, CapEx database. Figures converted from Rs. million to Rs. crore.<sup class="cite">[8]</sup></p>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- STATE LEADERS -->
+      <section id="states">
+        <div class="section-head"><span class="section-tag">07</span><h2>Where It Is Made: States</h2></div>
+        <div class="prose">
+          <p>Production is concentrated in three states running unusually close to one another. Maharashtra leads on Gross Value of Output, but Tamil Nadu and Haryana are both within 15% of Maharashtra's level, a genuine three-way race rather than a clear leader-and-field pattern.<sup class="cite">[1]</sup></p>
+        </div>
+        <div class="figure">
+          <div class="fig-label">Figure 12. Gross Value of Output by leading state, 2023-24</div>
+          <svg viewBox="0 0 640 130" width="100%" height="130" role="img" aria-label="State GVO comparison, transport equipment">
+            <rect x="10" y="15" width="440" height="24" fill="#7A1F2E"/>
+            <rect x="10" y="55" width="409.6" height="24" fill="#1C2B44"/>
+            <rect x="10" y="95" width="376.4" height="24" fill="#B8862E"/>
+            <text x="18" y="31" fill="#F6EFE1" font-size="12" font-weight="600">Maharashtra — ₹3,59,184 cr</text>
+            <text x="18" y="71" fill="#F6EFE1" font-size="12" font-weight="600">Tamil Nadu — ₹3,34,310 cr</text>
+            <text x="18" y="111" fill="#F6EFE1" font-size="12" font-weight="600">Haryana — ₹3,07,282 cr</text>
+          </svg>
+          <div class="fig-caption">Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup></div>
+        </div>
+        <table class="data-table">
+          <caption>Table 3. Leading transport equipment states, GVO and factory count, 2023-24</caption>
+          <thead><tr><th>State</th><th>GVO</th><th>Factories</th></tr></thead>
+          <tbody>
+            <tr><td>Maharashtra</td><td class="num">₹3,59,184 cr</td><td class="num">1,758</td></tr>
+            <tr><td>Tamil Nadu</td><td class="num">₹3,34,310 cr</td><td class="num">1,730</td></tr>
+            <tr><td>Haryana</td><td class="num">₹3,07,282 cr</td><td class="num">1,022</td></tr>
+            <tr><td>Karnataka</td><td class="num">₹1,39,110 cr</td><td class="num">661</td></tr>
+            <tr><td>Gujarat</td><td class="num">₹88,624 cr</td><td class="num">420</td></tr>
+            <tr><td>Uttarakhand</td><td class="num">₹78,469 cr</td><td class="num">368</td></tr>
+          </tbody>
+        </table>
+        <p class="fig-caption" style="margin:4px 0 18px;">Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup></p>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- CLUSTERS -->
+      <section id="clusters">
+        <div class="section-head"><span class="section-tag">08</span><h2>Where It Is Made: Clusters</h2></div>
+        <div class="prose">
+          <p>The institute's cluster registry logs four transport equipment clusters, ranked and matched almost exactly to the state-level GVO ranking in Section 7: Chennai (Tamil Nadu), Pune (Maharashtra), Gurugram-Manesar-Bawal (Haryana), and Sanand (Gujarat). All four have at least one anchor firm logged and a linkage verdict, the fullest cluster coverage of any sector examined in this series so far.<sup class="cite">[7]</sup></p>
+        </div>
+        <table class="data-table">
+          <caption>Table 4. Principal transport equipment clusters, selected indicators</caption>
+          <thead>
+            <tr><th>Cluster</th><th>State</th><th>Units (est.)</th><th>Anchor firms</th><th>Linkage verdict</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Chennai Automotive Cluster</td><td>Tamil Nadu</td><td class="num">~2,245 (incl. 340 SME/MSME, 15 large OEM/component)</td><td>Hyundai, Renault-Nissan, BMW, Ashok Leyland, Daimler Truck, Royal Enfield</td><td>Insufficient Data</td></tr>
+            <tr><td>Pune Automotive Cluster</td><td>Maharashtra</td><td class="num">4,000+</td><td>Large OEMs and precision-component firms</td><td>Partially Linked</td></tr>
+            <tr><td>Gurugram-Manesar-Bawal Automotive Cluster</td><td>Haryana</td><td class="num">1,000+</td><td>Maruti Suzuki, Hero MotoCorp, Honda Motorcycle &amp; Scooter, Uno Minda, Suzuki Motorcycle India</td><td>Tightly Linked</td></tr>
+            <tr><td>Sanand</td><td>Gujarat</td><td class="num">~80</td><td>Tata Motors, Suzuki Motor Gujarat (Maruti Suzuki), Hitachi; Ford India (closed 2021)</td><td>Thin-Agglomeration Only</td></tr>
+          </tbody>
+        </table>
+        <div class="insight-box">
+          <div class="label">Observation</div>
+          <p>Cluster registry notes for Chennai state that Maharashtra, Tamil Nadu, and Haryana together contribute nearly 68% of India's Gross Value Added from motor vehicle parts and accessories manufacturing, a figure independently consistent with the ASI GVO concentration shown in Section 7 above. Sanand's "Thin-Agglomeration Only" verdict, alongside Ford India's 2021 closure there, is consistent with that state's comparatively small and slow-growing investment pipeline noted in Section 6.1.</p>
+        </div>
+      </section>
+
+      <hr class="rule-thin">
+
+      <!-- CLOSING -->
+      <section id="closing">
+        <div class="section-head"><span class="section-tag">09</span><h2>Summary</h2></div>
+        <div class="prose">
+          <p>Transport equipment is the strongest all-round performer among the sectors examined in this series so far. Output more than doubled over the decade, the sector currently posts the fastest IIP growth of any sector tracked, leverage has fallen sharply while returns have risen, market concentration has eased rather than tightened, and the investment pipeline, the largest of any sector in this series, converts announcements into active projects at a far higher rate than textiles, with a stalled-project share under 1% in the latest year. The two clearest points of caution are a declining R&amp;D-to-sales ratio despite rising output, and a persistent net-forex deficit on a company-financials basis even as the sector runs a customs-based trade surplus.</p>
+        </div>
+        <div class="stat-grid cols-5">
+          <div class="stat-box"><span class="num">+163.6%</span><span class="lbl">GVO growth, 2014-15 → 2023-24</span></div>
+          <div class="stat-box"><span class="num">18.5→18.3%</span><span class="lbl">GVA share of GVO, 2014-15 → 2023-24 (low of 16.5% in 2022-23)</span></div>
+          <div class="stat-box"><span class="num">0.40%</span><span class="lbl">R&amp;D spend, share of sales (2024-25, down from 0.79% in 2014-15)</span></div>
+          <div class="stat-box"><span class="num">0.69%</span><span class="lbl">Implementation stalled, share of investment outstanding (2025-26)</span></div>
+          <div class="stat-box"><span class="num">1,297→989</span><span class="lbl">Herfindahl-Hirschman Index, 2015-16 → 2024-25</span></div>
+        </div>
+      </section>
+
+      <footer>
+        <details class="accordion">
+          <summary>References <span class="chev">▾</span></summary>
+          <div class="accordion-body">
+            <ol class="ref-list">
+              <li>Annual Survey of Industries, Ministry of Statistics and Programme Implementation, National and State Summary Tables, 2014-15 to 2023-24.</li>
+              <li>Index of Industrial Production, Base 2011-12, Ministry of Statistics and Programme Implementation; latest-year figures drawn from an indicative 12-sector cut (Chemicals and Pharmaceuticals reported separately) supplied for this paper, rather than the 11-sector weighted composite used for Textiles.</li>
+              <li>Directorate General of Commercial Intelligence and Statistics, TradeStat / Trade Intelligence and Analytics Portal, FY24-25.</li>
+              <li>Centre for Monitoring Indian Economy, Prowess IQ database, fixed 20-firm panel by sector, FY14 to FY25.</li>
+              <li>Centre for Monitoring Indian Economy, Industry Outlook, cost and capital-structure aggregates, FY14-15 to FY24-25.</li>
+              <li>Internal firm-financials workbook, Herfindahl-Hirschman Index and Top-3 concentration tabs, FY14-15 to FY24-25 (firm-level data; structurally requires firm-level basis and is not sourced from the aggregate Industry Outlook file).</li>
+              <li>Cluster Supply Chain Linkage Workbook, Cluster Register and Cluster Summary Scorecard tabs, compiled from published cluster studies and industry-body profiles (Chennai, Pune, Gurugram-Manesar-Bawal, Sanand).</li>
+              <li>CMIE Industry Outlook, Transport and Equipment sector, aggregate all-companies basis (Income &amp; Expenditure, Balance Sheet, Distribution of Cost, Profitability &amp; Return Ratios, Ownership Split, Investment Pipeline/CapEx, PLI Scheme Expenditure), 2014-15 to 2025-26 (Investment Pipeline/CapEx series only; other indicators run 2014-15 to 2024-25).</li>
+            </ol>
+          </div>
+        </details>
+
+        <details class="accordion">
+          <summary>Methodological Notes <span class="chev">▾</span></summary>
+          <div class="accordion-body">
+            <ul class="note-list">
+              <li><span class="tag">(a)</span>This paper's IIP figures were checked against two source files. The first, an 11-sector "corrected" workbook consistent with the rest of this series, contained a data-integrity issue: four of its eight analysis tabs listed "Transport and Equipment" twice, with the second, spurious row's values matching the Overall Manufacturing (official) row instead. A second, 12-sector file (Chemicals and Pharmaceuticals reported separately rather than as a weighted composite) supplied for this paper did not have this duplication, and its Transport Equipment figures match the correct (non-duplicated) row from the first file exactly. This paper uses the second file's figures on that basis; because Transport Equipment is unaffected by the Chemicals/Pharmaceuticals split, its own numbers are unaffected either way, though its "of 11" vs "of 12" sector-count and rank-among-peers framing differs slightly from Textiles' framing (rank 3 of 11 there vs rank 4 of 12 here, on the level measure).</li>
+              <li><span class="tag">(b)</span>Trade figures in Section 3 use the same HS-to-NIC concordance and directional-estimate caveat described in the Textiles paper; the specific coverage percentages for Transport Equipment were not independently re-confirmed in this session and should be checked against the source methodology tab before publication.</li>
+              <li><span class="tag">(c)</span>Free Cash Flow (Net Operating Cash Flow minus Purchase of Fixed Assets) was reported for Textiles in Section 4.1 of that paper but is omitted here pending confirmation that the same two source lines are clean and complete for Transport Equipment in the underlying CMIE export.</li>
+              <li><span class="tag">(d)</span>The 2014-15 HHI value (10,000) reflects an anomalous single-firm-reporting base year and is excluded from the trend discussion and Figure 8, consistent with the same exclusion applied to Textiles' 2014-15 figure in that paper.</li>
+              <li><span class="tag">(e)</span>Unlike the Textiles paper, this paper does not state a total multi-year PLI scheme outlay figure for Transport Equipment (e.g., from a Ministry Annual Report), because that source document was not available in this session. Only CMIE-tracked actual annual disbursement (Budget and Revised Estimates) is reported in Section 6. This gap should be filled before this paper is treated as final.</li>
+              <li><span class="tag">(f)</span>The 2024-25 "Investments Completed - Cost" figure (₹76,619 crore, national total) is roughly ten times larger than any other year in the 2014-15 to 2025-26 series and was not independently re-verified against the underlying CMIE CapEx export in this session. It is reported as-is in Figure 10 but flagged here as a likely candidate for a data-entry or classification check before publication.</li>
+              <li><span class="tag">(g)</span>The header text in row 4 and the "NATIONAL TOTALS" section header in the underlying ASI/State workbook's Transport Equipment tab both carry leftover text reading "Sector: Food &amp; Agro-based Products" and "NIC Div 10, 11, 12", inconsistent with the tab's own title row, which correctly reads "SECTOR: Transport and Equipment | NIC: 29, 30". The underlying data values were checked against the Food &amp; Agro tab and confirmed distinct (not a duplicated data pull), so this is treated as a stale copy-pasted label only; it should still be corrected at source.</li>
+            </ul>
+          </div>
+        </details>
+
+        <div class="colophon">Institute of Manufacturing and Economy · Manufacturing Sector Working Paper Series · Sector numbering to be confirmed · NIC Divisions 29, 30 · Primary research: Nidhi Patel · Compiled by: Riddhi Bhargava</div>
+      </footer>
+
     </div>
-    <div class="keywords"><b>Keywords:</b> Transport Equipment, Automotive, Index of Industrial Production, Annual Survey of Industries, trade balance, firm concentration, investment pipeline, industrial clusters, Production-Linked Incentive scheme</div>
-
-    <div class="hero-stats">
-      <div class="hero-stat"><span class="num up">2.67 / 12</span><span class="lbl">Average rank across level, growth, and CAGR (lowest = strongest), of 12 sectors tracked</span></div>
-      <div class="hero-stat"><span class="num up">+11.8%</span><span class="lbl">Latest IIP growth, 2025-26 — fastest of any sector tracked</span></div>
-      <div class="hero-stat"><span class="num">44.3%</span><span class="lbl">Top-3 firms' combined market share, 2024-25</span></div>
-    </div>
-  </header>
-
-  <!-- SCALE -->
-  <section id="scale">
-    <div class="section-head"><span class="section-tag">§1</span><h2>The Scale</h2></div>
-    <div class="prose">
-      <p>Transport equipment is one of the largest sectors in this series by output: <strong>8,869 factories</strong> were registered under the Annual Survey of Industries in 2023-24, producing a combined <strong>Gross Value of Output of ₹16.27 lakh crore</strong>, up from ₹6.17 lakh crore in 2014-15, a 163.6% increase over the decade.<sup class="cite">[1]</sup></p>
-    </div>
-    <table class="data-table">
-      <caption>Table 1. Scale indicators, Annual Survey of Industries, 2023-24</caption>
-      <thead><tr><th>Indicator</th><th>Value</th></tr></thead>
-      <tbody>
-        <tr><td>Factories registered</td><td class="num">8,869</td></tr>
-        <tr><td>Total persons engaged</td><td class="num">17.9 lakh</td></tr>
-        <tr><td>Workers (directly employed)</td><td class="num">6.4 lakh</td></tr>
-        <tr><td>Gross Value of Output, 2023-24</td><td class="num">₹16.27 lakh crore</td></tr>
-        <tr><td>Gross Value Added, 2023-24</td><td class="num">₹2.97 lakh crore</td></tr>
-      </tbody>
-    </table>
-
-    <div class="figure">
-      <div class="fig-label">Figure 1. Gross Value of Output (bars) and value-added intensity (line), 2014-15 to 2023-24</div>
-      <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="GVO and GVA-to-GVO ratio chart, transport equipment">
-        <line x1="10" y1="194" x2="630" y2="194" stroke="#D9CBB0" stroke-width="1"/>
-        <rect x="19.3" y="130.8" width="43.4" height="63.2" fill="#7A1F2E"/>
-        <rect x="81.3" y="124.1" width="43.4" height="69.9" fill="#7A1F2E"/>
-        <rect x="143.3" y="120.0" width="43.4" height="74.0" fill="#7A1F2E"/>
-        <rect x="205.3" y="110.2" width="43.4" height="83.8" fill="#7A1F2E"/>
-        <rect x="267.3" y="98.1" width="43.4" height="95.9" fill="#7A1F2E"/>
-        <rect x="329.3" y="105.7" width="43.4" height="88.3" fill="#7A1F2E"/>
-        <rect x="391.3" y="107.5" width="43.4" height="86.5" fill="#7A1F2E"/>
-        <rect x="453.3" y="80.4" width="43.4" height="113.6" fill="#7A1F2E"/>
-        <rect x="515.3" y="48.2" width="43.4" height="145.8" fill="#7A1F2E"/>
-        <rect x="577.3" y="27.5" width="43.4" height="166.5" fill="#7A1F2E"/>
-        <polyline points="41.0,91.6 103.0,59.4 165.0,73.9 227.0,122.1 289.0,89.3 351.0,91.3 413.0,111.9 475.0,144.7 537.0,150.5 599.0,99.2"
-          fill="none" stroke="#B8862E" stroke-width="2.5"/>
-        <g fill="#B8862E">
-          <circle cx="41.0" cy="91.6" r="3"/><circle cx="103.0" cy="59.4" r="3"/><circle cx="165.0" cy="73.9" r="3"/>
-          <circle cx="227.0" cy="122.1" r="3"/><circle cx="289.0" cy="89.3" r="3"/><circle cx="351.0" cy="91.3" r="3"/>
-          <circle cx="413.0" cy="111.9" r="3"/><circle cx="475.0" cy="144.7" r="3"/><circle cx="537.0" cy="150.5" r="3"/>
-          <circle cx="599.0" cy="99.2" r="3"/>
-        </g>
-        <text x="19" y="210" class="axis-label">14-15</text>
-        <text x="143" y="210" class="axis-label">16-17</text>
-        <text x="267" y="210" class="axis-label">18-19</text>
-        <text x="391" y="210" class="axis-label">20-21</text>
-        <text x="515" y="210" class="axis-label">22-23</text>
-        <text x="577" y="210" class="axis-label">23-24</text>
-      </svg>
-      <div class="legend">
-        <span><span class="dot" style="background:#7A1F2E;"></span>GVO, ₹ lakh crore, left scale</span>
-        <span><span class="dot" style="background:#B8862E;"></span>GVA ÷ GVO ratio, 16.5%–19.6% range, right scale</span>
-      </div>
-      <div class="fig-caption">GVO rose 163.6% over the decade, with the sharpest acceleration in the final two years (2021-22 to 2023-24). Unlike output, the value-added share slipped from 18.5% (2014-15) to a low of 16.5% (2022-23) before recovering to 18.3% by 2023-24, a COVID-era cost-pressure dip rather than a structural decline.<sup class="cite">[1]</sup></div>
-    </div>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- OUTPUT PERFORMANCE -->
-  <section id="output">
-    <div class="section-head"><span class="section-tag">§2</span><h2>The Surge</h2></div>
-    <div class="prose">
-      <p>Transport equipment is the standout performer on the Index of Industrial Production among the sectors in this series. Its 2025-26 index level of 157.76 is an all-time high, comfortably above its previous 2018-19 peak of 128.86, which it first cleared in 2023-24 (132.33) and has extended every year since. Latest-year growth (11.8%) is the fastest of any of the 12 sectors tracked, and the sector's average rank across index level, latest growth, and full-period CAGR (2.67) is the best of any sector in the composite ranking.<sup class="cite">[2]</sup><sup class="note">(a)</sup></p>
-      <p>This strength is a post-COVID story, not a decade-long one. Pre-COVID CAGR (2012-13 to 2019-20) was a modest 1.38%, and the sector took its hardest hit of any major downturn during COVID itself: the index fell 18.7% from 2019-20 to 2020-21, a sharper shock than textiles or the manufacturing average. What followed was an unusually strong recovery: post-COVID CAGR (2020-21 to 2025-26) runs at 12.04%, the second-highest of the 12 sectors, behind only Construction Material. On the "above/below Overall Manufacturing" classification, the sector was below the composite manufacturing index in all 14 years, a distinct measure from its rank among the 12 sectors: it means transport equipment's own trajectory has tracked persistently just under the broader manufacturing-wide benchmark set largely by other sectors' 2011-12 base, even while comfortably outranking most of them on growth.<sup class="cite">[2]</sup><sup class="note">(a)</sup></p>
-    </div>
-    <div class="figure">
-      <div class="fig-label">Figure 2. IIP index level, transport equipment, 2012-13 to 2025-26 (base 2011-12 = 100)</div>
-      <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="Transport equipment IIP index level trend">
-        <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
-        <rect x="343" y="10" width="49" height="164" fill="#A63A2E" opacity="0.08"/>
-        <text x="345" y="22" font-size="9.5" fill="#A63A2E">COVID</text>
-        <polyline points="10.0,145.4 57.7,144.6 105.4,136.3 153.1,137.1 200.8,133.7 248.5,107.2 296.2,89.6 343.8,126.0 391.5,165.6 439.2,143.6 486.9,110.8 534.6,82.9 582.3,66.0 630.0,33.9"
-          fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
-        <circle cx="296.2" cy="89.6" r="4" fill="#B8862E"/>
-        <text x="255" y="82" font-size="9.5" fill="#B8862E">pre-COVID peak 128.9</text>
-        <circle cx="391.5" cy="165.6" r="4" fill="#A63A2E"/>
-        <text x="393" y="178" font-size="9.5" fill="#A63A2E">89.4 (20-21)</text>
-        <circle cx="630.0" cy="33.9" r="4" fill="#1C2B44"/>
-        <text x="540" y="26" font-size="9.5" fill="#1C2B44">157.8 (all-time high, latest)</text>
-      </svg>
-      <div class="fig-caption">Item-group weights per the MoSPI IIP Manual, Annexure I, summed to NIC 2-digit level (Transport Equipment = NIC 29 + 30). Latest figures drawn from an indicative 12-sector cut supplied separately (Chemicals and Pharmaceuticals shown apart, rather than the 11-sector weighted composite used elsewhere in this series); Transport Equipment's own figures are unaffected by that split.<sup class="cite">[2]</sup><sup class="note">(a)</sup></div>
-    </div>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- TRADE -->
-  <section id="trade">
-    <div class="section-head"><span class="section-tag">§3</span><h2>The Balance</h2></div>
-    <div class="prose">
-      <p><em>Figures in this section are directional rather than exact.</em> The underlying HS-to-NIC concordance maps a defined share of export and import value to each sector; the remainder is unclassified and excluded rather than estimated, so totals should be read as a close approximation of trade flows, not an exact reconciliation.<sup class="note">(b)</sup></p>
-      <p>Transport equipment runs a trade surplus, though a narrower one relative to output than textiles: ₹65,139 crore in FY24-25, on exports of ₹3,46,034 crore against imports of ₹2,80,895 crore. Import dependency is moderate at 44.8%. Export growth is the standout figure here: exports grew 24.7% year-on-year in FY24-25 against 12.0% import growth, and the five-year export CAGR (12.3%) outpaces the five-year import CAGR (7.4%). Leading export partners are the USA, UAE, Singapore, Saudi Arabia and the UK; leading import sources are the USA, UAE, China, Saudi Arabia and Switzerland.<sup class="cite">[3]</sup></p>
-      <p>The product mix is more capital-goods-heavy than a pure automotive read would suggest: the single largest export line is aircraft over 15,000 kg unladen weight (₹46,823 crore), ahead of mid-size passenger vehicles and turbo-jet engines. Aircraft is also the single largest import line, at ₹1,04,810 crore, more than double the export figure for the same product line, indicating the sector's aviation trade is import-heavy even as its automotive trade runs a surplus.<sup class="cite">[3]</sup></p>
-    </div>
-    <div class="two-col">
-      <div class="figure">
-        <div class="fig-label">Figure 3. Exports, imports, and surplus, FY24-25 (₹ lakh crore)</div>
-        <svg viewBox="0 0 320 170" width="100%" height="170" role="img" aria-label="Exports imports surplus bar chart">
-          <line x1="10" y1="148" x2="310" y2="148" stroke="#D9CBB0" stroke-width="1"/>
-          <rect x="35" y="27.4" width="60" height="120.6" fill="#3E6B4F"/>
-          <rect x="130" y="49.2" width="60" height="98.8" fill="#A63A2E"/>
-          <rect x="225" y="124.1" width="60" height="23.9" fill="#B8862E"/>
-          <text x="45" y="20" font-size="10.5" fill="#262220" font-weight="600">3.46</text>
-          <text x="140" y="42" font-size="10.5" fill="#262220" font-weight="600">2.81</text>
-          <text x="235" y="117" font-size="10.5" fill="#262220" font-weight="600">0.65</text>
-          <text x="40" y="163" class="axis-label">Exports</text>
-          <text x="137" y="163" class="axis-label">Imports</text>
-          <text x="230" y="163" class="axis-label">Surplus</text>
-        </svg>
-        <div class="fig-caption">Directional estimate; see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
-      </div>
-      <div class="figure">
-        <div class="fig-label">Figure 4. Leading trade partners, FY24-25 (₹ crore)</div>
-        <svg viewBox="0 0 320 170" width="100%" height="170" role="img" aria-label="Top trade partners bar chart">
-          <text x="10" y="30" font-size="11" fill="#262220" font-weight="600">USA (export)</text>
-          <rect x="10" y="38" width="280" height="20" fill="#3E6B4F"/>
-          <text x="16" y="53" font-size="10.5" fill="#F6EFE1" font-weight="600">₹35,820 cr</text>
-          <text x="10" y="92" font-size="11" fill="#262220" font-weight="600">USA (import)</text>
-          <rect x="10" y="100" width="289.3" height="20" fill="#A63A2E"/>
-          <text x="16" y="115" font-size="10.5" fill="#F6EFE1" font-weight="600">₹37,013 cr</text>
-        </svg>
-        <div class="fig-caption">The USA is the leading partner on both sides of transport equipment's trade, unlike most other sectors in this series where the leading export and import partners differ. Directional estimate; see note (b). Source: DGCI&amp;S TradeStat / TIA Portal.<sup class="cite">[3]</sup></div>
-      </div>
-    </div>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- COMPETITIVE STRUCTURE -->
-  <section id="structure">
-    <div class="section-head"><span class="section-tag">§4</span><h2>The Structure</h2></div>
-    <div class="prose">
-      <p>On an aggregate, all-companies basis, transport equipment carries a Raw Material Cost of 60.95% of sales and an Employee Cost of 6.05% of sales in 2024-25, materials-heavy but far less labour-intensive than textiles, consistent with an assembly-and-components industry rather than a workforce-heavy one. Capital intensity (Gross Fixed Assets ÷ Sales) stands at 0.45×, down from 0.52× a decade earlier, and well below textiles' 0.69×, suggesting comparatively efficient asset utilisation for a sector this large. Sales per employee has been broadly flat, ₹18.85 million in 2014-15 versus ₹21.13 million in 2024-25, with a dip to ₹13.98 million in the COVID year. R&amp;D spend has fallen as a share of sales, from 0.79% in 2014-15 to 0.40% in 2024-25, even as absolute R&amp;D spend has not kept pace with the sector's sales growth. Cross-sector comparison on these measures is deferred until aggregate-basis figures are available for all sectors in this series.<sup class="cite">[8]</sup></p>
-    </div>
-
-    <div class="stat-grid cols-5">
-      <div class="stat-box"><span class="num">₹90.8 L</span><span class="lbl">Output per worker, GVO ÷ workers, 2023-24 (ASI)</span></div>
-      <div class="stat-box"><span class="num">₹16.6 L</span><span class="lbl">Value added per worker, GVA ÷ workers, 2023-24 (ASI)</span></div>
-      <div class="stat-box"><span class="num">60.95%</span><span class="lbl">Raw material cost, share of sales (CMIE aggregate, 2024-25)</span></div>
-      <div class="stat-box"><span class="num">6.05%</span><span class="lbl">Employee cost, share of sales (CMIE aggregate, 2024-25)</span></div>
-      <div class="stat-box"><span class="num">0.45×</span><span class="lbl">Capital intensity, GFA-to-sales (CMIE aggregate, 2024-25)</span></div>
-    </div>
-    <p class="fig-caption" style="margin:4px 0 18px;">ASI figures (first two boxes) are sector-wide averages on ASI-reported workers (6.4 lakh); CMIE figures (remaining three) are aggregate, all-companies basis. The two data families are not on the same base and should not be divided against each other.<sup class="cite">[1],[8]</sup></p>
-
-    <div class="figure">
-      <div class="fig-label">Figure 5. Capital Intensity and Employee Cost, Transport Equipment, 2014-15 vs 2024-25 (aggregate basis)</div>
-      <svg viewBox="0 0 640 130" width="100%" height="130" role="img" aria-label="Transport equipment capital intensity and employee cost trend">
-        <text x="15" y="24" font-size="11" fill="#262220" font-weight="600">Capital Intensity (GFA / Sales)</text>
-        <rect x="230" y="14" width="52.4" height="16" fill="#D9CBB0"/>
-        <rect x="230" y="34" width="45.3" height="16" fill="#7A1F2E"/>
-        <text x="288" y="27" font-size="10" fill="#55504A">0.52× (14-15)</text>
-        <text x="281" y="47" font-size="10" fill="#7A1F2E" font-weight="600">0.45× (24-25)</text>
-        <text x="15" y="84" font-size="11" fill="#262220" font-weight="600">Employee Cost (% of Sales)</text>
-        <rect x="230" y="74" width="65.7" height="16" fill="#D9CBB0"/>
-        <rect x="230" y="94" width="60.5" height="16" fill="#1C2B44"/>
-        <text x="301" y="87" font-size="10" fill="#55504A">6.57% (14-15)</text>
-        <text x="296" y="107" font-size="10" fill="#1C2B44" font-weight="600">6.05% (24-25)</text>
-      </svg>
-      <p class="fig-caption">Both capital intensity and employee cost share edged down over the decade, a modest efficiency gain on both fronts rather than a labour-for-capital tradeoff. Source: CMIE Industry Outlook, aggregate all-companies basis.<sup class="cite">[8]</sup></p>
-    </div>
-
-    <div class="figure">
-      <div class="fig-label">Figure 6. Sales by ownership group, aggregate all-companies, 2024-25</div>
-      <svg viewBox="0 0 640 70" width="100%" height="70" role="img" aria-label="Sales by ownership stacked bar">
-        <rect x="10" y="20" width="8.8" height="30" fill="#1C2B44"/>
-        <rect x="18.8" y="20" width="371.1" height="30" fill="#7A1F2E"/>
-        <rect x="389.9" y="20" width="240.1" height="30" fill="#B8862E"/>
-        <text x="30" y="15" fill="#1C2B44" font-size="10" font-weight="600">Govt 1.4%</text>
-        <text x="30" y="40" fill="#F6EFE1" font-size="12" font-weight="600">Private Domestic 59.9%</text>
-        <text x="400" y="40" fill="#262220" font-size="12" font-weight="600">Private Foreign 38.7%</text>
-      </svg>
-      <p class="fig-caption">Government-owned enterprises account for a negligible share of sector sales. Private Domestic firms hold a clear majority; Private Foreign firms hold a substantial minority, reflecting the sector's large multinational OEM presence. Source: CMIE Industry Outlook, aggregate all-companies basis, Sales by Ownership.<sup class="cite">[8]</sup></p>
-    </div>
-
-    <h3 style="font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--maroon-deep); margin:28px 0 12px;">§4.1 Returns, Leverage and Liquidity</h3>
-    <div class="prose">
-      <p>The decade's financial trajectory is one of steady deleveraging alongside improving returns, a stronger and steadier version of the turnaround seen in textiles. PAT margin rose from 2.63% in 2014-15 to 7.21% in 2024-25 (with a COVID-year dip to 1.70%), ROE from 7.32% to 17.53%, and ROCE from 12.37% to 19.95%. Debt-to-Equity fell from 0.62× to 0.24×, and Interest Cover improved from 3.32× to 12.4×, among the strongest interest-coverage positions of any sector in this series. Current Ratio improved modestly, from 1.08 to 1.24. Unlike textiles, this sector's Free Cash Flow figures were not separately re-derived this session and are not reported here pending confirmation of the underlying Purchase-of-Fixed-Assets and Operating Cash Flow lines.<sup class="cite">[8]</sup><sup class="note">(c)</sup></p>
-    </div>
-    <div class="stat-grid cols-5">
-      <div class="stat-box"><span class="num">19.95%</span><span class="lbl">ROCE, 2024-25 (up from 12.37% in 2014-15)</span></div>
-      <div class="stat-box"><span class="num">17.53%</span><span class="lbl">ROE, 2024-25 (up from 7.32% in 2014-15)</span></div>
-      <div class="stat-box"><span class="num">0.24×</span><span class="lbl">Debt-to-Equity, 2024-25 (down from 0.62× in 2014-15)</span></div>
-      <div class="stat-box"><span class="num">12.4×</span><span class="lbl">Interest Cover, 2024-25 (up from 3.32× in 2014-15)</span></div>
-      <div class="stat-box"><span class="num">1.24</span><span class="lbl">Current Ratio, 2024-25</span></div>
-    </div>
-    <p class="fig-caption" style="margin:8px 0 0;">Source: CMIE Industry Outlook, aggregate all-companies basis. ROCE, ROA and ROE are CMIE's own reported ratios, pulled directly rather than re-derived, pending the same ROCE-derivation exercise applied in the Textiles paper.<sup class="cite">[8]</sup></p>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- FIRM-LEVEL -->
-  <section id="firms">
-    <div class="section-head"><span class="section-tag">§5</span><h2>The Firms</h2></div>
-    <div class="prose">
-      <p><strong>Maruti Suzuki India</strong> has held the number one sales rank in this 20-firm panel continuously from FY14 through FY25, growing from ₹47,823 crore to ₹1,45,115 crore, a 203% increase, the sector's clearest decade-long constant at the top. <strong>Toyota Kirloskar Motor</strong> is the standout riser, climbing from 8th (₹15,873 crore) to 5th (₹64,332 crore), a 305% increase, the largest percentage gain of any firm in the panel. <strong>Chevrolet Sales India</strong> is the sector's clearest collapse: 18th in FY14 at ₹4,549 crore, down to 19th by FY25 at just ₹48 crore, a 99% decline that tracks General Motors' 2017 exit from the Indian passenger-vehicle market. Only one of the original 20 firms, Skoda Auto India Pvt Ltd, dropped out of continuous reporting, having merged into Skoda Auto Volkswagen India, a much lower churn rate than seen in textiles.<sup class="cite">[4]</sup></p>
-      <p>Concentration has eased over the decade rather than risen, a different pattern from textiles. The top-3 firms' combined share was 44.3% in 2024-25, down from 53.8% in 2015-16; the sector's Herfindahl-Hirschman Index fell from 1,297 in 2015-16 to 989 by 2024-25, remaining in the "Competitive" band throughout and drifting toward more competition rather than less, likely reflecting new-entrant and EV-segment fragmentation rather than incumbent consolidation.<sup class="cite">[4],[6]</sup><sup class="note">(d)</sup></p>
-    </div>
-    <div class="figure">
-      <div class="fig-label">Figure 7. Sales, FY14 vs FY25, ₹ crore: leader, riser, laggard</div>
-      <svg viewBox="0 0 640 230" width="100%" height="230" role="img" aria-label="Firm sales FY14 vs FY25 comparison, transport equipment">
-        <line x1="10" y1="190" x2="630" y2="190" stroke="#D9CBB0" stroke-width="1"/>
-        <rect x="34.8" y="139.0" width="66.1" height="51.0" fill="#D9CBB0"/>
-        <rect x="106.9" y="35.2" width="66.1" height="154.8" fill="#7A1F2E"/>
-        <rect x="241.5" y="173.1" width="66.1" height="16.9" fill="#D9CBB0"/>
-        <rect x="313.6" y="121.4" width="66.1" height="68.6" fill="#7A1F2E"/>
-        <rect x="448.1" y="185.2" width="66.1" height="4.8" fill="#D9CBB0"/>
-        <rect x="520.3" y="189.9" width="66.1" height="0.1" fill="#A63A2E"/>
-        <text x="34" y="205" font-size="11" fill="#262220" font-weight="600">Maruti Suzuki</text>
-        <text x="55" y="219" font-size="9.5" fill="#55504A">#1 → #1</text>
-        <text x="248" y="205" font-size="11" fill="#262220" font-weight="600">Toyota Kirloskar</text>
-        <text x="265" y="219" font-size="9.5" fill="#55504A">#8 → #5</text>
-        <text x="440" y="205" font-size="11" fill="#262220" font-weight="600">Chevrolet Sales</text>
-        <text x="450" y="219" font-size="9.5" fill="#A63A2E">#18 → #19</text>
-        <text x="70" y="132" font-size="10" fill="#262220">₹47,823cr</text>
-        <text x="118" y="29" font-size="10" fill="#7A1F2E" font-weight="600">₹1,45,115cr</text>
-        <text x="222" y="167" font-size="10" fill="#262220">₹15,873cr</text>
-        <text x="325" y="115" font-size="10" fill="#7A1F2E" font-weight="600">₹64,332cr</text>
-        <text x="430" y="179" font-size="10" fill="#262220">₹4,549cr</text>
-        <text x="500" y="184" font-size="10" fill="#A63A2E" font-weight="600">₹48cr</text>
-      </svg>
-      <div class="legend"><span><span class="dot" style="background:#D9CBB0;"></span>FY14</span><span><span class="dot" style="background:#7A1F2E;"></span>FY25</span></div>
-      <div class="fig-caption">Fixed 20-firm panel, standalone total sales. Source: CMIE Prowess IQ.<sup class="cite">[4]</sup></div>
-    </div>
-    <div class="figure">
-      <div class="fig-label">Figure 8. Market concentration, Herfindahl-Hirschman Index and Top-3 share, 2015-16 to 2024-25</div>
-      <svg viewBox="0 0 640 200" width="100%" height="200" role="img" aria-label="HHI trend transport equipment">
-        <line x1="10" y1="174" x2="630" y2="174" stroke="#D9CBB0" stroke-width="1"/>
-        <text x="14" y="30" class="axis-label">1,350</text>
-        <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
-        <text x="14" y="100" class="axis-label">1,100</text>
-        <line x1="10" y1="97" x2="630" y2="97" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
-        <text x="14" y="171" class="axis-label">850</text>
-        <polyline points="10.0,36.3 78.9,155.2 147.8,149.7 216.7,146.9 285.6,144.7 354.4,141.4 423.3,138.9 492.2,135.5 561.1,137.3 630.0,131.2"
-          fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
-        <circle cx="10.0" cy="36.3" r="4" fill="#B8862E"/>
-        <text x="16" y="30" font-size="10" fill="#B8862E" font-weight="600">HHI 1,297 (15-16)</text>
-        <circle cx="630.0" cy="131.2" r="4" fill="#1C2B44"/>
-        <text x="520" y="122" font-size="10" fill="#1C2B44" font-weight="600">HHI 989 (24-25)</text>
-        <text x="10" y="196" class="axis-label">15-16</text>
-        <text x="147.8" y="196" class="axis-label">17-18</text>
-        <text x="285.6" y="196" class="axis-label">19-20</text>
-        <text x="423.3" y="196" class="axis-label">21-22</text>
-        <text x="561.1" y="196" class="axis-label">23-24</text>
-        <text x="600" y="196" class="axis-label">24-25</text>
-      </svg>
-      <div class="fig-caption">2014-15 excluded as an anomalous single-firm-reporting base year (HHI = 10,000). All 10 years shown remain in the "Competitive" band (HHI &lt; 1,500) throughout. Source: internal firm-financials HHI/concentration tab.<sup class="cite">[6]</sup><sup class="note">(d)</sup></div>
-    </div>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- POLICY -->
-  <section id="policy">
-    <div class="section-head"><span class="section-tag">§6</span><h2>The Support</h2></div>
-    <div class="prose">
-      <p>The Production-Linked Incentive scheme's actual disbursement to transport equipment has scaled up sharply and is, in absolute terms, far larger than the textiles equivalent. CMIE's tracked PLI expenditure was ₹3,557 crore (Budget Estimate) and ₹404 crore (Revised Estimate) in 2024-25, rising to a Budget Estimate of ₹2,819 crore and Revised Estimate of ₹2,091 crore for 2025-26. This session's files do not include the Ministry Annual Report total multi-year scheme outlay figure used for textiles' PLI framing (₹10,683 crore there); that total is not stated here and should not be assumed, pending the relevant Ministry of Heavy Industries or NITI Aayog document.<sup class="cite">[8]</sup><sup class="note">(e)</sup></p>
-      <p>The sector is a persistent net importer of foreign exchange on a company-financials basis (distinct from the customs-based trade surplus in §3): Net Forex was &minus;₹4,450 crore in 2024-25, negative throughout the decade except for a brief positive stretch in 2021-22 (+₹1,482 crore). Contribution to Exchequer (total taxes) stood at ₹51,459 crore in 2024-25, roughly 65% higher than the 2014-15 figure of ₹75,088 crore once adjusted for the sharp COVID-year fall to ₹18,053 crore in 2020-21.<sup class="cite">[8]</sup></p>
-    </div>
-
-    <div class="insight-box">
-      <div class="label">Observation</div>
-      <p>Actual PLI disbursement to transport equipment in 2024-25 (₹404 crore Revised Estimate) is roughly nine times the equivalent textiles figure (₹45 crore), consistent with the scheme's design emphasis on advanced automotive technology and components. Even so, disbursement remains a small fraction of the sector's ₹18.89 lakh crore 2024-25 sales.</p>
-    </div>
-
-    <h3 style="font-family:var(--sans); font-weight:700; font-size:1.05rem; color:var(--maroon-deep); margin:28px 0 12px;">§6.1 Investment Pipeline</h3>
-    <div class="prose">
-      <p>Transport equipment carries by far the largest investment pipeline of any sector examined in this series to date. Total investment outstanding reached ₹8,45,019 crore in 2025-26 (250 projects), up from ₹3,64,634 crore in 2014-15, a 132% increase, and roughly six times the outstanding pipeline size of textiles. Growth has been broadly steady rather than a single-year step-change: the pipeline has grown in 9 of the last 11 years.<sup class="cite">[8]</sup></p>
-    </div>
-
-    <div class="figure">
-      <div class="fig-label">Figure 9. Total Investments Outstanding, national, 2014-15 to 2025-26 (₹ crore)</div>
-      <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="Total investments outstanding multi-year trend, transport equipment">
-        <line x1="10" y1="180" x2="630" y2="180" stroke="#D9CBB0" stroke-width="1"/>
-        <text x="14" y="30" class="axis-label">₹8,70,000 cr</text>
-        <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
-        <text x="14" y="105" class="axis-label">₹6,10,000 cr</text>
-        <line x1="10" y1="100" x2="630" y2="100" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
-        <text x="14" y="177" class="axis-label">₹3,50,000 cr</text>
-        <polyline points="10.0,175.5 66.4,142.7 122.7,145.0 179.1,131.4 235.5,128.4 291.8,123.2 348.2,114.6 404.5,120.2 460.9,96.3 517.3,73.6 573.6,46.4 630.0,27.7"
-          fill="none" stroke="#7A1F2E" stroke-width="2.5"/>
-        <circle cx="10.0" cy="175.5" r="3.5" fill="#55504A"/>
-        <text x="14" y="196" class="axis-label">14-15</text>
-        <circle cx="573.6" cy="46.4" r="3.5" fill="#1C2B44"/>
-        <text x="470" y="40" font-size="10" fill="#1C2B44" font-weight="600">₹7,84,232 cr (24-25)</text>
-        <circle cx="630.0" cy="27.7" r="4" fill="#B8862E"/>
-        <text x="460" y="20" font-size="10" fill="#B8862E" font-weight="600">₹8,45,019 cr (25-26)</text>
-        <text x="122.7" y="196" class="axis-label">16-17</text>
-        <text x="235.5" y="196" class="axis-label">18-19</text>
-        <text x="348.2" y="196" class="axis-label">20-21</text>
-        <text x="460.9" y="196" class="axis-label">22-23</text>
-        <text x="573.6" y="196" class="axis-label">24-25</text>
-      </svg>
-      <div class="fig-caption">Growth has been steadier than textiles' single-year step-change: a near-continuous climb from ₹3.65 lakh crore to ₹8.45 lakh crore, briefly interrupted only in 2016-17 and 2021-22. Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></div>
-    </div>
-
-    <div class="figure">
-      <div class="fig-label">Figure 10. New Investments Announced, Completed, and Dropped, 2014-15 to 2025-26 (₹ crore)</div>
-      <svg viewBox="0 0 640 220" width="100%" height="220" role="img" aria-label="New investments announced completed dropped multi-year trend, transport equipment">
-        <line x1="10" y1="180" x2="630" y2="180" stroke="#D9CBB0" stroke-width="1"/>
-        <text x="14" y="30" class="axis-label">₹1,75,000 cr</text>
-        <line x1="10" y1="27" x2="630" y2="27" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
-        <text x="14" y="105" class="axis-label">₹87,500 cr</text>
-        <line x1="10" y1="100" x2="630" y2="100" stroke="#D9CBB0" stroke-width="0.5" stroke-dasharray="2,2"/>
-        <text x="14" y="177" class="axis-label">₹0</text>
-        <polyline points="10.0,146.3 66.4,75.1 122.7,150.5 179.1,148.2 235.5,128.3 291.8,134.7 348.2,129.6 404.5,128.8 460.9,84.2 517.3,83.1 573.6,26.3 630.0,92.9"
-          fill="none" stroke="#7A1F2E" stroke-width="2.25"/>
-        <polyline points="10.0,167.4 66.4,164.1 122.7,171.2 179.1,170.3 235.5,171.2 291.8,164.6 348.2,173.8 404.5,167.1 460.9,173.5 517.3,174.9 573.6,109.9 630.0,172.8"
-          fill="none" stroke="#3E6B4F" stroke-width="2.25"/>
-        <polyline points="10.0,164.0 66.4,175.1 122.7,155.8 179.1,168.7 235.5,158.1 291.8,147.8 348.2,160.2 404.5,146.0 460.9,144.5 517.3,133.3 573.6,148.3 630.0,133.0"
-          fill="none" stroke="#A63A2E" stroke-width="2.25" stroke-dasharray="4,2"/>
-        <circle cx="573.6" cy="26.3" r="4" fill="#7A1F2E"/>
-        <text x="480" y="18" font-size="10" fill="#7A1F2E" font-weight="600">Announced ₹1,68,099 cr (24-25)</text>
-        <circle cx="122.7" cy="171.2" r="3.5" fill="#3E6B4F"/>
-        <circle cx="573.6" cy="109.9" r="3.5" fill="#3E6B4F"/>
-        <text x="500" y="205" font-size="10" fill="#3E6B4F" font-weight="600">Completed ₹76,619 cr (24-25)</text>
-        <circle cx="630.0" cy="133.0" r="3.5" fill="#A63A2E"/>
-        <text x="540" y="146" font-size="10" fill="#A63A2E" font-weight="600">Dropped ₹51,400 cr (25-26)</text>
-        <text x="10" y="196" class="axis-label">14-15</text>
-        <text x="122.7" y="196" class="axis-label">16-17</text>
-        <text x="235.5" y="196" class="axis-label">18-19</text>
-        <text x="348.2" y="196" class="axis-label">20-21</text>
-        <text x="460.9" y="196" class="axis-label">22-23</text>
-        <text x="573.6" y="196" class="axis-label">24-25</text>
-      </svg>
-      <div class="legend">
-        <span><span class="dot" style="background:#7A1F2E;"></span>New Investments Announced</span>
-        <span><span class="dot" style="background:#3E6B4F;"></span>Investments Completed</span>
-        <span><span class="dot" style="background:#A63A2E;"></span>Investments Dropped</span>
-      </div>
-      <div class="fig-caption">2024-25's completion figure (₹76,619 cr) is a genuine outlier, roughly ten times any other year in the series, and should be re-verified against the underlying CMIE CapEx export before being used in headline claims. Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup><sup class="note">(f)</sup></div>
-    </div>
-
-    <div class="insight-box">
-      <div class="label">Observation</div>
-      <p>The Implementation Stalled share of total outstanding investment (Table 2) has stayed consistently low across the full 12-year series, never exceeding 2.3%, and has fallen further to 0.69% by 2025-26. This is a materially lower and more stable stalled rate than textiles (2.0% to 11.4% range), suggesting the transport equipment pipeline converts announcements into active projects considerably more reliably, even as it has grown to six times textiles' pipeline size.</p>
-    </div>
-
-    <table class="data-table">
-      <caption>Table 2. Investment pipeline composition and stalled rate, national, selected years</caption>
-      <thead><tr><th>Year</th><th>Total Outstanding</th><th>Under Implementation</th><th>Implementation Stalled</th><th>Stalled, % of Outstanding</th></tr></thead>
-      <tbody>
-        <tr><td>2014-15</td><td class="num">₹3,64,634 cr</td><td class="num">₹1,78,214 cr</td><td class="num">₹7,769 cr</td><td class="num">2.13%</td></tr>
-        <tr><td>2019-20</td><td class="num">₹5,34,657 cr</td><td class="num">₹2,15,739 cr</td><td class="num">₹12,403 cr</td><td class="num">2.32%</td></tr>
-        <tr><td>2022-23</td><td class="num">₹6,21,941 cr</td><td class="num">₹2,53,574 cr</td><td class="num">₹6,636 cr</td><td class="num">1.07%</td></tr>
-        <tr><td>2024-25</td><td class="num">₹7,84,232 cr</td><td class="num">₹2,94,358 cr</td><td class="num">₹6,006 cr</td><td class="num">0.77%</td></tr>
-        <tr><td>2025-26</td><td class="num">₹8,45,019 cr</td><td class="num">₹3,08,935 cr</td><td class="num">₹5,836 cr</td><td class="num">0.69%</td></tr>
-      </tbody>
-    </table>
-    <p class="fig-caption" style="margin:4px 0 18px;">Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></p>
-
-    <div class="prose">
-      <p>On ownership, new investment in 2025-26 was, as in textiles, overwhelmingly domestic and private: Indian Private Sector accounted for ₹85,985 crore of the ₹95,240 crore national total (90.3%), Foreign Private Sector for ₹6,755 crore (7.1%), and Central and State Government combined for just ₹2,500 crore (2.6%). This is a slightly heavier domestic-private tilt than textiles (82% in 2025-26), and the ownership split is consistent with the sector's overall Sales-by-Ownership pattern in §4 (59.9% Private Domestic, 38.7% Private Foreign).<sup class="cite">[8]</sup></p>
-    </div>
-
-    <div class="figure">
-      <div class="fig-label">Figure 11. New Investments Announced by ownership group, 2025-26 (₹ crore)</div>
-      <svg viewBox="0 0 640 150" width="100%" height="150" role="img" aria-label="New investments by ownership group bar chart, transport equipment">
-        <text x="10" y="26" font-size="11" fill="#262220" font-weight="600">Indian Private Sector</text>
-        <rect x="180" y="16" width="440" height="18" fill="#7A1F2E"/>
-        <text x="185" y="29" font-size="10.5" fill="#F6EFE1" font-weight="600">₹85,985 cr</text>
-        <text x="10" y="58" font-size="11" fill="#262220" font-weight="600">Foreign Private Sector</text>
-        <rect x="180" y="48" width="34.6" height="18" fill="#B8862E"/>
-        <text x="221" y="61" font-size="10.5" fill="#262220" font-weight="600">₹6,755 cr</text>
-        <text x="10" y="90" font-size="11" fill="#262220" font-weight="600">State Government</text>
-        <rect x="180" y="80" width="3.6" height="18" fill="#1C2B44"/>
-        <text x="190" y="93" font-size="10.5" fill="#262220" font-weight="600">₹700 cr</text>
-        <text x="10" y="122" font-size="11" fill="#262220" font-weight="600">Central Government</text>
-        <rect x="180" y="112" width="9.2" height="18" fill="#3E6B4F"/>
-        <text x="196" y="125" font-size="10.5" fill="#262220" font-weight="600">₹1,800 cr</text>
-        <text x="180" y="142" font-size="9" fill="#55504A">Bar widths to scale, 0 to ₹85,985 cr (Indian Private Sector = full scale)</text>
-      </svg>
-      <div class="fig-caption">Indian Private Sector and Foreign Private Sector together account for 97.4% of new investment announced in 2025-26; combined government share is 2.6%. Source: CMIE Industry Outlook, CapEx database.<sup class="cite">[8]</sup></div>
-    </div>
-
-    <div class="prose">
-      <p>State-level, the investment pipeline is tracked for the three leading GVO states, Tamil Nadu, Maharashtra, and Haryana, and it diverges sharply from the state-level GVO ranking in §7. Maharashtra carries by far the largest outstanding pipeline of the three, ₹1,80,515 crore in 2025-26, more than double Tamil Nadu's ₹85,334 crore, even though the two states are within 7% of each other on current GVO. Haryana's outstanding pipeline is smaller still at ₹18,102 crore, and its new investment flow in 2025-26 (₹297 crore) is a small fraction of Tamil Nadu's (₹23,629 crore) or Maharashtra's (₹20,508 crore), suggesting Haryana's cluster (see §8) is comparatively mature, with less new capital actively flowing in relative to its existing output base.<sup class="cite">[8]</sup></p>
-    </div>
-
-    <div class="stat-grid cols-4">
-      <div class="stat-box"><span class="num">₹8,45,019 cr</span><span class="lbl">Total investment outstanding, 2025-26 (250 projects)</span></div>
-      <div class="stat-box"><span class="num">0.69%</span><span class="lbl">Implementation stalled, share of outstanding, 2025-26</span></div>
-      <div class="stat-box"><span class="num">90.3%</span><span class="lbl">Indian Private Sector share of 2025-26 new investment announced</span></div>
-      <div class="stat-box"><span class="num">MH &gt; TN &gt; HR</span><span class="lbl">Outstanding pipeline by state, 2025-26 (Maharashtra more than double Tamil Nadu)</span></div>
-    </div>
-    <p class="fig-caption" style="margin:8px 0 0;">Source: CMIE Industry Outlook, CapEx database. Figures converted from Rs. million to Rs. crore.<sup class="cite">[8]</sup></p>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- STATE LEADERS -->
-  <section id="states">
-    <div class="section-head"><span class="section-tag">§7</span><h2>Where It Is Made: States</h2></div>
-    <div class="prose">
-      <p>Production is concentrated in three states running unusually close to one another. Maharashtra leads on Gross Value of Output, but Tamil Nadu and Haryana are both within 15% of Maharashtra's level, a genuine three-way race rather than a clear leader-and-field pattern.<sup class="cite">[1]</sup></p>
-    </div>
-    <div class="figure">
-      <div class="fig-label">Figure 12. Gross Value of Output by leading state, 2023-24</div>
-      <svg viewBox="0 0 640 130" width="100%" height="130" role="img" aria-label="State GVO comparison, transport equipment">
-        <rect x="10" y="15" width="440" height="24" fill="#7A1F2E"/>
-        <rect x="10" y="55" width="409.6" height="24" fill="#1C2B44"/>
-        <rect x="10" y="95" width="376.4" height="24" fill="#B8862E"/>
-        <text x="18" y="31" fill="#F6EFE1" font-size="12" font-weight="600">Maharashtra — ₹3,59,184 cr</text>
-        <text x="18" y="71" fill="#F6EFE1" font-size="12" font-weight="600">Tamil Nadu — ₹3,34,310 cr</text>
-        <text x="18" y="111" fill="#F6EFE1" font-size="12" font-weight="600">Haryana — ₹3,07,282 cr</text>
-      </svg>
-      <div class="fig-caption">Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup></div>
-    </div>
-    <table class="data-table">
-      <caption>Table 3. Leading transport equipment states, GVO and factory count, 2023-24</caption>
-      <thead><tr><th>State</th><th>GVO</th><th>Factories</th></tr></thead>
-      <tbody>
-        <tr><td>Maharashtra</td><td class="num">₹3,59,184 cr</td><td class="num">1,758</td></tr>
-        <tr><td>Tamil Nadu</td><td class="num">₹3,34,310 cr</td><td class="num">1,730</td></tr>
-        <tr><td>Haryana</td><td class="num">₹3,07,282 cr</td><td class="num">1,022</td></tr>
-        <tr><td>Karnataka</td><td class="num">₹1,39,110 cr</td><td class="num">661</td></tr>
-        <tr><td>Gujarat</td><td class="num">₹88,624 cr</td><td class="num">420</td></tr>
-        <tr><td>Uttarakhand</td><td class="num">₹78,469 cr</td><td class="num">368</td></tr>
-      </tbody>
-    </table>
-    <p class="fig-caption" style="margin:4px 0 18px;">Source: Annual Survey of Industries, state-level tables.<sup class="cite">[1]</sup></p>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- CLUSTERS -->
-  <section id="clusters">
-    <div class="section-head"><span class="section-tag">§8</span><h2>Where It Is Made: Clusters</h2></div>
-    <div class="prose">
-      <p>The institute's cluster registry logs four transport equipment clusters, ranked and matched almost exactly to the state-level GVO ranking in §7: Chennai (Tamil Nadu), Pune (Maharashtra), Gurugram-Manesar-Bawal (Haryana), and Sanand (Gujarat). All four have at least one anchor firm logged and a linkage verdict, the fullest cluster coverage of any sector examined in this series so far.<sup class="cite">[7]</sup></p>
-    </div>
-    <table class="data-table">
-      <caption>Table 4. Principal transport equipment clusters, selected indicators</caption>
-      <thead>
-        <tr><th>Cluster</th><th>State</th><th>Units (est.)</th><th>Anchor firms</th><th>Linkage verdict</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Chennai Automotive Cluster</td><td>Tamil Nadu</td><td class="num">~2,245 (incl. 340 SME/MSME, 15 large OEM/component)</td><td>Hyundai, Renault-Nissan, BMW, Ashok Leyland, Daimler Truck, Royal Enfield</td><td>Insufficient Data</td></tr>
-        <tr><td>Pune Automotive Cluster</td><td>Maharashtra</td><td class="num">4,000+</td><td>Large OEMs and precision-component firms</td><td>Partially Linked</td></tr>
-        <tr><td>Gurugram-Manesar-Bawal Automotive Cluster</td><td>Haryana</td><td class="num">1,000+</td><td>Maruti Suzuki, Hero MotoCorp, Honda Motorcycle &amp; Scooter, Uno Minda, Suzuki Motorcycle India</td><td>Tightly Linked</td></tr>
-        <tr><td>Sanand</td><td>Gujarat</td><td class="num">~80</td><td>Tata Motors, Suzuki Motor Gujarat (Maruti Suzuki), Hitachi; Ford India (closed 2021)</td><td>Thin-Agglomeration Only</td></tr>
-      </tbody>
-    </table>
-    <div class="insight-box">
-      <div class="label">Observation</div>
-      <p>Cluster registry notes for Chennai state that Maharashtra, Tamil Nadu, and Haryana together contribute nearly 68% of India's Gross Value Added from motor vehicle parts and accessories manufacturing, a figure independently consistent with the ASI GVO concentration shown in §7 and Figure 12 above. Sanand's "Thin-Agglomeration Only" verdict, alongside Ford India's 2021 closure there, is consistent with that state's comparatively small and slow-growing investment pipeline noted in §6.1.<sup class="cite">[7]</sup></p>
-    </div>
-  </section>
-
-  <hr class="rule-thin">
-
-  <!-- CLOSING -->
-  <section id="closing">
-    <div class="section-head"><span class="section-tag">§9</span><h2>Summary</h2></div>
-    <div class="prose">
-      <p>Transport equipment is the strongest all-round performer among the sectors examined in this series so far. Output more than doubled over the decade, the sector currently posts the fastest IIP growth of any sector tracked, leverage has fallen sharply while returns have risen, market concentration has eased rather than tightened, and the investment pipeline, the largest of any sector in this series, converts announcements into active projects at a far higher rate than textiles, with a stalled-project share under 1% in the latest year. The two clearest points of caution are a declining R&amp;D-to-sales ratio despite rising output, and a persistent net-forex deficit on a company-financials basis even as the sector runs a customs-based trade surplus.</p>
-    </div>
-    <div class="stat-grid cols-5">
-      <div class="stat-box"><span class="num">+163.6%</span><span class="lbl">GVO growth, 2014-15 → 2023-24</span></div>
-      <div class="stat-box"><span class="num">18.5→18.3%</span><span class="lbl">GVA share of GVO, 2014-15 → 2023-24 (low of 16.5% in 2022-23)</span></div>
-      <div class="stat-box"><span class="num">0.40%</span><span class="lbl">R&amp;D spend, share of sales (2024-25, down from 0.79% in 2014-15)</span></div>
-      <div class="stat-box"><span class="num">0.69%</span><span class="lbl">Implementation stalled, share of investment outstanding (2025-26)</span></div>
-      <div class="stat-box"><span class="num">1,297→989</span><span class="lbl">Herfindahl-Hirschman Index, 2015-16 → 2024-25</span></div>
-    </div>
-  </section>
-
-  <footer>
-    <h3>References</h3>
-    <ol class="ref-list">
-      <li>Annual Survey of Industries, Ministry of Statistics and Programme Implementation, National and State Summary Tables, 2014-15 to 2023-24.</li>
-      <li>Index of Industrial Production, Base 2011-12, Ministry of Statistics and Programme Implementation; latest-year figures drawn from an indicative 12-sector cut (Chemicals and Pharmaceuticals reported separately) supplied for this paper, rather than the 11-sector weighted composite used for Textiles.</li>
-      <li>Directorate General of Commercial Intelligence and Statistics, TradeStat / Trade Intelligence and Analytics Portal, FY24-25.</li>
-      <li>Centre for Monitoring Indian Economy, Prowess IQ database, fixed 20-firm panel by sector, FY14 to FY25.</li>
-      <li>Centre for Monitoring Indian Economy, Industry Outlook, cost and capital-structure aggregates, FY14-15 to FY24-25.</li>
-      <li>Internal firm-financials workbook, Herfindahl-Hirschman Index and Top-3 concentration tabs, FY14-15 to FY24-25 (firm-level data; structurally requires firm-level basis and is not sourced from the aggregate Industry Outlook file).</li>
-      <li>Cluster Supply Chain Linkage Workbook, Cluster Register and Cluster Summary Scorecard tabs, compiled from published cluster studies and industry-body profiles (Chennai, Pune, Gurugram-Manesar-Bawal, Sanand).</li>
-      <li>CMIE Industry Outlook, Transport and Equipment sector, aggregate all-companies basis (Income &amp; Expenditure, Balance Sheet, Distribution of Cost, Profitability &amp; Return Ratios, Ownership Split, Investment Pipeline/CapEx, PLI Scheme Expenditure), 2014-15 to 2025-26 (Investment Pipeline/CapEx series only; other indicators run 2014-15 to 2024-25).</li>
-    </ol>
-
-    <h3>Methodological Notes</h3>
-    <ul class="note-list">
-      <li><span class="tag">(a)</span>This paper's IIP figures were checked against two source files. The first, an 11-sector "corrected" workbook consistent with the rest of this series, contained a data-integrity issue: four of its eight analysis tabs listed "Transport and Equipment" twice, with the second, spurious row's values matching the Overall Manufacturing (official) row instead. A second, 12-sector file (Chemicals and Pharmaceuticals reported separately rather than as a weighted composite) supplied for this paper did not have this duplication, and its Transport Equipment figures match the correct (non-duplicated) row from the first file exactly. This paper uses the second file's figures on that basis; because Transport Equipment is unaffected by the Chemicals/Pharmaceuticals split, its own numbers are unaffected either way, though its "of 11" vs "of 12" sector-count and rank-among-peers framing differs slightly from Textiles' framing (rank 3 of 11 there vs rank 4 of 12 here, on the level measure).</li>
-      <li><span class="tag">(b)</span>Trade figures in §3 use the same HS-to-NIC concordance and directional-estimate caveat described in the Textiles paper; the specific coverage percentages for Transport Equipment were not independently re-confirmed in this session and should be checked against the source methodology tab before publication.</li>
-      <li><span class="tag">(c)</span>Free Cash Flow (Net Operating Cash Flow minus Purchase of Fixed Assets) was reported for Textiles in §4.1 of that paper but is omitted here pending confirmation that the same two source lines are clean and complete for Transport Equipment in the underlying CMIE export.</li>
-      <li><span class="tag">(d)</span>The 2014-15 HHI value (10,000) reflects an anomalous single-firm-reporting base year and is excluded from the trend discussion and Figure 8, consistent with the same exclusion applied to Textiles' 2014-15 figure in that paper.</li>
-      <li><span class="tag">(e)</span>Unlike the Textiles paper, this paper does not state a total multi-year PLI scheme outlay figure for Transport Equipment (e.g., from a Ministry Annual Report), because that source document was not available in this session. Only CMIE-tracked actual annual disbursement (Budget and Revised Estimates) is reported in §6. This gap should be filled before this paper is treated as final.</li>
-      <li><span class="tag">(f)</span>The 2024-25 "Investments Completed - Cost" figure (₹76,619 crore, national total) is roughly ten times larger than any other year in the 2014-15 to 2025-26 series and was not independently re-verified against the underlying CMIE CapEx export in this session. It is reported as-is in Figure 10 but flagged here as a likely candidate for a data-entry or classification check before publication.</li>
-      <li><span class="tag">(g)</span>The header text in row 4 and the "NATIONAL TOTALS" section header in the underlying ASI/State workbook's Transport Equipment tab both carry leftover text reading "Sector: Food &amp; Agro-based Products" and "NIC Div 10, 11, 12", inconsistent with the tab's own title row, which correctly reads "SECTOR: Transport and Equipment | NIC: 29, 30". The underlying data values were checked against the Food &amp; Agro tab and confirmed distinct (not a duplicated data pull), so this is treated as a stale copy-pasted label only; it should still be corrected at source.</li>
-    </ul>
-
-    <div class="colophon">Institute of Manufacturing and Economy · Manufacturing Sector Working Paper Series · Sector numbering to be confirmed · NIC Divisions 29, 30 · Primary research: Nidhi Patel · Compiled by: Riddhi Bhargava</div>
-  </footer>
-
+  </main>
 </div>
+
+<button class="fab-top" id="fabTop" aria-label="Back to top">↑</button>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">Close ✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+(function(){
+  // Progress bar
+  var fill = document.getElementById('progressFill');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? (scrolled / max) * 100 : 0;
+    fill.style.width = pct + '%';
+    document.getElementById('fabTop').classList.toggle('show', scrolled > 500);
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // Scrollspy
+  var links = Array.prototype.slice.call(document.querySelectorAll('#tocNav a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var idx = sections.indexOf(entry.target);
+      if(idx === -1) return;
+      if(entry.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        links[idx].classList.add('active');
+      }
+    });
+  }, {rootMargin:'-15% 0px -70% 0px', threshold:0});
+  sections.forEach(function(s){ if(s) observer.observe(s); });
+
+  // Mobile sidebar
+  var sidebar = document.getElementById('sidebar');
+  var hamburger = document.getElementById('hamburger');
+  var scrim = document.getElementById('scrim');
+  function closeSidebar(){ sidebar.classList.remove('open'); scrim.classList.remove('show'); }
+  if(hamburger){
+    hamburger.addEventListener('click', function(){
+      sidebar.classList.toggle('open');
+      scrim.classList.toggle('show');
+    });
+  }
+  scrim.addEventListener('click', closeSidebar);
+  links.forEach(function(l){ l.addEventListener('click', closeSidebar); });
+
+  // Desktop sidebar collapse
+  var railToggle = document.getElementById('railToggle');
+  if(railToggle){
+    var collapsedInit = false;
+    try{ collapsedInit = window.localStorage.getItem('ime-sidebar-collapsed') === '1'; }catch(e){}
+    if(collapsedInit){
+      sidebar.classList.add('collapsed');
+      railToggle.setAttribute('aria-label','Expand sidebar');
+      railToggle.setAttribute('title','Expand sidebar');
+    }
+    railToggle.addEventListener('click', function(){
+      var isCollapsed = sidebar.classList.toggle('collapsed');
+      railToggle.setAttribute('aria-label', isCollapsed ? 'Expand sidebar' : 'Collapse sidebar');
+      railToggle.setAttribute('title', isCollapsed ? 'Expand sidebar' : 'Collapse sidebar');
+      try{ window.localStorage.setItem('ime-sidebar-collapsed', isCollapsed ? '1' : '0'); }catch(e){}
+    });
+  }
+
+  // Back to top
+  document.getElementById('fabTop').addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  // Lightbox
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+  document.querySelectorAll('.figure img').forEach(function(img){
+    img.addEventListener('click', function(){
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.classList.add('show');
+    });
+  });
+  function closeLightbox(){ lightbox.classList.remove('show'); lightboxImg.src=''; }
+  lightbox.addEventListener('click', closeLightbox);
+  document.getElementById('lightboxClose').addEventListener('click', function(e){ e.stopPropagation(); closeLightbox(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeLightbox(); });
+
+  // Reveal-on-scroll for figures, tables, stat rows, insight boxes
+  var revealTargets = document.querySelectorAll('.figure, .data-table, .stat-grid, .insight-box, .section-footnote, .abstract');
+  revealTargets.forEach(function(el){ el.classList.add('reveal'); });
+  var revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  revealTargets.forEach(function(el){ revealObserver.observe(el); });
+
+  // Count-up animation for stat numbers (animates the numeric portion only)
+  function animateCount(el){
+    var raw = el.textContent;
+    var m = raw.match(/^([^0-9]*)([0-9][0-9,]*\.?[0-9]*)(.*)$/);
+    if(!m) return;
+    var prefix = m[1], target = parseFloat(m[2].replace(/,/g,'')), suffix = m[3];
+    var decimals = (m[2].split('.')[1] || '').length;
+    var hasComma = m[2].indexOf(',') !== -1;
+    if(isNaN(target)) return;
+    var start = null, duration = 900;
+    function fmt(n){
+      var s = n.toFixed(decimals);
+      if(hasComma){ s = Number(s).toLocaleString('en-IN', {minimumFractionDigits:decimals, maximumFractionDigits:decimals}); }
+      return s;
+    }
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + fmt(target * eased) + suffix;
+      if(p < 1) requestAnimationFrame(step);
+      else el.textContent = raw;
+    }
+    requestAnimationFrame(step);
+  }
+  var countTargets = document.querySelectorAll('.hero-stat .num, .stat-box .num');
+  var countObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        animateCount(entry.target);
+        countObserver.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.6});
+  countTargets.forEach(function(el){ countObserver.observe(el); });
+})();
+</script>
+
 </body>
 </html>
